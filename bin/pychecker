@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# This is a script used by .emacs to check PEP-8 compliance on Python
+# code.
+#
+# The following Python packages are required:
+#
+#   pip install pyflakes pep8
+#
+# Put this in a directory defined in PATH and give it an executable
+# permission.
+
+pyflakes "$1"
+pep8 --repeat "$1"
+true
