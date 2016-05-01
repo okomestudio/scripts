@@ -22,9 +22,11 @@ get_dev_id "TPPS/2 IBM TrackPoint"
 xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation" 1
 xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Button" 2
 xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Axes" 6 7 4 5
-xinput --set-prop --type=float "$dev_id" "Device Accel Constant Deceleration" 0.25
+xinput --set-prop --type=int "$dev_id" "Evdev Wheel Emulation Inertia" 4
+xinput --set-prop --type=int "$dev_id" "Device Accel Profile" 2
+xinput --set-prop --type=float "$dev_id" "Device Accel Constant Deceleration" 0.250
 xinput --set-prop --type=float "$dev_id" "Device Accel Adaptive Deceleration" 1.0
-xinput --set-prop --type=float "$dev_id" "Device Accel Velocity Scaling" 12.5
+xinput --set-prop --type=float "$dev_id" "Device Accel Velocity Scaling" 10.0
 
 
 # TrackPad
