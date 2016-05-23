@@ -15,6 +15,7 @@
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
+ '(line-number-mode t)
  '(load-home-init-file t t)
  '(make-backup-files nil)
  '(mouse-wheel-mode t nil (mwheel))
@@ -72,15 +73,16 @@
 ;; Dired -- ignore some files
 (require 'dired-x)
 (setq-default dired-omit-files-p t)
-(setq dired-omit-files "^\\.[^.]\\|^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
+(setq dired-omit-files "^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
+;;(setq dired-omit-files "^\\.[^.]\\|^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
 
 
 ;; autocomplete
-(unless (package-installed-p 'auto-complete)
-  (package-refresh-contents) (package-install 'auto-complete))
-(require 'auto-complete-config)
-(ac-config-default)
-(setq ac-show-menu-immediately-on-auto-complete t)
+;; (unless (package-installed-p 'auto-complete)
+;;   (package-refresh-contents) (package-install 'auto-complete))
+;; (require 'auto-complete-config)
+;; (ac-config-default)
+;; (setq ac-show-menu-immediately-on-auto-complete t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -138,6 +140,28 @@
   (package-refresh-contents) (package-install 'python))
 (require 'python)
 
+
+
+;; (global-font-lock-mode 1)
+
+
+
+;; (load-library "python")
+
+;; (autoload 'python-mode "python-mode" "Python Mode." t)
+;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
+;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
+
+;; (setq interpreter-mode-alist
+;;       (cons '("python" . python-mode)
+;;             interpreter-mode-alist)
+;;       python-mode-hook
+;;       '(lambda () (progn
+;;                     (set-variable 'py-indent-offset 4)
+;;                     (set-variable 'indent-tabs-mode nil))))
+
+
+
 ;; automatically remove trailing whitespace when file is saved
 (add-hook 'python-mode-hook
           (lambda()
@@ -178,19 +202,17 @@
 ;;
 ;;   http://stackoverflow.com/questions/21246218/how-can-i-make-emacs-jedi-use-project-specific-virtualenvs
 
-;; TODO: find a way to set --sys-path to default-directory (so that
-;; the path is set to where emacs is launched
-(setq jedi:server-args '("--sys-path" "~/projects/github.com/restlessbandit/restless-ingester"))
+(setq jedi:server-args (list (or (buffer-file-name) default-directory)))
+(push "--sys-path" jedi:server-args)
+(message "for jedi:server-args %s" jedi:server-args)
 
 
 ;; flymake - Python code checking.
+(unless (package-installed-p 'flymake-cursor)
+  (package-refresh-contents) (package-install 'flymake-cursor))
 (require 'flymake)
 (load-library "flymake-cursor")
-
-;; Script that flymake uses to check code. This script must be
-;; present in the system path.
-(setq pycodechecker "pychecker")
-
+(setq pycodechecker "pychecker") ; script that flymake uses to check code.
 (when (load "flymake" t)
   (defun flymake-pycodecheck-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -201,7 +223,6 @@
       (list pycodechecker (list local-file))))
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
-
 (add-hook 'python-mode-hook 'flymake-mode)
 
 
@@ -240,3 +261,11 @@
 (require 'ace-jump-mode)
 (define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MISC.
+
+(unless (package-installed-p 'neotree)
+  (package-refresh-contents) (package-install 'neotree))
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
