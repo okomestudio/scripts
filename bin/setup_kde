@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Set up KDE environment
+
+
+# Global shortcuts:
+
+# Audio volumes
+kwriteconfig \
+    --file kglobalshortcutsrc --group kmix \
+    --key decrease_volume 'Alt+\,,Volume Down,Decrease Volume'
+kwriteconfig \
+    --file kglobalshortcutsrc --group kmix \
+    --key increase_volume 'Alt+.,Volume Up,Increase Volume'
+kwriteconfig \
+    --file kglobalshortcutsrc --group kmix \
+    --key mute 'Alt+M,Volume Mute,Mute'
