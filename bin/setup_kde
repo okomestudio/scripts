@@ -15,3 +15,12 @@ kwriteconfig \
 kwriteconfig \
     --file kglobalshortcutsrc --group kmix \
     --key mute 'Alt+M,Volume Mute,Mute'
+
+
+# Windows management
+kwriteconfig \
+    --file kglobalshortcutsrc --group kwin \
+    --key 'Window Quick Tile Left' 'Meta+Shift+Left,none,Quick Tile Window to the Left'
+kwriteconfig \
+    --file kglobalshortcutsrc --group kwin \
+    --key 'Window Quick Tile Right' 'Meta+Shift+Right,none,Quick Tile Window to the Right'
