@@ -23,30 +23,30 @@ set -e
 export PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD
 
 which dot >/dev/null || (
-	echo 'graphviz required, or at least dot(1)' >&2
-	exit 1
+    echo 'graphviz required, or at least dot(1)' >&2
+    exit 1
 )
 
 gv="$(mktemp)"
 (
-	echo 'digraph entities {'
-	echo '    rankdir=LR'
+    echo 'digraph entities {'
+    echo '    rankdir=LR'
 
-	psql -XAt <<EOF | sed -e 's/|/ -> /' -e 's/^/    /'
+    psql -XAt <<EOF | sed -e 's/|/ -> /' -e 's/^/    /'
 SELECT
-	t1.relname, t2.relname
+    t1.relname, t2.relname
 FROM
-	pg_constraint c
-	JOIN pg_stat_all_tables t1 ON c.conrelid=t1.relid
-	JOIN pg_stat_all_tables t2 ON c.confrelid=t2.relid
+    pg_constraint c
+    JOIN pg_stat_all_tables t1 ON c.conrelid=t1.relid
+    JOIN pg_stat_all_tables t2 ON c.confrelid=t2.relid
 WHERE
-	c.contype = 'f'
-	AND t1.schemaname = 'public'
-	AND t2.schemaname = 'public'
+    c.contype = 'f'
+    AND t1.schemaname = 'public'
+    AND t2.schemaname = 'public'
 ;
 EOF
 
-	echo '}'
+    echo '}'
 ) >$gv
 
 dot -Tpdf $gv >relationships.pdf
