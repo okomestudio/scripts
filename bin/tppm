@@ -1,0 +1,88 @@
+#!/bin/bash
+#
+# tppm - Power management config script for ThinkPad 
+#
+# This is obsolete... I am not sure for which ThinkPad I used this the
+# last time. 
+#
+# Need:
+#
+#   Packages:
+#
+#     sudo aptitude install ethtool tp-smapi-dkms top powertop modconf
+#     sudo aptitude install laptop-mode-tools
+#
+#   Kernel config:
+#
+#     usbcore.autosuspend=1 [kernel command]
+#
+# hal-disable-polling --device /dev/cdrom
+#
+
+
+if [ ! -f /sys/devices/platform/smapi/ac_connected ]; then
+    exit 0
+fi
+
+TAG=pmtp
+STATUS=`cat /sys/devices/platform/smapi/ac_connected`
+
+if [ "$STATUS" = "1" ]; then
+    logger -t $TAG "on ac"
+
+    #iwconfig wlan0 power off
+
+    logger -t $TAG "increasing swappiness"
+    sysctl -w vm.swappiness=60
+
+    #echo 5 > /sys/module/snd_hda_intel/parameters/power_save
+    #echo Y > /sys/module/snd_hda_intel/parameters/power_save_controller
+    #echo 1 > /dev/dsp
+
+    #echo 0 > /proc/sys/vm/laptop_mode
+    #echo 500 > /proc/sys/vm/dirty_writeback_centisecs
+
+    #for i in /sys/class/scsi_host/*; do
+    #    echo max_performance > $i/link_power_management_policy
+    #done
+
+    # Ethernet
+    #modprobe e1000e 2>&1 | logger
+    
+else
+    logger -t $TAG "on battery"
+
+    # WiFi Card
+    #iwconfig wlan0 power on
+
+    #for i in /sys/bus/pci/devices/*/power_level ; do echo 5 > $i; done
+
+    logger -t $TAG "reducing swappiness"
+    sysctl -w vm.swappiness=10
+
+    # Intel HD Audio
+    #echo 3 > /sys/module/snd_hda_intel/parameters/power_save
+    #echo Y > /sys/module/snd_hda_intel/parameters/power_save_controller
+    #echo 1 > /dev/dsp
+
+    # Hard Drives
+    #echo 5 > /proc/sys/vm/laptop_mode
+    #echo 1500 > /proc/sys/vm/dirty_writeback_centisecs
+
+    # SATA Link Power Management
+    #for i in /sys/class/scsi_host/*; do
+    #    echo min_power > $i/link_power_management_policy
+    #done
+
+    # USB Subsystems
+    #for i in /sys/bus/usb/devices/*/power/autosuspend; do
+    #    echo 1 > $i
+    #done
+    #rmmod uhci_hcd 2>&1 | logger
+
+    # Ethernet
+    #ethtool -s eth0 wol d 2>&1 | logger
+    #ethtool -s eth0 speed 100 autoneg off 2>&1 | logger
+    #rmmod e1000e 2>&1 | logger
+
+fi
