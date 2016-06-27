@@ -1,0 +1,21 @@
+#!/bin/bash
+#
+# Search selected text using Google
+#
+# This script should be used along with a custom keyboard shortcut to
+# trigger Google search. If BROWSER is set, the query is made by the
+# specified browser (defaults to google-chrome if not set).
+
+# Required Debian packages: xsel
+
+set -e
+
+browser=${BROWSER:-google-chrome}
+
+query=$(xsel -p -o)
+url="https://google.com/search?q=$query"
+
+# If the query should be logged, uncomment below:
+# logger "sending $url to $browser"
+
+$browser $url
