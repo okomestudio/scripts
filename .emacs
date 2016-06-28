@@ -24,7 +24,7 @@
  '(show-paren-mode t nil (paren))
  '(size-indication-mode t)
  '(tab-always-indent t)
- '(tab-width 4)
+ '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
  '(x-select-enable-clipboard t))
@@ -34,10 +34,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(setq c-mode-hook
-    (function (lambda ()
-                (setq indent-tabs-mode nil)
-                (setq c-indent-level 4))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -83,6 +79,31 @@
 ;; (require 'auto-complete-config)
 ;; (ac-config-default)
 ;; (setq ac-show-menu-immediately-on-auto-complete t)
+
+;; NeoTree
+(unless (package-installed-p 'neotree)
+  (package-refresh-contents) (package-install 'neotree))
+(require 'neotree)
+(global-set-key [f8] 'neotree-toggle)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Shell/BASH
+
+(defun setup-sh-mode ()
+  (interactive)
+  (setq sh-basic-offset 2
+        sh-indentation 2))
+(add-hook 'sh-mode-hook 'setup-sh-mode)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C
+
+(setq c-mode-hook
+      (function (lambda ()
+                  (setq indent-tabs-mode nil)
+                  (setq c-indent-level 4))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -255,7 +276,11 @@
 (global-set-key "\C-qk" 'windmove-up)
 (global-set-key "\C-ql" 'windmove-right)
 
-;; ace-jump
+;; Ace Jump -- Enables fast/direct cursor movement in current view.
+;;
+;; Example: (1) type C-c SPC, (2) type a character, and (3) type one
+;; of the highlighted characters to move to that location in view.
+;;
 (unless (package-installed-p 'ace-jump-mode)
   (package-refresh-contents) (package-install 'ace-jump-mode))
 (require 'ace-jump-mode)
@@ -264,8 +289,3 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MISC.
-
-(unless (package-installed-p 'neotree)
-  (package-refresh-contents) (package-install 'neotree))
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
