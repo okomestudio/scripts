@@ -23,7 +23,7 @@ Type=SIMPLE_ACTION_DATA
 ActionsCount=1
 
 [Data_1_1Actions0]
-CommandURL=google_search
+CommandURL=$HOME/bin/google_search
 Type=COMMAND_URL
 
 [Data_1_1Conditions]
