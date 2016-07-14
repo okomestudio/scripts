@@ -16,6 +16,26 @@
 #   $ pip install awscli
 #
 
+scriptname=$0
+
+function usage {
+  echo ""
+  echo "usage: $scriptname s3_uri"
+  echo ""
+  echo "       s3_uri  S3 directory to which _SUCCESS file is created,"
+  echo "               e.g., s3://somebucket/somedir/."
+  echo ""
+  exit 1
+}
+
+opt_pem=""
+
+if [ $# -eq 1 ]; then
+  :
+else
+  usage
+fi
+
 dest=$1
 
 if [[ $dest == s3://* ]]; then
@@ -29,4 +49,5 @@ if [[ $dest == s3://* ]]; then
   rm $tmpfile
 else
   echo "ERROR: invalid S3 path: '${dest}'"
+  exit 1
 fi
