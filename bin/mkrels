@@ -20,19 +20,20 @@
 #
 
 set -e
+
 export PGHOST PGPORT PGDATABASE PGUSER PGPASSWORD
 
 which dot >/dev/null || (
-    echo 'graphviz required, or at least dot(1)' >&2
-    exit 1
+  echo 'graphviz required, or at least dot(1)' >&2
+  exit 1
 )
 
 gv="$(mktemp)"
 (
-    echo 'digraph entities {'
-    echo '    rankdir=LR'
+  echo 'digraph entities {'
+  echo '    rankdir=LR'
 
-    psql -XAt <<EOF | sed -e 's/|/ -> /' -e 's/^/    /'
+  psql -XAt <<EOF | sed -e 's/|/ -> /' -e 's/^/    /'
 SELECT
     t1.relname, t2.relname
 FROM
@@ -46,7 +47,7 @@ WHERE
 ;
 EOF
 
-    echo '}'
+  echo '}'
 ) >$gv
 
 dot -Tpdf $gv >relationships.pdf
