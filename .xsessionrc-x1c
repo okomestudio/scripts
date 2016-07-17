@@ -2,37 +2,29 @@
 #
 # .xsessionrc for ThinkPad X1 Carbon (2015)
 #
-# Required: xinput
 
+set -xe
 
-# extract device id from xinput output
-dev_id=""
-function get_dev_id() {
-    device_name="$1"
-    s=$(xinput | grep "$device_name")
-    s="${s#*id=}"
-    dev_id="${s%%[!0-9]*}"
-}
-
+. .xsessionrc_helpers
 
 # TrackPoint
-get_dev_id "TPPS/2 IBM TrackPoint"
+dev_id=$(get_dev_id "TPPS/2 IBM TrackPoint")
+if [[ -n "$dev_id" ]]; then
+  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation" 1
+  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Button" 2
+  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Timeout" 200
+  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Axes" 6 7 4 5
 
-xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation" 1
-xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Button" 2
-xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Timeout" 200
-xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Axes" 6 7 4 5
-
-xinput --set-prop --type=int "$dev_id" "Evdev Wheel Emulation Inertia" 1
-xinput --set-prop --type=int "$dev_id" "Device Accel Profile" 2
-xinput --set-prop --type=float "$dev_id" "Device Accel Constant Deceleration" 0.250
-xinput --set-prop --type=float "$dev_id" "Device Accel Adaptive Deceleration" 1.0
-xinput --set-prop --type=float "$dev_id" "Device Accel Velocity Scaling" 10.0
-
-
+  xinput --set-prop --type=int "$dev_id" "Evdev Wheel Emulation Inertia" 1
+  xinput --set-prop --type=int "$dev_id" "Device Accel Profile" 2
+  xinput --set-prop --type=float "$dev_id" "Device Accel Constant Deceleration" 0.250
+  xinput --set-prop --type=float "$dev_id" "Device Accel Adaptive Deceleration" 1.0
+  xinput --set-prop --type=float "$dev_id" "Device Accel Velocity Scaling" 10.0
+fi
 
 # TrackPad
-get_dev_id "PS/2 Synaptics TouchPad"
-
-# disable TrackPad if desired
-xinput --set-prop --type=int "$dev_id" "Device Enabled" 0
+dev_id=$(get_dev_id "PS/2 Synaptics TouchPad")
+if [[ -n "$dev_id" ]]; then
+  # disable TrackPad if desired
+  xinput --set-prop --type=int "$dev_id" "Device Enabled" 0
+fi
