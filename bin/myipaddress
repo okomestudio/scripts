@@ -1,0 +1,9 @@
+#!/bin/bash
+#
+# myipaddress - Get the public facing IP address of the local host.
+#
+
+set -e
+
+remotehost=checkip.dyndns.org
+curl -s $remotehost | sed -e 's/.*Current IP Address: //' -e 's/<.*$//'
