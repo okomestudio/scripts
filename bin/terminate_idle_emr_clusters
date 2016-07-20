@@ -1,0 +1,162 @@
+#!/usr/bin/env python2.7
+# -*- coding: utf-8 -*-
+"""Terminate idle AWS/EMR clusters
+==================================
+
+This script should be run periodically in order to terminate idle EMR
+clusters before instance hours crosses the cost-increase boundary.
+
+For example, a cron job for running this script every 3 mins would be:
+
+  */3 * * * * terminate_idle_emr_clusters mycluster --min-idle-time 180
+
+and only clusters with name prefix `mycluster` will be checked for
+idleness.
+
+
+Requirements
+------------
+
+  $ pip install boto3, dateutil, pytz
+
+"""
+from __future__ import absolute_import
+import logging
+from argparse import ArgumentParser
+from datetime import datetime
+
+import boto3
+import pytz
+
+
+log = logging.getLogger(__name__)
+
+emr = boto3.client('emr')
+
+
+def utcnow():
+    return pytz.utc.localize(datetime.utcnow())
+
+
+def terminate_cluster(cluster_id):
+    emr.terminate_job_flow(JobFlowIds=[cluster_id])
+
+
+def get_clusters(prefix=None, states=None):
+    """Gets a list of EMR clusters.
+
+    :type prefix: :class:`str` or :obj:`None`
+    :param prefix: The name prefix of EMR clusters to capture.
+
+    :returns: The response generator of :class:`dict` items.
+
+    """
+    clusters = []
+    args = {}
+    if states:
+        args['ClusterStates'] = states
+    marker = None
+    while 1:
+        if marker:
+            args['Marker'] = marker
+        resp = emr.list_clusters(**args)
+        if 'Clusters':
+            for c in resp['Clusters']:
+                if not prefix or c['Name'].startswith(prefix):
+                    yield c
+        if 'Marker' not in resp:
+            break
+
+        marker = resp['Marker']
+
+
+def check(prefix, min_idle_time=300, terminate_now=False):
+    """Captures and checks EMR cluster for idleness and terminates the
+    ones that satisfy the termination criteria.
+
+    :type prefix: :class:`str` or :obj:`None`
+    :param prefix: The name prefix of EMR clusters to capture.
+
+    :type min_idle_time: :class:`int`
+    :param min_idle_time: The minimum idle time in seconds before a
+        cluster can be terminated.
+
+    :type terminate_now: :class:`bool`
+    :param terminate_now: :obj:`True` if terminating outside the
+        cost-increase boundary; :obj:`False` if termination only
+        occurs right before the cost increases.
+
+    """
+    log.info("checking on emr clusters named '%s*'", prefix)
+    for cluster in get_clusters(prefix=prefix, states=['WAITING']):
+        cluster_id = cluster['Id']
+        log.debug('captured cluster %s: %r', cluster_id, cluster)
+        try:
+            last_step = emr.list_steps(ClusterId=cluster_id)['Steps'][0]
+        except Exception:
+            log.debug('Error retrieving last step')
+            continue
+
+        try:
+            last_used = last_step['Status']['Timeline']['EndDateTime']
+        except Exception:
+            log.debug('Step end datetime not found')
+            continue
+
+        started = cluster['Status']['Timeline']['ReadyDateTime']
+
+        now = utcnow()
+        idle_time = (now - last_used).total_seconds()
+        till_cost_boundary = 3600 - ((now - started).total_seconds() % 3600)
+
+        log.info('cluster %s has been idle for %.1f sec'
+                 ' (%.1f sec till cost boundary)',
+                 cluster_id, idle_time, till_cost_boundary)
+
+        if idle_time > min_idle_time:
+            if terminate_now:
+                log.warn('terminating cluster %s NOW', cluster_id)
+                terminate_job_flow(cluster_id)
+            elif till_cost_boundary < min_idle_time * 2.:
+                # Only terminate if crossing the 1-hour billing
+                # boundary is imminent.
+                log.warn('terminating cluster %s before cost increases '
+                         'in %.1f sec',
+                         cluster_id, till_cost_boundary)
+                terminate_job_flow(cluster_id)
+
+
+def main(args):
+    log = globals()['log']
+    if args.logging_level:
+        log.setLevel(args.logging_level)
+    if args.logging_file:
+        h = logging.FileHandler(args.logging_file)
+    else:
+        h = logging.StreamHandler()
+    h.setFormatter(logging.Formatter('%(asctime)s:%(message)s'))
+    log.addHandler(h)
+
+    for name_prefix in args.cluster_name_prefix:
+        check(name_prefix, min_idle_time=args.min_idle_time,
+              terminate_now=args.now)
+
+
+if __name__ == '__main__':
+    p = ArgumentParser(description=__doc__.strip())
+    p.add_argument(
+        'cluster_name_prefix', nargs='+', type=str,
+        help='EMR cluster name prefix(es) to check for termination')
+    p.add_argument(
+        '--min-idle-time', type=int, default=180,
+        help='Minimum seconds of inactivity before termination (default: 180)')
+    p.add_argument(
+        '--now', action='store_true', default=False,
+        help='Terminate idle clusters immediately')
+    p.add_argument(
+        '--logging-file', type=str,
+        help='Path to log file')
+    p.add_argument(
+        '--logging-level', type=str, default='WARNING',
+        help='Logging level')
+    main(p.parse_args())
