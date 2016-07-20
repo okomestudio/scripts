@@ -17,7 +17,7 @@ idleness.
 Requirements
 ------------
 
-  $ pip install boto3, dateutil, pytz
+  $ pip install boto3, pytz
 
 """
 from __future__ import absolute_import
