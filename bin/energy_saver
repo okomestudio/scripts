@@ -19,35 +19,35 @@ USERNAME=$USER
 statuspath="/sys/class/power_supply/AC/online"
 
 if [ ! -f "$statuspath" ]; then
-    exit 0
+  exit 0
 fi
 
 tag=pmpersonal
 status=`cat "$statuspath"`
 
 if [ "$status" = "1" ]; then
-    logger -t $tag "on ac"
+  logger -t $tag "on ac"
 
-    logger -t $tag "start xflux"
-    for i in `pgrep ^xflux$` ; do kill -9 $i ; done
-    xflux -l $LATITUDE -g $LONGITUDE
+  logger -t $tag "start xflux"
+  for i in `pgrep ^xflux$` ; do kill -9 $i ; done
+  xflux -l $LATITUDE -g $LONGITUDE
 
-    logger -t $tag "start dropbox"
-    dropbox start
+  logger -t $tag "start dropbox"
+  dropbox start
 
-    logger -t $tag "enable system notification"
-    kwriteconfig --file="/home/$USERNAME/.kde/share/config/knotifyrc" \
-                 --group=Sounds --key="No sound" false
+  logger -t $tag "enable system notification"
+  kwriteconfig --file="/home/$USERNAME/.kde/share/config/knotifyrc" \
+               --group=Sounds --key="No sound" false
 else
-    logger -t $tag "on battery"
+  logger -t $tag "on battery"
+  
+  logger -t $tag "stop xflux"
+  for i in `pgrep ^xflux$` ; do kill -9 $i ; done
+  
+  logger -t $tag "stop dropbox"
+  dropbox stop
 
-    logger -t $tag "stop xflux"
-    for i in `pgrep ^xflux$` ; do kill -9 $i ; done
-
-    logger -t $tag "stop dropbox"
-    dropbox stop
-
-    logger -t $tag "disable system notification"
-    kwriteconfig --file="/home/$USERNAME/.kde/share/config/knotifyrc" \
-                 --group=Sounds --key="No sound" true
+  logger -t $tag "disable system notification"
+  kwriteconfig --file="/home/$USERNAME/.kde/share/config/knotifyrc" \
+               --group=Sounds --key="No sound" true
 fi
