@@ -1,0 +1,40 @@
+#!/bin/bash
+#
+# Bootstrap a Debian/Jessie instance
+# 
+
+sudo apt-get update
+sudo apt-get -y upgrade
+
+################
+# General system
+
+sudo apt-get -y install emacs
+sudo apt-get -y install gcc g++ make
+
+# postgresql
+sudo apt-get -y install postgresql postgresql-contrib
+sudo apt-get -y install postgresql-server-dev-9.4 libpq-dev
+
+# git
+sudo apt-get -y install git
+
+# lxml
+sudo apt-get -y install libxml2 libxml2-dev libxslt-dev
+
+# gevent
+sudo apt-get -y install libevent-dev
+
+
+#################
+# Python packages
+sudo apt-get -y install python-dev
+
+# pip
+wget https://bootstrap.pypa.io/get-pip.py
+sudo python get-pip.py
+rm get-pip.py
+
+sudo pip install ipython
+sudo pip install virtualenv
+sudo pip install cython
