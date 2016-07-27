@@ -39,7 +39,7 @@ def utcnow():
 
 
 def terminate_cluster(cluster_id):
-    emr.terminate_job_flow(JobFlowIds=[cluster_id])
+    emr.terminate_job_flows(JobFlowIds=[cluster_id])
 
 
 def get_clusters(prefix=None, states=None):
@@ -116,14 +116,14 @@ def check(prefix, min_idle_time=300, terminate_now=False):
         if idle_time > min_idle_time:
             if terminate_now:
                 log.warn('terminating cluster %s NOW', cluster_id)
-                terminate_job_flow(cluster_id)
+                terminate_cluster(cluster_id)
             elif till_cost_boundary < min_idle_time * 2.:
                 # Only terminate if crossing the 1-hour billing
                 # boundary is imminent.
                 log.warn('terminating cluster %s before cost increases '
                          'in %.1f sec',
                          cluster_id, till_cost_boundary)
-                terminate_job_flow(cluster_id)
+                terminate_cluster(cluster_id)
 
 
 def main(args):
