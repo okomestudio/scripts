@@ -1,56 +1,72 @@
 #!/bin/sh
+#
+# Add syntax highlighting via Pygments
+#
+# Install Pygments:
+#
+#   $ pip install Pygments
+#
+# and add the following lines to ~/.bashrc:
+#
+#   export LESS='-R'
+#   export LESSOPEN='|~/.lessfilter %s'
+#
+# and save this file as ~/.lessfilter
+#
 
 case "$1" in
-    *.ad[asb]|\
-    *.asm|\
-    *.awk|\
-    *.axp|\
-    *.c|\
-    *.cc|\
-    *.cpp|\
-    *.cxx|\
-    *.diff|\
-    *.ebuild|\
-    *.eclass|\
-    *.groff|\
-    *.h|\
-    *.hh|\
-    *.hpp|\
-    *.hxx|\
-    *.inc|\
-    *.java|\
-    *.js|\
-    *.l|\
-    *.lsp|\
-    *.m4|\
-    *.p|\
-    *.pas|\
-    *.php|\
-    *.pl|\
-    *.pm|\
-    *.pod|\
-    *.sh|\
-    *.tex|\
-    *.xml|\
-    *.xps|\
-    *.xsl|\
-    *.patch|\
-    *.pov|\
-    *.ppd|\
-    *.py|\
-    *.rb|\
-    *.sql)
-        pygmentize -f 256 -O bg=light "$1";;
-    .bashrc|.bash_aliases|.bash_environment)
-        pygmentize -f 256 -O bg=light -l sh "$1"
-        ;;
-    *)
-        grep "#\!/bin/bash" "$1" > /dev/null
-        if [ "$?" -eq "0" ]; then
-            pygmentize -f 256 -O bg=light -l sh "$1"
-        else
-            exit 1
-        fi
+  *.ad[asb]|\
+  *.asm|\
+  *.awk|\
+  *.axp|\
+  *.c|\
+  *.cc|\
+  *.cpp|\
+  *.cxx|\
+  *.diff|\
+  *.ebuild|\
+  *.eclass|\
+  *.groff|\
+  *.h|\
+  *.hh|\
+  *.hpp|\
+  *.hxx|\
+  *.inc|\
+  *.java|\
+  *.js|\
+  *.l|\
+  *.lsp|\
+  *.m4|\
+  *.p|\
+  *.pas|\
+  *.php|\
+  *.pl|\
+  *.pm|\
+  *.pod|\
+  *.sh|\
+  *.tex|\
+  *.xml|\
+  *.xps|\
+  *.xsl|\
+  *.patch|\
+  *.pov|\
+  *.ppd|\
+  *.py|\
+  *.rb|\
+  *.sql)
+    pygmentize -f 256 -O bg=light "$1"
+    ;;
+  .bashrc|.bash_aliases|.bash_environment)
+    pygmentize -f 256 -O bg=light -l sh "$1"
+    ;;
+  *)
+    grep "#\!/bin/bash" "$1" > /dev/null
+    if [ "$?" -eq "0" ]; then
+      pygmentize -f 256 -O bg=light -l sh "$1"
+    else
+      exit 1
+    fi
+    ;;
 esac
 
 exit 0
