@@ -1,0 +1,38 @@
+#!/bin/bash
+#
+# Create self-signed certificate for use with HTTPS
+# =================================================
+#
+# Run this script to generate self-signed certificate that can be used
+# to support SSL on development web services. The script generates
+# three files `generated.key` (private key), `generated.cert` (primary
+# certificate), and `generated.pem` (certificate bundle, i.e., the
+# primary plus intermediate certificates).
+#
+# Requirements
+# ------------
+#
+#   $ sudo apt-get install openssl
+#   $ sudo pip install certifi
+#
+
+set -xe
+
+# Paths for output files
+generated_key_path=generated.key
+generated_cert_path=generated.crt
+generated_pem_path=generated.pem
+
+# Generate the primary cert:
+openssl req -x509 \
+        -nodes \
+        -days 365 \
+        -newkey rsa:2048 \
+        -keyout ${generated_key_path} \
+        -out ${generated_cert_path}
+
+# Generate the intermediate cert:
+cacert_path=$(python -c 'import certifi; print certifi.where()')
+
+# Concatenate the primary and intermediate certs:
+cat ${generated_cert_path} ${cacert_path} > ${generated_pem_path}
