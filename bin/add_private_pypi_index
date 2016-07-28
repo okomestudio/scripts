@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# Add a PyPI index to pip.conf.
+#
+
+set -xe
+
+scriptname="$0"
+
+function usage {
+  echo ""
+  echo "usage: $scriptname host_url [cert_path]"
+  echo ""
+  echo "       host_url   PyPI host URL"
+  echo "       cert_path  Local path to the cert file (used with SSL)"
+  echo ""
+  exit 1
+}
+
+if [[ ( "$#" -eq 1 ) || ( "$#" -eq 2 ) ]]; then
+  :
+else
+  usage
+fi
+
+host_url=$1
+if [[ -n "$2" ]]; then
+  cert_path="$2"
+fi
+
+# Need to temporarily disable set -e, as the `read` command below
+# returns 1.
+set +e
+read -r -d '' content <<EOF
+[install]
+index-url = ${host_url}/simple
+EOF
+set -e
+
+if [[ -n ${cert_path} ]]; then
+  content="${content}"$'\n'"cert = ${cert_path}"
+fi
+
+# The target PIP config file is that of virtual environment if it is
+# detected; otherwise it will be the per-user config.
+if [ -z ${VIRTUAL_ENV+x} ]; then
+  target="${HOME}/.pip/pip.conf"
+else
+  target="${VIRTUAL_ENV}/pip.conf"
+fi
+
+# If the index entry does not exist, add; otherwise, do nothing.
+if grep -q -F "${host_url}" "${target}" ; then
+  :
+else
+  echo "${content}" >> "${target}"
+fi
