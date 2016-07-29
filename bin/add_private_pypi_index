@@ -43,15 +43,18 @@ fi
 
 # The target PIP config file is that of virtual environment if it is
 # detected; otherwise it will be the per-user config.
-if [ -z ${VIRTUAL_ENV+x} ]; then
-  target="${HOME}/.pip/pip.conf"
+if [[ -z ${VIRTUAL_ENV+x} ]]; then
+  target="${HOME}/.pip"
+  if [[ ! -d ${target} ]]; then
+    mkdir -p ${target}
+  fi
 else
-  target="${VIRTUAL_ENV}/pip.conf"
+  target="${VIRTUAL_ENV}"
 fi
 
 # If the index entry does not exist, add; otherwise, do nothing.
-if grep -q -F "${host_url}" "${target}" ; then
+if grep -q -F "${host_url}" "${target}/pip.conf" ; then
   :
 else
-  echo "${content}" >> "${target}"
+  echo "${content}" >> "${target}/pip.conf"
 fi
