@@ -5,44 +5,73 @@
 # Requirements
 # ------------
 #
-# $ sudo apt-get install pssh jq
+# $ sudo apt-get install jq
+# $ sudo apt-get install pssh
 # $ sudo pip install awscli
 #
 
-set -xe
+set -e
 
-cluster_id=$1
-ssh_key=$2
+scriptname=$0
 
-resp=$(aws emr list-instances --cluster-id "$1")
+function usage {
+  echo ""
+  echo "usage: $scriptname [-i ssh_key] cluster_id command [arg ...]"
+  echo ""
+  echo "       ssh_key     The private key for authentication over ssh."
+  echo "       cluster_id  The AWS/EMR cluster ID."
+  echo "       command     Command to run on remote hosts."
+  echo ""
+  exit 1
+}
 
-# echo ${resp}
+nonopts=()
+while [[ $# -gt 1 ]]
+do
+  key="$1"
+  case $key in
+    -i|--identity)
+      ssh_key="$2"
+      shift
+      ;;
+    *)
+      nonopts+=("$key")
+      ;;
+  esac
+  shift
+done
+nonopts+=("$1")
+
+cluster_id=${nonopts[0]}
+cmds=${nonopts[@]:1}
+
+if [[ -z ${cluster_id} ]] || [[ -z ${cmds} ]] ; then
+  usage
+fi
+
+resp=$(aws emr list-instances --cluster-id ${cluster_id})
 
 ips=$(echo ${resp} | jq '.Instances[] | .PublicIpAddress')
 
-ipboo=()
+hosts=()
 for ip in $ips; do
-  ip=${ip//\"/}
-  ipboo+=("hadoop@${ip}")
+  hosts+=(${ip//\"/})
 done
-# echo "${ipboo[@]}"
+hosts=${hosts[*]}
 
-function dojoin {
-  local d=$1;
-  shift;
-  echo -n "$1";
-  shift;
-  printf "%s" "${@/#/$d}";
-}
+if which pssh > /dev/null ; then
+  prog=pssh
+elif which parallel-ssh > /dev/null ; then
+  prog=parallel-ssh
+else
+  echo "ERROR: pssh not found"
+  exit 1
+fi
 
-hosts=$(dojoin ' -H ' ${ipboo[@]})
+opts="-v -l hadoop"
+if [[ -n ${ssh_key} ]]; then
+  opts="${opts} -O IdentityFile=${ssh_key}"
+  opts="${opts} -O StrictHostKeyChecking=no"
+fi
 
-# echo $hosts
-
-alias pssh='parallel-ssh'
-
-parallel-ssh \
-  -v -H $hosts -l hadoop \
-  -O IdentityFile=${ssh_key} \
-  -O StrictHostKeyChecking=no \
-  -i "uptime"
+${prog} -H "${hosts}" ${opts} -i "${cmds}"
