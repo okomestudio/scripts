@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# Execute shell command via ssh on each instance of an EMR cluster
+#
+# Requirements
+# ------------
+#
+# $ sudo apt-get install pssh jq
+# $ sudo pip install awscli
+#
+
+set -xe
+
+cluster_id=$1
+ssh_key=$2
+
+resp=$(aws emr list-instances --cluster-id "$1")
+
+# echo ${resp}
+
+ips=$(echo ${resp} | jq '.Instances[] | .PublicIpAddress')
+
+ipboo=()
+for ip in $ips; do
+  ip=${ip//\"/}
+  ipboo+=("hadoop@${ip}")
+done
+# echo "${ipboo[@]}"
+
+function dojoin {
+  local d=$1;
+  shift;
+  echo -n "$1";
+  shift;
+  printf "%s" "${@/#/$d}";
+}
+
+hosts=$(dojoin ' -H ' ${ipboo[@]})
+
+# echo $hosts
+
+alias pssh='parallel-ssh'
+
+parallel-ssh \
+  -v -H $hosts -l hadoop \
+  -O IdentityFile=${ssh_key} \
+  -O StrictHostKeyChecking=no \
+  -i "uptime"
