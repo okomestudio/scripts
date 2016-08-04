@@ -22,10 +22,10 @@ kwriteconfig \
 # Windows management
 kwriteconfig \
     --file kglobalshortcutsrc --group kwin \
-    --key 'Window Maximize' 'Meta+Ctrl+Up,none,Maximize Window'
+    --key 'Window Maximize' 'Meta+Shift+Up,none,Maximize Window'
 kwriteconfig \
     --file kglobalshortcutsrc --group kwin \
-    --key 'Window Minimize' 'Meta+Ctrl+Down,none,Minimize Window'
+    --key 'Window Minimize' 'Meta+Shift+Down,none,Minimize Window'
 kwriteconfig \
     --file kglobalshortcutsrc --group kwin \
     --key 'Window Quick Tile Left' 'Meta+Shift+Left,none,Quick Tile Window to the Left'
