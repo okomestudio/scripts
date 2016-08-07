@@ -1,24 +1,57 @@
 #!/bin/bash
+#
+# Perform backups of local files to a remote file server using rsync.
+#
+# Run this as a cronjob to periodically make backups, only when the
+# remote backup server is up.
 
 set -e
 
-remote_host=mybackupserver
-remote_port=22
+scriptname=$0
 
-if ! nc -z ${remote_host} ${remote_port} 2> /dev/null ;
-then
-  echo "Host ${remote_host} is down. Nothing is done."
+usage() {
+  cat <<EOF
+${scriptname} file_server [ssh_port]
+
+  file_server  The host name or IP address of remote file server.
+  ssh_port     The SSH port over which rsync runs
+
+EOF
+  exit 1
+}
+
+# Logger 
+log() {
+  logger -s -t backup $1
+}
+
+if [[ $# -eq 1 ]]; then
+  FILE_SERVER=$1
+  SSH_PORT=22
+elif [[ $# -eq 2 ]]; then
+  FILE_SERVER=$1
+  SSH_PORT=$2
+else
+  usage
+fi
+readonly FILE_SERVER
+readonly SSH_PORT
+
+if ! nc -z ${FILE_SERVER} ${SSH_PORT} 2> /dev/null; then
+  log "Host ${FILE_SERVER} is down. Nothing is done."
   exit 0;
 fi
 
-echo "Host ${remote_host} is up. Starting backup..."
+log "Host ${FILE_SERVER} is up. Starting backup..."
 
-cmd="rsync -avP --delete --dry-run"
+# The rsync command to use for backup.
+#
+# TODO: The ssh port might need to be customizable.
+cmd="rsync -avP --delete"
 
-# List paths to be rsynced below.
+# NOTE: List rsync directories below:
 
-# $cmd \
-#       /home/username/ \
-#       ${remote_host}:/data/home/username/
+# ${cmd} /path/to/src/ \
+#        ${FILE_SERVER}:/path/to/backup/dest/
 
-echo "Finished."
+log "Backup to ${FILE_SERVER} finished."
