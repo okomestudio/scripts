@@ -1,0 +1,24 @@
+#!/bin/bash
+
+set -e
+
+remote_host=mybackupserver
+remote_port=22
+
+if ! nc -z ${remote_host} ${remote_port} 2> /dev/null ;
+then
+  echo "Host ${remote_host} is down. Nothing is done."
+  exit 0;
+fi
+
+echo "Host ${remote_host} is up. Starting backup..."
+
+cmd="rsync -avP --delete --dry-run"
+
+# List paths to be rsynced below.
+
+# $cmd \
+#       /home/username/ \
+#       ${remote_host}:/data/home/username/
+
+echo "Finished."
