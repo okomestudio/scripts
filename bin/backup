@@ -47,7 +47,7 @@ log "Host ${FILE_SERVER} is up. Starting backup..."
 # The rsync command to use for backup.
 #
 # TODO: The ssh port might need to be customizable.
-cmd="rsync -avP --delete"
+cmd="rsync -avP --delete --log-file=/var/log/backuplog"
 
 # NOTE: List rsync directories below:
 
