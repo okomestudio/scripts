@@ -12,14 +12,17 @@ if [ -x /usr/bin/dircolors ]; then
   # alias egrep='egrep --color=auto'
 fi
 
+alias ds9='ds9 -zscale'
+
 alias less='less -S'
 
 alias l='ls -CF'
 alias la='ls -A'
 alias ll='ls -lh'
 
-alias ds9='ds9 -zscale'
+alias open='xdg-open'
 
+# Shortcuts for git
 alias co='git checkout'
 alias log='git log'
 alias pull='git pull'
