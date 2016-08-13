@@ -1,0 +1,49 @@
+#!/bin/bash
+#
+# Drop PostgreSQL databases when their name matches given pattern
+#
+
+set -e
+
+scriptname=$0
+
+usage() {
+  cat <<EOF
+${scriptname} dbname_pattern
+
+  dbname_pattern  database name pattern to be matched
+
+EOF
+  exit 1
+}
+
+if [[ ! $# -eq 1 ]]; then
+  usage
+fi
+
+pattern=$1
+readonly pattern
+
+databases=$(psql -Atc "\l ${pattern}" | cut -d \| -f1)
+readonly databases
+
+if [[ -z "${databases[@]}" ]]; then
+  echo "No databases matching pattern found."
+  exit 0
+fi
+
+for db in ${databases[@]}; do
+  echo $db
+done
+
+echo -n "Are you sure to drop the PostgreSQL databases? (y/N) "
+read resp
+readonly resp
+if [[ ! "$resp" = "y" ]]; then
+  exit 0
+fi
+
+for db in ${databases[@]}; do
+  echo "Removing $db..."
+  dropdb "$db"
+done
