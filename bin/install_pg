@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Reference: http://narbeh.org/blog/upgrade-postgresql-9-4-to-9-5-in-debian/
+#
+# This script is work in progress.
+
+sudo /etc/init.d/postgresql stop
+
+# Backup database
+pg_dump -Fc -U [ROLE] [DATABASE] -f Backup.dump
+
+# Backup raw postgresql files
+cp -rp /var/lib/postgresql/9.4/ /media/backup
+
+echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
+  | sudo tee /etc/apt/sources.list.d/pgdg.list
+
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+  | sudo apt-key add -
+
+sudo apt-get update
+sudo apt-get install postgresql-9.5
+
+su postgres
+
+/usr/lib/postgresql/9.5/bin/pg_upgrade \
+  -b /usr/lib/postgresql/9.4/bin/ \
+  -B /usr/lib/postgresql/9.5/bin/ \
+  -d /var/lib/postgresql/9.4/main \
+  -D /var/lib/postgresql/9.5/main \
+  -o ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf' \
+  -O ' -c config_file=/etc/postgresql/9.5/main/postgresql.conf'
