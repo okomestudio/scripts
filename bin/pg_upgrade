@@ -1,0 +1,67 @@
+#!/bin/bash
+#
+# Install PostgreSQL 9.5 on Debian/Jessie
+#
+# It appears the stock PostgreSQL 9.4 remains running at port 5432,
+# whereas newly installed 9.5 runs at port 5433.
+#
+
+PORT_OLD=5432
+PORT_NEW=5433
+
+readonly PORT_OLD
+readonly PORT_NEW
+
+# Register PostgreSQL repo to APT.
+echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
+  | sudo tee /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+  | sudo apt-key add -
+sudo apt-get update
+
+# Install version 9.5.
+sudo apt-get install postgresql-9.5
+
+# The following would work for simple setting, but with PostGIS it
+# will barf.
+
+# sudo /etc/init.d/postgresql stop
+# su postgres
+# /usr/lib/postgresql/9.5/bin/pg_upgrade \
+#   -b /usr/lib/postgresql/9.4/bin/ \
+#   -B /usr/lib/postgresql/9.5/bin/ \
+#   -d /var/lib/postgresql/9.4/main \
+#   -D /var/lib/postgresql/9.5/main \
+#   -o ' -c config_file=/etc/postgresql/9.4/main/postgresql.conf' \
+#   -O ' -c config_file=/etc/postgresql/9.5/main/postgresql.conf'
+# sudo /etc/init.d/postgresql start
+
+# The following hard restores each database, taking care of PostGIS
+# version difference.
+sudo apt-get install postgresql-9.5-postgis-2.2
+
+sudo PORT_OLD="$PORT_OLD" PORT_NEW="$PORT_NEW" su postgres <<'EOF'
+mkdir -p /tmp/pgbk
+
+databases=$(psql -p "$PORT_OLD" -Atc "SELECT datname FROM pg_database
+                                        WHERE datistemplate = false")
+readonly databases
+
+for db in ${databases[@]}; do
+  pg_dump -p "$PORT_OLD" -U postgres -Fc -b -v -f "/tmp/pgbk/$db.backup" "$db"
+done
+
+for db in ${databases[@]}; do
+  exists=$(psql -p "$PORT_NEW" -Atc "SELECT datname FROM pg_database" |
+           grep "^$db$")
+  if [[ -z "$exists" ]]; then
+    echo "$db does not exist"
+    createdb -p "$PORT_NEW" "$db"
+    /usr/share/postgresql/9.5/contrib/postgis-2.2/postgis_restore.pl \
+      "/tmp/pgbk/$db.backup" | \
+      psql -p "$PORT_NEW" "$db" 2> /tmp/errors."$db".log
+  else
+    echo "$db exists"
+  fi
+done
+EOF
