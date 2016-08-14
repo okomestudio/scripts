@@ -109,7 +109,6 @@ export PAGER=less
 
 # For the special ssh prompt
 if [ -n "$SSH_CLIENT" ]; then
-  #text="ssh "
   export PS1='\[\e[0;31m\][\u@\h \W]$\[\e[m\] '
 fi
 
@@ -132,8 +131,6 @@ addpythonpath() {
     PYTHONPATH="$1:$PYTHONPATH"
   fi
 }
-
-host=`hostname -s`
 
 ##############################################################################
 # PATH
