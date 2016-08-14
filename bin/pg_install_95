@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Install PostgreSQL 9.5 on Debian/Jessie
+
+set -ex
+
+# Register PostgreSQL repo to APT.
+echo "deb http://apt.postgresql.org/pub/repos/apt/ jessie-pgdg main" \
+  | sudo tee /etc/apt/sources.list.d/pgdg.list
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc \
+  | sudo apt-key add -
+
+sudo apt-get update
+sudo apt-get install -y postgresql-9.5
+sudo apt-get install -y postgresql-9.5-postgis-2.2
