@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+echo "This script is work in progress. Do not use it"
+exit 1
+
+usage() {
+  cat<<EOF
+$0 
+
+TBD.
+EOF
+  exit 1
+}
+
+set -ex
+
+export GH_USER GH_TWO_FACTOR_CODE
+
+if [[ -z "$GH_USER" ]]; then
+  usage
+fi
+readonly GH_USER
+
+curl_opts=(-u "$GH_USER")
+
+# OAuth2.
+token=""
+while [[ -z "$token" ]]; do
+if [[ -n "$GH_TWO_FACTOR_CODE" ]]; then
+  #header="-H 'X-GitHub-OTP: $GH_TWO_FACTOR_CODE'"
+  curl_opts+=(-H "X-GitHub-OTP: $GH_TWO_FACTOR_CODE")
+fi
+
+resp=$(curl "${curl_opts[@]}" \
+       https://api.github.com/authorizations \
+         -d '{"scopes": ["gist"], "note": "Dmoe"}')
+if echo "$resp" | grep -q 'Must specify two-factor authentication'; then
+  echo -n "GitHub requires a two-factor authentication code: "
+  read GH_TWO_FACTOR_CODE
+  continue
+fi
+
+token=$(echo "$resp" | jq '.token')
+done
+
+echo "TOKEN: $token"
+exit 0
+
+
+# if echo "$resp" | grep -q 'X-GitHub-OTP: required'; then
+#   echo -n "GitHub requires a two-factor authentication code: "
+#   read code
+#   readonly code
+
+#   token=$(curl ${curl_opts} -H "X-GitHub-OTP: $code" \
+#                https://api.github.com/authorizations \
+#                -d '{"scopes": ["gist"], "note": "Dmoe"}' | \
+#              jq '.token')
+
+#   curl_opts="$curl_opts -H 'Authorization: token $token'"
+# fi
+
+# readonly curl_opts
+
+# curl ${curl_opts} https://api.github.com/gists/starred
