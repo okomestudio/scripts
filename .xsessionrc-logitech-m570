@@ -1,19 +1,20 @@
 #!/bin/bash
 #
-# Setup for Logitech Wireless Trackball M570
-#
+# Setup Logitech Wireless Trackball M570
 
 set -xe
 
-. .xsessionrc_helpers
+source include/xsessionrc_helpers.sh
 
-dev_id=$(get_dev_id "Logitech Unifying Device. Wireless PID:1028")
-if [[ -n "$dev_id" ]]; then
+device_id=$(get_device_id "Logitech Unifying Device. Wireless PID:1028")
+if [[ -n "$device_id" ]]; then
+  setp="xinput --set-prop $device_id"
+
   # Activate scroll wheel emulation (use the trackball while pressing
   # vertical wheel down).
-  xinput --set-prop "$dev_id" "Evdev Wheel Emulation" 1
-  xinput --set-prop "$dev_id" "Evdev Wheel Emulation Axes" 6 7 4 5
-  xinput --set-prop "$dev_id" "Evdev Wheel Emulation Inertia" 3
-  xinput --set-prop "$dev_id" "Evdev Wheel Emulation Timeout" 200
-  xinput --set-prop "$dev_id" "Evdev Wheel Emulation Button" 2
+  ${setp} "Evdev Wheel Emulation" 1
+  ${setp} "Evdev Wheel Emulation Axes" 6 7 4 5
+  ${setp} "Evdev Wheel Emulation Inertia" 3
+  ${setp} "Evdev Wheel Emulation Timeout" 200
+  ${setp} "Evdev Wheel Emulation Button" 2
 fi

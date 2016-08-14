@@ -1,30 +1,28 @@
 #!/bin/bash
 #
 # .xsessionrc for ThinkPad X1 Carbon (2015)
-#
 
 set -xe
 
-. .xsessionrc_helpers
+source include/xsessionrc_helpers.sh
 
-# TrackPoint
-dev_id=$(get_dev_id "TPPS/2 IBM TrackPoint")
-if [[ -n "$dev_id" ]]; then
-  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation" 1
-  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Button" 2
-  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Timeout" 200
-  xinput --set-prop --type=int --format=8 "$dev_id" "Evdev Wheel Emulation Axes" 6 7 4 5
-
-  xinput --set-prop --type=int "$dev_id" "Evdev Wheel Emulation Inertia" 1
-  xinput --set-prop --type=int "$dev_id" "Device Accel Profile" 2
-  xinput --set-prop --type=float "$dev_id" "Device Accel Constant Deceleration" 0.250
-  xinput --set-prop --type=float "$dev_id" "Device Accel Adaptive Deceleration" 1.0
-  xinput --set-prop --type=float "$dev_id" "Device Accel Velocity Scaling" 10.0
+device_id=$(get_device_id "TPPS/2 IBM TrackPoint")
+if [[ -n "$device_id" ]]; then
+  setp="xinput --set-prop $device_id"
+  ${setp} --type=int --format=8 "Evdev Wheel Emulation" 1
+  ${setp} --type=int --format=8 "Evdev Wheel Emulation Button" 2
+  ${setp} --type=int --format=8 "Evdev Wheel Emulation Timeout" 200
+  ${setp} --type=int --format=8 "Evdev Wheel Emulation Axes" 6 7 4 5
+  ${setp} --type=int "Evdev Wheel Emulation Inertia" 1
+  ${setp} --type=int "Device Accel Profile" 2
+  ${setp} --type=float "Device Accel Constant Deceleration" 0.250
+  ${setp} --type=float "Device Accel Adaptive Deceleration" 1.0
+  ${setp} --type=float "Device Accel Velocity Scaling" 10.0
 fi
 
-# TrackPad
-dev_id=$(get_dev_id "PS/2 Synaptics TouchPad")
-if [[ -n "$dev_id" ]]; then
-  # disable TrackPad if desired
-  xinput --set-prop --type=int "$dev_id" "Device Enabled" 0
+device_id=$(get_device_id "PS/2 Synaptics TouchPad")
+if [[ -n "$device_id" ]]; then
+  setp="xinput --set-prop $device_id"
+  # Disable TrackPad.
+  ${setp} --type=int "Device Enabled" 0
 fi
