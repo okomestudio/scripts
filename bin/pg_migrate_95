@@ -6,8 +6,12 @@
 # whereas newly installed 9.5 runs at port 5433.
 #
 
+set -e
+
 PORT_OLD=5432  # version 9.4
 PORT_NEW=5433  # version 9.5
+
+# Where dumped databases from old postgres are stored.
 DB_DUMP_DIR=/tmp/pgdb
 
 readonly PORT_OLD
@@ -33,41 +37,47 @@ readonly DB_DUMP_DIR
 
 sudo PORT_OLD="$PORT_OLD" PORT_NEW="$PORT_NEW" DB_DUMP_DIR="$DB_DUMP_DIR" \
      su postgres <<'EOF'
-tmpdir="$DB_DUMP_DIR"
-mkdir -p "$tmpdir"
+mkdir -p "$DB_DUMP_DIR"
 
-pg_dumpall -p "$PORT_OLD" -U postgres -g -f "$tmpdir/_globals.backup"
+pg_dumpall -p "$PORT_OLD" -U postgres -g -f "$DB_DUMP_DIR/_globals.backup"
 
-psql -p "$PORT_NEW" -U postgres -f "$tmpdir/_globals.backup" \
-  2> /tmp/errors._globals.log
+psql -p "$PORT_NEW" -U postgres -f "$DB_DUMP_DIR/_globals.backup" \
+  2> "$DB_DUMP_DIR/errors._globals.log"
 
 databases=$(psql -p "$PORT_OLD" -Atc \
               "SELECT datname, rolname 
                  FROM pg_database
                  INNER JOIN pg_roles ON pg_database.datdba = pg_roles.oid
-                 WHERE datistemplate = false ")
+                 WHERE datistemplate = false")
 readonly databases
-# echo ${databases[@]}
 
 for row in ${databases[@]}; do
-  db=$(echo "$row" | cut -d \| -f1)
-  pg_dump -p "$PORT_OLD" -U postgres -Fc -b -v -f "$tmpdir/$db.backup" "$db"
+ db=$(echo "$row" | cut -d \| -f1)
+ pg_dump -p "$PORT_OLD" -U postgres \
+         -Fc -b -v -f "$DB_DUMP_DIR/$db.backup" "$db"
 done
 
 for row in ${databases[@]}; do
   db=$(echo "$row" | cut -d \| -f1)
   role=$(echo "$row" | cut -d \| -f2)
 
-  exists=$(psql -p "$PORT_NEW" -Atc \
-             "SELECT datname FROM pg_database WHERE datname='$db'" |
-             grep "^$db$")
+  # role_exists=$(psql -p "$PORT_NEW" -Atc \
+  #                    "SELECT 1 FROM pg_roles WHERE rolname='$role'")
+  # if [[ -z "$role_exists" ]]; then
+  #   echo "Role $role does not exist. Creating..."
+  #   createuser -p "$PORT_NEW" "$role"
+  # fi
 
-  if [[ -z "$exists" ]]; then
+  db_exists=$(psql -p "$PORT_NEW" -Atc \
+                   "SELECT datname FROM pg_database WHERE datname='$db'" \
+                 | grep "^$db$")
+
+  if [[ -z "$db_exists" ]]; then
     echo "$db does not exist"
     createdb -p "$PORT_NEW" -O "$role" "$db"
     /usr/share/postgresql/9.5/contrib/postgis-2.2/postgis_restore.pl \
-      "$tmpdir/$db.backup" | \
-      psql -p "$PORT_NEW" "$db" 2> /tmp/errors."$db".log
+      "$DB_DUMP_DIR/$db.backup" \
+      | psql -p "$PORT_NEW" "$db" 2> "$DB_DUMP_DIR/errors.$db.log"
   else
     echo "$db exists"
   fi
