@@ -101,6 +101,7 @@
   (setq sh-basic-offset 2
         sh-indentation 2))
 (add-hook 'sh-mode-hook 'setup-sh-mode)
+(add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
