@@ -2,7 +2,7 @@
 #
 # .xsessionrc for ThinkPad T460s (TrackPad/TrackPoint configuration)
 
-set -xe
+set -x
 
 source include/xsessionrc_helpers.sh
 

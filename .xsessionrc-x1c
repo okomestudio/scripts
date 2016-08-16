@@ -2,7 +2,7 @@
 #
 # .xsessionrc for ThinkPad X1 Carbon (2015)
 
-set -xe
+set -x
 
 source include/xsessionrc_helpers.sh
 

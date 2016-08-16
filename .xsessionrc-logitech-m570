@@ -2,7 +2,7 @@
 #
 # Setup Logitech Wireless Trackball M570
 
-set -xe
+set -x
 
 source include/xsessionrc_helpers.sh
 
