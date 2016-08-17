@@ -1,66 +1,40 @@
-#!/bin/bash
+#!/usr/bin/env python2.7
+import os
+
+from github import Github
+
+username = os.environ['GHUSER']
+password = os.environ['GHPASSWORD']
 
 
-echo "This script is work in progress. Do not use it"
-exit 1
-
-usage() {
-  cat<<EOF
-$0 
-
-TBD.
-EOF
-  exit 1
-}
-
-set -ex
-
-export GH_USER GH_TWO_FACTOR_CODE
-
-if [[ -z "$GH_USER" ]]; then
-  usage
-fi
-readonly GH_USER
-
-curl_opts=(-u "$GH_USER")
-
-# OAuth2.
-token=""
-while [[ -z "$token" ]]; do
-if [[ -n "$GH_TWO_FACTOR_CODE" ]]; then
-  #header="-H 'X-GitHub-OTP: $GH_TWO_FACTOR_CODE'"
-  curl_opts+=(-H "X-GitHub-OTP: $GH_TWO_FACTOR_CODE")
-fi
-
-resp=$(curl "${curl_opts[@]}" \
-       https://api.github.com/authorizations \
-         -d '{"scopes": ["gist"], "note": "Dmoe"}')
-if echo "$resp" | grep -q 'Must specify two-factor authentication'; then
-  echo -n "GitHub requires a two-factor authentication code: "
-  read GH_TWO_FACTOR_CODE
-  continue
-fi
-
-token=$(echo "$resp" | jq '.token')
-done
-
-echo "TOKEN: $token"
-exit 0
+g = Github(username, password)
 
 
-# if echo "$resp" | grep -q 'X-GitHub-OTP: required'; then
-#   echo -n "GitHub requires a two-factor authentication code: "
-#   read code
-#   readonly code
 
-#   token=$(curl ${curl_opts} -H "X-GitHub-OTP: $code" \
-#                https://api.github.com/authorizations \
-#                -d '{"scopes": ["gist"], "note": "Dmoe"}' | \
-#              jq '.token')
+# for repo in g.get_user().get_repos():
+#     print dir(repo)
+#     print repo.name, repo.organization
+#     print
 
-#   curl_opts="$curl_opts -H 'Authorization: token $token'"
-# fi
+login = 'restlessbandit'
 
-# readonly curl_opts
+for org in g.get_user().get_orgs():
+    if login == org.login:
+        break
+    print org, org.name, org.company, org.etag, org.login
+else:
+    raise ValueError('{} not found'.format(login))
 
-# curl ${curl_opts} https://api.github.com/gists/starred
+for repo in org.get_repos():
+    print repo.name, repo.default_branch, repo.clone_url
+    #print repo.clone_url.replace(
+    #    'https://github.com', 'https://{username}:{password}@github.com'.format(
+    #        username=username, password=password))
+
+    clone_url = 'git@github.com:{login}/{repo_name}.git'.format(
+        login=login, repo_name=repo.name)
+
+    import subprocess
+    p = subprocess.Popen(['git', 'clone', clone_url])
+    p.wait()
+    break
