@@ -1,0 +1,43 @@
+#!/usr/bin/env python2.7
+import getpass
+import os
+import subprocess
+from argparse import ArgumentParser
+
+from github import Github
+
+
+CLONE_URL_FORMAT = 'git@github.com:{login}/{repo}.git'
+
+
+def main(args):
+    username = args.username
+    password = getpass.getpass(prompt='Enter password: ')
+    g = Github(username, password)
+
+    if not args.org:
+        for repo in g.get_user().get_repos(type='owner'):
+            clone_url = CLONE_URL_FORMAT.format(login=username, repo=repo.name)
+            print clone_url
+
+    elif args.org:
+        for org in g.get_user().get_orgs():
+            if args.org == org.login:
+                break
+        else:
+            raise ValueError('{} not found'.format(login))
+
+        for repo in org.get_repos():
+            clone_url = CLONE_URL_FORMAT.format(
+                login=org.login, repo=repo.name)
+            print clone_url
+
+    # p = subprocess.Popen(['git', 'clone', clone_url])
+    # p.wait()
+
+
+if __name__ == '__main__':
+    p = ArgumentParser()
+    p.add_argument('username')
+    p.add_argument('--org')
+    main(p.parse_args())
