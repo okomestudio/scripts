@@ -1,40 +1,43 @@
 #!/usr/bin/env python2.7
+import getpass
 import os
+import subprocess
+from argparse import ArgumentParser
 
 from github import Github
 
-username = os.environ['GHUSER']
-password = os.environ['GHPASSWORD']
+
+CLONE_URL_FORMAT = 'git@github.com:{login}/{repo}.git'
 
 
-g = Github(username, password)
+def main(args):
+    username = args.username
+    password = getpass.getpass(prompt='Enter password: ')
+    g = Github(username, password)
+
+    if not args.org:
+        for repo in g.get_user().get_repos(type='owner'):
+            clone_url = CLONE_URL_FORMAT.format(login=username, repo=repo.name)
+            print clone_url
+
+    elif args.org:
+        for org in g.get_user().get_orgs():
+            if args.org == org.login:
+                break
+        else:
+            raise ValueError('{} not found'.format(login))
+
+        for repo in org.get_repos():
+            clone_url = CLONE_URL_FORMAT.format(
+                login=org.login, repo=repo.name)
+            print clone_url
+
+    # p = subprocess.Popen(['git', 'clone', clone_url])
+    # p.wait()
 
 
-
-# for repo in g.get_user().get_repos():
-#     print dir(repo)
-#     print repo.name, repo.organization
-#     print
-
-login = 'restlessbandit'
-
-for org in g.get_user().get_orgs():
-    if login == org.login:
-        break
-    print org, org.name, org.company, org.etag, org.login
-else:
-    raise ValueError('{} not found'.format(login))
-
-for repo in org.get_repos():
-    print repo.name, repo.default_branch, repo.clone_url
-    #print repo.clone_url.replace(
-    #    'https://github.com', 'https://{username}:{password}@github.com'.format(
-    #        username=username, password=password))
-
-    clone_url = 'git@github.com:{login}/{repo_name}.git'.format(
-        login=login, repo_name=repo.name)
-
-    import subprocess
-    p = subprocess.Popen(['git', 'clone', clone_url])
-    p.wait()
-    break
+if __name__ == '__main__':
+    p = ArgumentParser()
+    p.add_argument('username')
+    p.add_argument('--org')
+    main(p.parse_args())
