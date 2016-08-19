@@ -10,30 +10,56 @@ from github import Github
 CLONE_URL_FORMAT = 'git@github.com:{login}/{repo}.git'
 
 
-def main(args):
-    username = args.username
+def sh(cmd):
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    return p.communicate()[0]
+
+
+def get_repos(username, org=None):
+    username = username
     password = getpass.getpass(prompt='Enter password: ')
     g = Github(username, password)
 
-    if not args.org:
+    if not org:
         for repo in g.get_user().get_repos(type='owner'):
             clone_url = CLONE_URL_FORMAT.format(login=username, repo=repo.name)
-            print clone_url
+            yield {'name': repo.name,
+                   'default_branch': repo.default_branch,
+                   'clone_url': clone_url}
 
-    elif args.org:
-        for org in g.get_user().get_orgs():
-            if args.org == org.login:
+    elif org:
+        for _org in g.get_user().get_orgs():
+            if org == _org.login:
                 break
         else:
-            raise ValueError('{} not found'.format(login))
+            raise ValueError('{} not found'.format(org))
 
-        for repo in org.get_repos():
+        for repo in _org.get_repos():
             clone_url = CLONE_URL_FORMAT.format(
-                login=org.login, repo=repo.name)
-            print clone_url
+                login=_org.login, repo=repo.name)
+            yield {'name': repo.name,
+                   'default_branch': repo.default_branch,
+                   'clone_url': clone_url}
 
-    # p = subprocess.Popen(['git', 'clone', clone_url])
-    # p.wait()
+
+def main(args):
+    for repo in get_repos(username=args.username, org=args.org):
+        name = repo['name']
+        if not os.path.exists(name):
+            # Need to clone.
+            print 'Cloning', name
+            print sh('git clone {}'.format(repo['clone_url']))
+            continue
+
+        if not os.path.isdir(name):
+            continue
+
+        # Pull default branch.
+        print 'Pulling {default_branch} branch from {name}'.format(**repo)
+        print sh(('cd {name};'
+                  'git fetch;'
+                  'git checkout {default_branch};'
+                  'git pull origin {default_branch};').format(**repo))
 
 
 if __name__ == '__main__':
