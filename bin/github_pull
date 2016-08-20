@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3
 """GitHub repositories sync script
 
 This script accesses GitHub repositories via ssh and either clone or
@@ -11,76 +11,126 @@ Requirements
 
 """
 import getpass
+import logging
 import os
 import subprocess
+import sys
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
 
 from github import Github
+from github.GithubException import BadCredentialsException
+
+
+logging.basicConfig()
+log = logging.getLogger(__name__)
 
 
 CLONE_URL_FORMAT = 'git@github.com:{login}/{repo}.git'
 
 
+class GitHubException(Exception):
+    pass
+
+
 def sh(cmd):
-    p = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    return p.communicate()[0]
+    p = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+    stdout, stderr = p.communicate()
+    return p.returncode
 
 
-def get_repos(username, org=None):
-    username = username
-    password = getpass.getpass(prompt='Enter password: ')
-    g = Github(username, password)
+def get_user(username_or_token):
+    try:
+        g = Github(username_or_token)
+        user = g.get_user()
+        user.name  # to trigger authentication or fail
+    except BadCredentialsException:
+        password = getpass.getpass(prompt='Enter password: ')
+        g = Github(username_or_token, password)
+        user = g.get_user()
+        user.name  # to trigger authentication or fail
+    return user
 
+
+def get_repos(username_or_token, org=None):
+    user = get_user(username_or_token)
     if not org:
-        for repo in g.get_user().get_repos(type='owner'):
-            clone_url = CLONE_URL_FORMAT.format(login=username, repo=repo.name)
+        for repo in user.get_repos(type='owner'):
+            clone_url = CLONE_URL_FORMAT.format(login=user.login, repo=repo.name)
             yield {'name': repo.name,
+                   'login': user.login,
                    'default_branch': repo.default_branch,
                    'clone_url': clone_url}
-
-    elif org:
-        for _org in g.get_user().get_orgs():
+    else:
+        for _org in user.get_orgs():
             if org == _org.login:
                 break
         else:
             raise ValueError('{} not found'.format(org))
 
         for repo in _org.get_repos():
-            clone_url = CLONE_URL_FORMAT.format(
-                login=_org.login, repo=repo.name)
+            clone_url = CLONE_URL_FORMAT.format(login=_org.login, repo=repo.name)
             yield {'name': repo.name,
+                   'login': _org.login,
                    'default_branch': repo.default_branch,
                    'clone_url': clone_url}
 
 
+def clone(repo, root_dir):
+    path = os.path.join(root_dir, repo['login'])
+    cmds = ('mkdir -p {path}; '
+            'cd {path}; '
+            'echo "In $(pwd)"; '
+            'git clone {clone_url};').format(path=path, **repo)
+    retcode = sh(cmds)
+    if retcode:
+        raise GitHubException(stderr)
+
+
+def pull(repo, root_dir):
+    path = os.path.join(root_dir, repo['login'], repo['name'])
+    cmds = ('cd {path}; '
+            'echo "In $(pwd)"; '
+            'git fetch; '
+            'git checkout {default_branch}; '
+            'git pull origin {default_branch};').format(path=path, **repo)
+    retcode = sh(cmds)
+    if retcode:
+        raise GitHubException(stderr)
+
+
 def main(args):
-    for repo in get_repos(username=args.username, org=args.org):
-        name = repo['name']
-        if not os.path.exists(name):
-            # Need to clone.
-            print 'Cloning', name
-            print sh('git clone {}'.format(repo['clone_url']))
-            continue
+    root_dir = args.root_dir or '.'
+    for repo in get_repos(
+            username_or_token=args.username_or_token, org=args.org):
+        repo_dir = os.path.join(root_dir, repo['login'], repo['name'])
 
-        if not os.path.isdir(name):
-            continue
-
-        # Pull default branch.
-        print 'Pulling {default_branch} branch from {name}'.format(**repo)
-        print sh(('cd {name};'
-                  'git fetch;'
-                  'git checkout {default_branch};'
-                  'git pull origin {default_branch};').format(**repo))
+        if not os.path.exists(repo_dir):
+            try:
+                clone(repo, root_dir)
+            except Exception:
+                log.exception('Error cloning %s', repo['name'])
+        else:
+            if not os.path.isdir(repo_dir):
+                raise IOError(
+                    ('{} is not a directory. '
+                     'Make sure it is a proper Git repo').format(repo_dir))
+            try:
+                pull(repo, root_dir)
+            except Exception:
+                log.exception('Error pulling %s', repo['name'])
 
 
 if __name__ == '__main__':
     p = ArgumentParser(
         description=__doc__, formatter_class=RawTextHelpFormatter)
     p.add_argument(
-        'username',
-        help='GitHub username')
+        'username_or_token',
+        help='GitHub username or access token')
     p.add_argument(
         '--org',
         help='GitHub organization')
+    p.add_argument(
+        '--root-dir',
+        help='root directory where repos are cloned locally')
     main(p.parse_args())
