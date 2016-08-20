@@ -21,10 +21,3 @@ alias la='ls -A'
 alias ll='ls -lh'
 
 alias open='xdg-open'
-
-# Shortcuts for git
-alias co='git checkout'
-alias log='git log'
-alias pull='git pull'
-alias push='git push'
-alias st='git status'

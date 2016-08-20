@@ -89,32 +89,32 @@ if ! shopt -oq posix; then
   fi
 fi
 
-
-##############################################################################
-# Customization by TS
-##############################################################################
-
-# Update fancy prompt
-export PS1='[\u@\h \W]\$ '
-#export LS_COLORS='ex=00;35:ln=00;32'
-export LS_COLORS="${LS_COLORS}:ex=32"
-export LC_COLLATE=C
-
-# Misc
-export BROWSER=google-chrome
-export ALTERNATE_EDITOR=""
-export EDITOR="emacsclient -t"
-export VISUAL="emacsclient -c -a emacs"
-export PAGER=less
-
-# For the special ssh prompt
-if [ -n "$SSH_CLIENT" ]; then
-  export PS1='\[\e[0;31m\][\u@\h \W]$\[\e[m\] '
+# Alias and completion for Git.
+if [[ -e /usr/share/bash-completion/completions/git ]]; then
+  . /usr/share/bash-completion/completions/git
+  __git_complete g __git_main
+  alias g='git'
+  alias gco='g checkout'
+  alias gst='g status'
+  # Want git push/pull aliased as well, but completion does not appear
+  # to work with <repo> [<refspec>] CLI.
 fi
 
-# Add syntax highlighting via Pygments (do: pip install Pygments)
-export LESS='-R'
-export LESSOPEN='|~/.lessfilter %s'
+# Update fancy prompt
+PS1='[\u@\h \W]\$ '
+
+# For remote shell over SSH.
+if [[ -n "$SSH_CLIENT" ]]; then
+  PS1='\[\e[0;31m\][\u@\h \W]$\[\e[m\] '
+fi
+
+# When in a git repo, show the branch name.
+if [[ -e /etc/bash_completion.d/git-prompt ]]; then
+  . /etc/bash_completion.d/git-prompt
+  PS1='[\u@\h \W$(__git_ps1 "(%s)")]\$ '
+fi
+
+export PS1
 
 ##############################################################################
 # Setting PATH: Any path that needs to be set in non-login shell needs
@@ -132,18 +132,15 @@ addpythonpath() {
   fi
 }
 
-##############################################################################
-# PATH
+# Add to PATH.
 addpath /iraf/bin
-addpath /usr/local/git/bin
 addpath /usr/local/stsci_python/bin
 addpath ~/bin
 addpath ~/lib/aws-emr
 addpath ~/.arc_install/arcanist/bin
 export PATH
 
-##############################################################################
-# PYTHONPATH
+# Add to PYTHONPATH.
 addpythonpath /usr/local/stsci_python/lib/python
 addpythonpath /usr/local/pyds9/lib/python2.7/site-packages
 addpythonpath /usr/local/astLib/lib/python2.7/site-packages
@@ -151,9 +148,22 @@ addpythonpath ~/lib/python2.7/site-packages
 addpythonpath /astro/DEEP2Wind/lib/python2.7/site-packages
 export PYTHONPATH
 
-##############################################################################
-# Miscellaneous environment variables
+#export LS_COLORS='ex=00;35:ln=00;32'
+export LS_COLORS="${LS_COLORS}:ex=32"
+export LC_COLLATE=C
 
+# Misc
+export BROWSER=google-chrome
+export ALTERNATE_EDITOR=""
+export EDITOR="emacsclient -t"
+export VISUAL="emacsclient -c -a emacs"
+export PAGER=less
+
+# Add syntax highlighting via Pygments (do: pip install Pygments)
+export LESS='-R'
+export LESSOPEN='|~/.lessfilter %s'
+
+# Lahman database
 export LAHMANDB=/usr/local/lahman/2013
 
 # for encoding used by python for stdin/stdout/stderr
