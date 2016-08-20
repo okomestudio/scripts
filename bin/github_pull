@@ -2,12 +2,36 @@
 """GitHub repositories sync script
 
 This script accesses GitHub repositories via ssh and either clone or
-pull the default branch to the most updated state.
+pull the default branch to its head on remote.
+
+Examples
+--------
+
+  $ github_pull <username or access_token> --root-dir <root_dir>
+
+will sync all personally owned repos at
+*<root_dir>/<login_name>/<repo_name>/*. When GitHub username is
+provided instead of access token, you will be prompted for a
+password. When omitted, <root_dir> defaults to the current directory.
+
+You may also sync repos from an organization you belong to, e.g.,
+
+  $ github_pull <username or access_token> --org <org>
+
+where <org> is the organization login name.
+
 
 Requirements
 ------------
 
-  $ pip install PyGithub
+Python packages: PyGithub
+
+
+TODO
+----
+
+- Gracefully handle when checkout to the default branch cannot be done
+  cleanly due to modified files.
 
 """
 import getpass
