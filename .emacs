@@ -292,11 +292,14 @@
 ;; ace-isearch -- Enhanced isearch
 ;;
 ;; Based on the number of characters used for search, ace-isearch uses
-;; different mode: 1 ;; char => ace-jump-mode, 2 - 5 chars => isearch,
-;; > 5 chars => helm-swoop. 
+;; different mode.
 (unless (package-installed-p 'ace-isearch)
   (package-refresh-contents) (package-install 'ace-isearch))
+(require 'ace-isearch)
 (global-ace-isearch-mode 1)
+(custom-set-variables
+ '(ace-isearch-input-length 10)
+ '(ace-isearch-jump-delay 0.70))
 
 ;; Buffer reloading
 ;;
