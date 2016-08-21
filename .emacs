@@ -276,29 +276,30 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM KEYBINDINGS
 
-;; window resize
+;; Window resize
 (global-set-key [C-s-left] 'shrink-window-horizontally)
 (global-set-key [C-s-right] 'enlarge-window-horizontally)
 (global-set-key [C-s-down] 'shrink-window)
 (global-set-key [C-s-up] 'enlarge-window)
 
-;; window switch (in place of C-x-o)
-(define-key global-map "\C-q" (make-sparse-keymap)) ; define prefix
-(global-set-key "\C-qh" 'windmove-left)
-(global-set-key "\C-qj" 'windmove-down)
-(global-set-key "\C-qk" 'windmove-up)
-(global-set-key "\C-ql" 'windmove-right)
+;; Window switch -- Disabled since ace-mode is better.
+;; (define-key global-map "\C-q" (make-sparse-keymap)) ; define prefix
+;; (global-set-key "\C-qh" 'windmove-left)
+;; (global-set-key "\C-qj" 'windmove-down)
+;; (global-set-key "\C-qk" 'windmove-up)
+;; (global-set-key "\C-ql" 'windmove-right)
 
-;; Ace Jump -- Enables fast/direct cursor movement in current view.
+;; ace-isearch -- Enhanced isearch
 ;;
-;; Example: (1) type C-c SPC, (2) type a character, and (3) type one
-;; of the highlighted characters to move to that location in view.
-;;
-(unless (package-installed-p 'ace-jump-mode)
-  (package-refresh-contents) (package-install 'ace-jump-mode))
-(require 'ace-jump-mode)
-(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+;; Based on the number of characters used for search, ace-isearch uses
+;; different mode: 1 ;; char => ace-jump-mode, 2 - 5 chars => isearch,
+;; > 5 chars => helm-swoop. 
+(unless (package-installed-p 'ace-isearch)
+  (package-refresh-contents) (package-install 'ace-isearch))
+(global-ace-isearch-mode 1)
 
+;; Buffer reloading
+;;
 ;; [F5] to trigger revert-buffer without confirmation.
 (defun revert-buffer-no-confirm (&optional force-reverting)
   "Interactive call to revert-buffer. Ignoring the auto-save file
