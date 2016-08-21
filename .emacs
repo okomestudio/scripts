@@ -162,12 +162,18 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SCALA
+
+(unless (package-installed-p 'scala-mode)
+  (package-refresh-contents) (package-install 'scala-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PYTHON
 
 (unless (package-installed-p 'python)
   (package-refresh-contents) (package-install 'python))
 (require 'python)
-
 
 
 ;; (global-font-lock-mode 1)
