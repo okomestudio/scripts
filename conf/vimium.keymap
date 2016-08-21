@@ -1,0 +1,88 @@
+###############################################################################
+# Emacs-style keybindings with Vimium (v1.56)
+#
+# Copy and paste this into "Custom key mappings" in Vimium
+# Options. Note that some Chrome shortcuts gets in the way on Linux.
+#
+# `<c-*>` = CTRL +
+# `<a-*>` = ALT +
+# `<m-*>` = META +
+
+# unmapAll
+
+# Navigating the page
+# map j scrollDown
+# map k scrollUp
+map <a-<> scrollToTop
+map <a->> scrollToBottom
+map <c-v> scrollFullPageDown
+map <a-v> scrollFullPageUp
+map <a-}> scrollPageDown
+map <a-{> scrollPageUp
+# map h scrollLeft
+map <c-b> scrollLeft
+# map l scrollRight
+map <c-f> scrollRight
+map <c-x>< scrollToLeft
+map <c-x>> scrollToRight
+# map r reload
+map <a-w> copyCurrentUrl
+map <c-y> openCopiedUrlInCurrentTab
+map <c-Y> openCopiedUrlInNewTab
+# map gu goUp
+# map gU goToRoot
+# map i enterInsertMode
+# v - Enter visual mode?
+# V - Enter visual line mode?
+# map gi focusInput
+# map f LinkHints.activateMode
+# map F LinkHints.activateModeToOpenInNewTab
+# map <a-f> LinkHints.activateModeWithQueue
+# yf - Copy a link URL to the clipboard?
+map [[ goPrevious
+map ]] goNext
+# map gf nextFrame
+# gF - Select the page's main/top frame?
+# map m Marks.activateCreateMode
+# map ` Marks.activateGotoMode
+
+# Not supported?
+# map <c-g><c-l> LinkHints.activateModeToCopyLinkUrl
+# map <c-x><c-F> LinkHints.activateModeToOpenInNewForegroundTab
+
+# Using the vomnibar
+map <c-x><c-d> Vomnibar.activate
+map <c-x><c-D> Vomnibar.activateInNewTab
+map <c-x><c-b> Vomnibar.activateBookmarks
+map <c-x><c-B> Vomnibar.activateBookmarksInNewTab
+map <c-x>b Vomnibar.activateTabSelection
+# ge - Edit the current URL?
+# gE - Edit the current URL and open in a new tab?
+
+# Using find
+map <c-s> enterFindMode
+# map n performFind
+map <c-r> performBackwardsFind
+# map N performBackwardsFind
+
+# Navigating history
+# map H goBack
+# map L goForward
+
+# Manipulating tabs
+# map t createTab
+# map gT previousTab
+# map gt nextTab
+# map g0 firstTab
+# map g$ lastTab
+# map yt duplicateTab
+# map <a-p> togglePinTab
+map <c-x>0 removeTab
+# map X restoreTab
+# map W moveTabToNewWindow
+# map << moveTabLeft
+# map >> moveTabRight
+
+# Miscellaneous
+map <c-h> showHelp
+map <c-u> toggleViewSource
