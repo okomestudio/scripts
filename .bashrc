@@ -93,6 +93,7 @@ fi
 if [[ -e /usr/share/bash-completion/completions/git ]]; then
   . /usr/share/bash-completion/completions/git
   __git_complete g __git_main
+  __git_complete gco _git_checkout
   alias g='git'
   alias gco='g checkout'
   alias gst='g status'
