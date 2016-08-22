@@ -259,7 +259,6 @@
                '("\\.py\\'" flymake-pycodecheck-init)))
 (add-hook 'python-mode-hook 'flymake-mode)
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
 
@@ -271,7 +270,6 @@
     (newline times))) ; insert new line
 (global-set-key (kbd "C-S-o")
                 'ts/insert-line-before)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM KEYBINDINGS
@@ -298,7 +296,7 @@
 (require 'ace-isearch)
 (global-ace-isearch-mode 1)
 (custom-set-variables
- '(ace-isearch-input-length 10)
+ '(ace-isearch-input-length 15)
  '(ace-isearch-jump-delay 0.70))
 
 ;; Buffer reloading
