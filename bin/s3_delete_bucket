@@ -1,0 +1,65 @@
+#!/bin/bash
+#
+# Delete S3 buckets (including all objects) selected by name pattern.
+#
+# Requirement
+# -----------
+#
+# Python's awscli package (pip install awscli)
+
+set -e
+
+usage() {
+  cat <<EOF
+$0 bucket_name_pattern
+
+  bucket_name_pattern  S3 bucket name (regex) pattern used for searching
+
+EOF
+  exit 1
+}
+
+if [[ ! $# -eq 1 ]]; then
+  usage
+fi
+
+regex=$1
+readonly regex
+
+# S3 bucket names to be deleted.
+to_be_deleted=()
+
+for bucket in $(aws s3 ls | cut -d' ' -f3); do
+  if [[ $bucket =~ $regex ]]; then
+    to_be_deleted+=($bucket)
+  fi
+done
+readonly to_be_deleted
+
+if [[ -z "${to_be_deleted[@]}" ]]; then
+  echo "No buckets selected with the pattern."
+  exit 0
+fi
+
+# Preview the buckets to be deleted.
+for bucket in ${to_be_deleted[@]}; do
+  echo "$bucket"
+done
+
+echo -n 'Delete these S3 buckets? (y/N) '
+read resp
+if [[ ! "$resp" = "y" ]]; then
+  echo "Quit without delete."
+  exit 0
+fi
+
+echo -n 'REALLY delete these S3 buckets? The operation is undoable! (y/N) '
+read resp
+if [[ ! "$resp" = "y" ]]; then
+  echo "Quit without delete."
+  exit 0
+fi
+
+for bucket in ${to_be_deleted[@]}; do
+  aws s3 rb --force "s3://$bucket"
+done
