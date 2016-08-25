@@ -169,6 +169,18 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SQL
+(require 'sql)
+
+;; Autocompletion
+(add-to-list 'load-path "~/.emacs.d/lisp/")
+(require 'sql-upcase)
+(when (require 'sql-upcase nil :noerror)
+  (add-hook 'sql-mode-hook 'sql-upcase-mode)
+  (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PYTHON
 
 (unless (package-installed-p 'python)
