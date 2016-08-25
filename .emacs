@@ -309,7 +309,7 @@
 (global-ace-isearch-mode 1)
 (custom-set-variables
  '(ace-isearch-input-length 20)
- '(ace-isearch-jump-delay 0.70))
+ '(ace-isearch-jump-delay 0.60))
 
 ;; Buffer reloading
 ;;
