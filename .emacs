@@ -85,6 +85,13 @@
   (package-refresh-contents) (package-install 'neotree))
 (require 'neotree)
 (global-set-key [f8] 'neotree-toggle)
+(setq neo-hidden-regexp-list '("^\\."
+                               "\\.cs\\.meta$"
+                               "\\.pyc$"
+                               "~$"
+                               "^#.*#$"
+                               "\\.elc$"
+                               "^__pycache__$"))
 
 ;; Every time when the neotree window is opened, let it find current
 ;; file and jump to node.
