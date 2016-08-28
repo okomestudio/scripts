@@ -14,7 +14,7 @@
 # and save this file as ~/.lessfilter
 #
 
-case "$1" in
+case $1 in
   *.ad[asb]|\
   *.asm|\
   *.awk|\
@@ -54,15 +54,18 @@ case "$1" in
   *.py|\
   *.rb|\
   *.sql)
-    pygmentize -f 256 -O bg=light "$1"
+    pygmentize -f 256 -O bg=light $1
     ;;
   .bashrc|.bash_aliases|.bash_environment)
-    pygmentize -f 256 -O bg=light -l sh "$1"
+    pygmentize -f 256 -O bg=light -l sh $1
+    ;;
+  *.el|.emacs)
+    pygmentize -f 256 -O bg=light -l elisp $1
     ;;
   *)
-    grep "#\!/bin/bash" "$1" > /dev/null
-    if [ "$?" -eq "0" ]; then
-      pygmentize -f 256 -O bg=light -l sh "$1"
+    grep "#\!/bin/bash" $1 > /dev/null
+    if [ $? -eq "0" ]; then
+      pygmentize -f 256 -O bg=light -l sh $1
     else
       exit 1
     fi
