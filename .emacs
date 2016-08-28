@@ -70,7 +70,6 @@
 (require 'dired-x)
 (setq-default dired-omit-files-p t)
 (setq dired-omit-files "^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
-;;(setq dired-omit-files "^\\.[^.]\\|^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
 
 
 ;; autocomplete
@@ -99,6 +98,7 @@
 
 ;; Open the Neo Tree window on start.
 (neotree-toggle)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Shell/BASH
@@ -194,10 +194,7 @@
   (package-refresh-contents) (package-install 'python))
 (require 'python)
 
-
 ;; (global-font-lock-mode 1)
-
-
 
 ;; (load-library "python")
 
@@ -213,8 +210,6 @@
 ;;                     (set-variable 'py-indent-offset 4)
 ;;                     (set-variable 'indent-tabs-mode nil))))
 
-
-
 ;; automatically remove trailing whitespace when file is saved
 (add-hook 'python-mode-hook
           (lambda()
@@ -228,12 +223,10 @@
   (setq python-shell-interpreter "ipython"
         python-shell-interpreter-args "-i"))
 
-
 ;; cython-mode
 (unless (package-installed-p 'cython-mode)
   (package-refresh-contents) (package-install 'cython-mode))
 (require 'cython-mode)
-
 
 ;; jedi.el -- autocomplete for python
 ;;
@@ -245,7 +238,6 @@
 (unless (package-installed-p 'jedi)
   (package-refresh-contents) (package-install 'jedi))
 (require 'jedi)
-
 (add-to-list 'ac-sources 'ac-source-jedi-direct)
 (add-hook 'python-mode-hook 'jedi:setup)
 (setq jedi:complete-on-dot t)
@@ -259,13 +251,12 @@
 (push "--sys-path" jedi:server-args)
 (message "for jedi:server-args %s" jedi:server-args)
 
-
-;; flymake - Python code checking.
+;; flymake - Python code checking (need pip install flake8)
 (unless (package-installed-p 'flymake-cursor)
   (package-refresh-contents) (package-install 'flymake-cursor))
 (require 'flymake)
 (load-library "flymake-cursor")
-(setq pycodechecker "pychecker") ; script that flymake uses to check code.
+(setq pycodechecker "flake8") ; script that flymake uses to check code.
 (when (load "flymake" t)
   (defun flymake-pycodecheck-init ()
     (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -277,6 +268,7 @@
   (add-to-list 'flymake-allowed-file-name-masks
                '("\\.py\\'" flymake-pycodecheck-init)))
 (add-hook 'python-mode-hook 'flymake-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
