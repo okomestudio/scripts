@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Emacs environment setup script
+#
+# This needs to be run before using emacs.
+
+# download .el file for sql-upcase
+installdir=~/.emacs.d/lisp
+source="https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/"`
+       `"sql-upcase.el"
+if [[ ! -f "$installdir/sql-upcase.el" ]]; then
+  mkdir -p "$installdir"
+  wget "$source" -O "$installdir/sql-upcase.el"
+fi
+
+
+# install flake8
+sudo pip install -U flake8
