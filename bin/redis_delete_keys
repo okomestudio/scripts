@@ -1,0 +1,62 @@
+#!/bin/bash
+#
+# Delete redis keys
+#
+# Requirement
+# -----------
+#
+# redis-cli
+
+set -e
+
+usage() {
+  cat <<EOF
+$0 pattern
+
+  pattern  Redis key name pattern
+
+EOF
+  exit 1
+}
+
+if [[ ! $# -eq 1 ]]; then
+  usage
+fi
+
+pattern=$1
+readonly pattern
+
+to_be_deleted=()
+
+for key in $(redis-cli keys '__*'); do
+  if [[ $key =~ $pattern ]]; then
+    to_be_deleted+=($key)
+  fi
+done
+readonly to_be_deleted
+
+if [[ -z "${to_be_deleted[@]}" ]]; then
+  echo "No keys selected with the pattern."
+  exit 0
+fi
+
+# preview the keys to be deleted
+for key in ${to_be_deleted[@]}; do
+  echo "$key"
+done
+
+echo -n 'Delete these Redis keys? (y/N) '
+read resp
+if [[ ! "$resp" = "y" ]]; then
+  echo "Quit without delete."
+  exit 0
+fi
+
+echo -n 'REALLY delete these Redis keys? The operation is undoable! (y/N) '
+read resp
+if [[ ! "$resp" = "y" ]]; then
+  echo "Quit without delete."
+  exit 0
+fi
+
+redis-cli del ${to_be_deleted[@]}
