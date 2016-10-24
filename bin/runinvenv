@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+  cat <<EOF
+$0 virtualenv_path command [arg1 arg2 ...]
+
+  virtualenv_path  Virtual environment path
+  command          Command to execute
+  args             Command arguments
+
+EOF
+  exit 1
+}
+
+venv=$1
+
+if [[ -z "$venv" ]]; then
+  usage
+fi
+
+shift 1
+
+. ${venv}/bin/activate
+exec "$@"
+deactivate
