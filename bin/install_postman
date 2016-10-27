@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Postman (getpostman.com) installer 
+
+source=https://dl.pstmn.io/download/latest/linux?arch=64
+libdir=/usr/local/postman
+
+wget --content-disposition -P /tmp/ "$source"
+sudo mkdir -p "$libdir"
+sudo tar -C "$libdir" --strip-components=1 -xvzf /tmp/Postman-*.tar.gz
+sudo ln -s "$libdir/Postman" /usr/local/bin/Postman
+
+rm /tmp/Postman-*.tar.gz
