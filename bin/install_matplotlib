@@ -1,0 +1,7 @@
+#!/bin/bash
+
+cmd=pip3
+
+"$cmd" install cairocffi
+"$cmd" install matplotlib
+
