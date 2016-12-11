@@ -1,0 +1,78 @@
+#!/usr/bin/env expect
+#
+# Start OpenVPN (PureVPN)
+# =======================
+#
+# To start OpenVPN session:
+#
+#   $ startvpn ~/.purevpn/TCP/San Francisco-tcp.ovpn
+#
+# You will be prompted for sudo password.
+#
+#
+# SETUP
+# -----
+# 
+# The OpenVPN config files for PureVPN can be downloaded from
+#
+#   https://s3-us-west-1.amazonaws.com/heartbleed/linux/linux-files.zip
+#
+# Expland the files to ~/.purevpn (default). Edit credentials in this
+# script file.
+#
+#
+# REQUIREMENTS
+# ------------
+#
+#   $ sudo apt-get install openvpn expect
+#
+
+
+# OpenVPN credentials
+set username "<my vpn username>"
+set password "<my vpn password>"
+
+# PureVPN config directory
+set dir "$env(HOME)/.purevpn"
+
+
+##############################################################################
+# DO NOT EDIT BELOW
+
+# Read in OpenVPN config file path from command-line
+set config [lindex $argv 0];
+
+
+# Grab sudo password
+stty -echo
+send_user -- "\[sudo\] password for $env(USER): "
+expect_user -re "(.*)\n"
+send_user "\n"
+stty echo
+set sudopw $expect_out(1,string)
+
+
+# Start OpenVPN
+spawn /usr/bin/sudo /usr/sbin/openvpn \
+    --config $config \
+    --tls-auth $dir/Wdc.key \
+    --ca $dir/ca.crt
+
+expect {
+    sudo {
+        send "$sudopw\r"
+    }
+}
+
+expect {
+    "Enter Auth Username: " {
+        send "$username\r"
+    }
+}
+expect {
+    "Enter Auth Password: " {
+        send "$password\r"
+    }
+}
+
+interact
