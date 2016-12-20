@@ -11,7 +11,7 @@ usage() {
   cat <<EOF
 ${scriptname} dbname_pattern
 
-  dbname_pattern  database name pattern to be matched
+  dbname_pattern  database name pattern (with wildcard) to be matched
 
 EOF
   exit 1
@@ -24,7 +24,7 @@ fi
 pattern=$1
 readonly pattern
 
-databases=$(psql -Atc "\l ${pattern}" | cut -d \| -f1)
+databases=$(psql -Atqc "\l ${pattern}" | cut -d \| -f1)
 readonly databases
 
 if [[ -z "${databases[@]}" ]]; then
