@@ -25,4 +25,12 @@ sudo apt-get install -y postgresql-9.5
 sudo apt-get install -y postgresql-9.5-postgis-2.2
 
 port=$(sed -n 's/^port *= *\([[:digit:]]\+\) *.*/\1/p' < $pgconf)
-echo "PostgreSQL 9.5 is listening at port ${port}"
+
+echo "PostgreSQL 9.5 is listening at port ${port}
+
+To use version 9.5 of PostreSQL instead of 9.4, modify environment
+variables as follows:
+
+  (1) PATH=\"/usr/lib/postgresql/9.5/bin/:\$PATH\"
+  (2) PGPORT=\"$port\"
+"
