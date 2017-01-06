@@ -169,6 +169,13 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Markdown
+
+(unless (package-installed-p 'markdown-mode)
+  (package-refresh-contents) (package-install 'markdown-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SCALA
 
 (unless (package-installed-p 'scala-mode)
