@@ -1,0 +1,43 @@
+#!/bin/bash
+#
+# Register computers to the router's ARP cache.
+
+# Wake On LAN (WOL) does not consistently work on computers unless
+# their IP and MAC addresses are permanently added to the ARP cache of
+# router. The ssh access needs to be enabled on RT-AC88U.
+#
+# Before running this `setup` script, edit the `hosts` entries in
+# `update_arp_cache` in the same directory. Then
+#
+#   $ ./setup
+#   Router host: <IP address of RT-AC88U>
+#   Username: <admin account username>
+#   Password: <admin account password>
+#   ...
+#
+#
+# Requirements
+# ------------
+#
+#   $ apt-get install sshpass
+#
+# Reference
+# ---------
+#
+# https://andblu.blogspot.com/2016/08/configure-wol-from-internet-wan-asus.html
+
+read -p "Router host: " routerhost
+read -p "Username: " user
+read -s -p "Password: " password
+
+sshpass -p $password ssh $user@$routerhost \
+        mkdir -p /jffs/scripts
+
+sshpass -p $password \
+        scp -p update_arp_cache $user@$routerhost:/jffs/scripts
+
+sshpass -p $password ssh $user@$routerhost \
+        /usr/sbin/nvram set script_usbmount="/jffs/scripts/update_arp_cache"
+
+sshpass -p $password ssh $user@$routerhost \
+        /usr/sbin/nvram commit
