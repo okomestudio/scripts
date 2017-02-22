@@ -34,6 +34,7 @@ case $1 in
   *.inc|\
   *.java|\
   *.js|\
+  *.json|\
   *.l|\
   *.lsp|\
   *.m4|\
