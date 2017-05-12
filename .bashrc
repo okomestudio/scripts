@@ -167,8 +167,12 @@ export LESSOPEN='|~/.lessfilter %s'
 # Lahman database
 export LAHMANDB=/usr/local/lahman/2013
 
-# for encoding used by python for stdin/stdout/stderr
+# Python
 export PYTHONIOENCODING=utf-8
+if [[ -e ~/bin/virtualenvwrapper.sh ]]; then
+  export WORKON_HOME=~/.virtualenvs
+  . ~/bin/virtualenvwrapper.sh
+fi
 
 # for Hadoop
 export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
