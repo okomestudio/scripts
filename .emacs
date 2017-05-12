@@ -3,6 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(ace-isearch-input-length 20)
+ '(ace-isearch-jump-delay 0.6)
  '(c-basic-offset 2)
  '(case-fold-search t)
  '(column-number-mode t)
@@ -15,12 +17,12 @@
  '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
- '(line-number-mode t)
  '(load-home-init-file t t)
  '(make-backup-files nil)
  '(mouse-wheel-mode t nil (mwheel))
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
+ '(scroll-bar-mode nil)
  '(show-paren-mode t nil (paren))
  '(size-indication-mode t)
  '(tab-always-indent t)
@@ -40,7 +42,6 @@
 ;;
 ;; CONFIGS BY TS
 ;;
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MELPA
@@ -313,9 +314,7 @@
   (package-refresh-contents) (package-install 'ace-isearch))
 (require 'ace-isearch)
 (global-ace-isearch-mode 1)
-(custom-set-variables
- '(ace-isearch-input-length 20)
- '(ace-isearch-jump-delay 0.60))
+
 
 ;; Buffer reloading
 ;;
