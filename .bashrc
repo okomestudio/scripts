@@ -168,11 +168,13 @@ export LESSOPEN='|~/.lessfilter %s'
 # Lahman database
 export LAHMANDB=/usr/local/lahman/2013
 
-# Python
+# Python ####
 export PYTHONIOENCODING=utf-8
-if [[ -e ~/bin/virtualenvwrapper.sh ]]; then
+
+# Enable virtualenvwrapper if installed
+if hash virtualenvwrapper.sh 2>/dev/null; then
   export WORKON_HOME=~/.virtualenvs
-  . ~/bin/virtualenvwrapper.sh
+  . $(which virtualenvwrapper.sh)
 fi
 
 # for Hadoop
