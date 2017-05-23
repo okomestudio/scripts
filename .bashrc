@@ -137,6 +137,7 @@ addpythonpath() {
 addpath /iraf/bin
 addpath /usr/local/stsci_python/bin
 addpath ~/bin
+addpath ~/.local/bin
 addpath ~/lib/aws-emr
 addpath ~/.arc_install/arcanist/bin
 export PATH
