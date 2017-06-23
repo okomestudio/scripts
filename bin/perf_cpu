@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# CPU performance metric.
+#
+# Required:
+#
+#   $ sudo apt-get install tiptop
+#
+# TODO:
+#   - Look into `perf` command (https://goo.gl/1tt5WZ)
+#
+
+tiptop
