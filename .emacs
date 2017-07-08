@@ -74,10 +74,10 @@
 
 
 ;; autocomplete
-;; (unless (package-installed-p 'auto-complete)
-;;   (package-refresh-contents) (package-install 'auto-complete))
-;; (require 'auto-complete-config)
-;; (ac-config-default)
+;;(unless (package-installed-p 'auto-complete)
+;;  (package-refresh-contents) (package-install 'auto-complete))
+(require 'auto-complete-config)
+(ac-config-default)
 ;; (setq ac-show-menu-immediately-on-auto-complete t)
 
 ;; NeoTree
