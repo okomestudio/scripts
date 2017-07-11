@@ -1,0 +1,27 @@
+#!/usr/bin/env python3
+"""Delete RabbitMQ queues"""
+import argparse
+
+import pika
+
+
+def delete_rabbitmq_queue(conn, queue):
+    print('Deleting {}... '.format(queue))
+    ch = conn.channel()
+    r =  ch.queue_delete(queue=queue)
+
+
+def main(queues):
+    conn = pika.BlockingConnection(pika.ConnectionParameters())
+    for queue in queues:
+        delete_rabbitmq_queue(conn, queue)
+    conn.close()
+
+
+if __name__ == '__main__':
+    p = argparse.ArgumentParser(description=__doc__)
+    p.add_argument(
+        'queues', metavar='queue', type=str, nargs='+',
+        help='RabbitMQ queue name')
+    args = p.parse_args()
+    main(args.queues)
