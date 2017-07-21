@@ -1,0 +1,79 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""TBD
+
+"""
+import logging
+from argparse import ArgumentParser
+
+import boto3
+
+
+log = logging.getLogger(__name__)
+
+emr = boto3.client('emr', region_name='us-west-2')
+
+
+def create(name, **kwargs):
+    resp = emr.run_job_flow(
+        Name=name,
+        ReleaseLabel='emr-5.0.0',
+        Instances={
+            'InstanceGroups': [
+                {'Name': 'master',
+                 'InstanceRole': 'MASTER',
+                 'InstanceType': 'c1.medium',
+                 'InstanceCount': 1}]},
+        VisibleToAllUsers=False,
+        JobFlowRole='EMR_EC2_DefaultRole',
+        ServiceRole='EMR_DefaultRole',
+    )
+    print(resp)
+
+
+def check(*args, **kwargs):
+    print((args, kwargs))
+
+
+def terminate(name_prefix, now=False, min_idle_time=3600, **kwargs):
+    for prefix in name_prefix:
+        check(prefix, min_idle_time=min_idle_time, terminate_now=now)
+
+
+if __name__ == '__main__':
+    parent = ArgumentParser(description=__doc__.strip(), add_help=False)
+    parent.add_argument(
+        '--logging-file', type=str,
+        help='Path to log file')
+    parent.add_argument(
+        '--logging-level', type=str, default='WARNING',
+        help='Logging level')
+
+    p = ArgumentParser(parents=[parent])
+    subparsers = p.add_subparsers(dest='action', help='Action to carry out')
+
+    sub = subparsers.add_parser(
+        'create',
+        help='Create an EMR cluster')
+    sub.add_argument(
+        'name', type=str,
+        help='Name for the created EMR cluster')
+
+    sub = subparsers.add_parser(
+        'terminate',
+        help='Terminate EMR cluster(s)')
+    sub.add_argument(
+        'name_prefix', nargs='+', type=str,
+        help='EMR cluster name prefix(es) to check for termination')
+    sub.add_argument(
+        '--min-idle-time', type=int, default=3300,
+        help='Minimum seconds of inactivity before termination (default: 3300)')
+    sub.add_argument(
+        '--now', action='store_true', default=False,
+        help='Terminate idle clusters immediately')
+
+    args = p.parse_args()
+
+    action = {'create': create,
+              'terminate': terminate}[args.action]
+    action(**vars(args))
