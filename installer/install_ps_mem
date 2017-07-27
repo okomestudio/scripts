@@ -1,0 +1,51 @@
+#!/bin/bash
+#
+# ``ps_mem`` is a utility to accurately report the in core memory usage.
+#
+# See: https://github.com/pixelb/ps_mem.
+#
+
+set -e
+
+declare src=https://raw.githubusercontent.com/pixelb/ps_mem/master/ps_mem.py
+declare dest=/usr/local
+
+
+function install() {
+  declare src=$1
+  declare dest=$2
+  if [[ (! -d "$dest") || (! -w "$dest") ]]; then
+    echo "ERROR: $dest is not a directory or is not accessible"
+    return 1
+  fi
+
+  declare tmpfile=$(mktemp /tmp/ps_mem.XXXXXX)
+  
+  wget -O "$tmpfile" "$src"
+  mv "$tmpfile" "$dest/ps_mem"
+  chmod +x "$dest/ps_mem"
+}
+
+
+function usage() {
+  echo ""
+  echo "usage: install_ps_mem [-u]"
+  echo ""
+  echo "       -u  Install locally for the current user"
+  echo ""
+  exit 1
+}
+
+
+while getopts hu opt; do
+  case $opt in
+    u) dest=~/.local
+       ;;
+    h) usage
+       ;;
+    \?) usage
+        ;;
+  esac
+done
+
+install "$src" "$dest/bin"
