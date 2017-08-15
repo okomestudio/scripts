@@ -1,9 +1,14 @@
 #!/bin/bash
 
-declare KEY=resample-method
-declare VAL=src-sinc-medium-quality
+readonly CONF=/etc/pulse/daemon.conf
 
-cat /etc/pulse/daemon.conf | \
-  sed -e "s/\(^${KEY} = .*$\)/; \1\n${KEY} = ${VAL}/g" | \
-  sed -e 's/\(^default-sample-format = .*$\)/; \1\ndefault-sample-format = s24le/g' | \
-  sed -e 's/\(^default-sample-rate = .*$\)/; \1\ndefault-sample-rate = 96000/g' 
+declare -A confitem=(
+  [resample-method]=src-sinc-medium-quality
+  [default-sample-format]=s24le
+  [default-sample-rate]=96000
+)
+
+for key in "${!confitem[@]}"; do
+  # sed -e "s/\(^${key} = .*$\)/; \1\n${key} = ${confitem[$key]}/g"
+  echo "s/\(^${key} = .*$\)/; \1\n${key} = ${confitem[$key]}/g"
+done
