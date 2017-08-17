@@ -307,10 +307,15 @@
 ;; (global-set-key "\C-qk" 'windmove-up)
 ;; (global-set-key "\C-ql" 'windmove-right)
 
+
 ;; ace-isearch -- Enhanced isearch
 ;;
 ;; Based on the number of characters used for search, ace-isearch uses
 ;; different mode.
+(unless (package-installed-p 'ace-jump-mode)
+  (package-refresh-contents) (package-install 'ace-jump-mode))
+(unless (package-installed-p 'helm-swoop)
+  (package-refresh-contents) (package-install 'helm-swoop))
 (unless (package-installed-p 'ace-isearch)
   (package-refresh-contents) (package-install 'ace-isearch))
 (require 'ace-isearch)
