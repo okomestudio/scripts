@@ -4,6 +4,8 @@
 #
 # This needs to be run before using emacs.
 
+sudo apt-get install emacs
+
 # download .el file for sql-upcase
 installdir=~/.emacs.d/lisp
 source="https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/"`
@@ -15,4 +17,4 @@ fi
 
 
 # install flake8
-sudo pip install -U flake8
+pip install --user flake8
