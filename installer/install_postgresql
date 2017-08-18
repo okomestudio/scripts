@@ -1,0 +1,22 @@
+#!/bin/bash
+
+sudo apt-get install postgresql
+sudo apt-get install postgresql-contrib
+sudo apt-get install postgresql-9.6-postgis-2.3
+
+
+# Create the current user as superuser, if it does not exist yet.
+
+db=$USER
+
+db_exists=$(psql -Atc \
+                 "SELECT datname FROM pg_database WHERE datname='$db'" \
+               | grep "^$db$")
+
+if [[ -z "$db_exists" ]]; then
+  echo "PG user $db does not exist. Creating..."
+  sudo -u postgres /usr/bin/createuser -s $db
+  createdb
+else
+  echo "PG user $db already exists"
+fi
