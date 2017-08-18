@@ -1,0 +1,13 @@
+#!/bin/bash
+#
+# Kensington SlimBlade Trackball
+
+source include/xsessionrc_helpers.sh
+
+device_id=$(get_device_id "Kensington Slimblade Trackball")
+
+if [[ -n "$device_id" ]]; then
+  xinput --set-button-map "$device_id" \
+         1  8  2  4  5  6  7  3
+  #     BL TL BR  4  5  6  7 TR
+fi
