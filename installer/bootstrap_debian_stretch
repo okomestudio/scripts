@@ -7,3 +7,6 @@ apt-get install xinit
 apt-get install xserver-xorg
 apt-get install sddm
 apt-get install plasma-desktop
+
+apt-get install debconf
+apt-get install debconf-utils
