@@ -1,0 +1,20 @@
+#!/bin/bash
+#
+# .xsessionrc for ThinkPad X1 Carbon 5th Gen (2017)
+
+set -e
+
+source include/xsessionrc_helpers.sh
+
+device_id=$(get_device_id "PS/2 Generic Mouse")
+if [[ -n "$device_id" ]]; then
+  setp="xinput --set-prop $device_id"
+  ${setp} --type=float "libinput Accel Speed" 1.0
+fi
+
+device_id=$(get_device_id "SynPS/2 Synaptics TouchPad")
+if [[ -n "$device_id" ]]; then
+  setp="xinput --set-prop $device_id"
+  # Disable TrackPad.
+  ${setp} --type=int "Device Enabled" 0
+fi
