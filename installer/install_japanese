@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+sudo apt-get install -y im-config
+sudo apt-get install -y fonts-droid-fallback
+sudo apt-get install -y ibus ibus-clutter ibus-mozc
+sudo apt-get install -y ibus-qt4  # or ibus-gtk3 for Gnome
+
+if [[ -f /etc/locale.gen ]]; then
+  sudo mv /etc/locale.gen /etc/locale.gen.bk
+fi
+
+sudo debconf-set-selections <<EOF
+locales locales/locales_to_be_generated multiselect en_US.UTF-8 UTF-8, ja_JP.UTF-8 UTF-8, ja_JP.EUC-JP EUC-JP
+locales locales/default_environment_locale select en_US.UTF-8
+EOF
+
+sudo dpkg-reconfigure -f noninteractive locales
+
+
+# When prompted, select "No" (recommended):
+# im-config
+
+# Say yes when prompted to start ibus daemon:
+ibus-setup
