@@ -4,7 +4,7 @@
 
 set -e
 
-source include/xsessionrc_helpers.sh
+source .local/include/xsessionrc_helpers.sh
 
 device_id=$(get_device_id "PS/2 Generic Mouse")
 if [[ -n "$device_id" ]]; then

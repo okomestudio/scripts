@@ -2,9 +2,9 @@
 #
 # Evoluent VM4S Vertical Mouse 4
 
-set -x
+set -e
 
-source include/xsessionrc_helpers.sh
+source .local/include/xsessionrc_helpers.sh
 
 device_id=$(get_device_id "Evoluent VerticalMouse 4")
 if [[ -n "$device_id" ]]; then

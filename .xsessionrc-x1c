@@ -2,9 +2,9 @@
 #
 # .xsessionrc for ThinkPad X1 Carbon (2015)
 
-set -x
+set -e
 
-source include/xsessionrc_helpers.sh
+source .local/include/xsessionrc_helpers.sh
 
 device_id=$(get_device_id "TPPS/2 IBM TrackPoint")
 if [[ -n "$device_id" ]]; then

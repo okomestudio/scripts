@@ -2,9 +2,9 @@
 #
 # Setup Logitech Wireless Trackball M570
 
-set -x
+set -e
 
-source include/xsessionrc_helpers.sh
+source .local/include/xsessionrc_helpers.sh
 
 device_id=$(get_device_id "Logitech Unifying Device. Wireless PID:1028")
 if [[ -n "$device_id" ]]; then
