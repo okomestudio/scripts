@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+export HOST PORT MACADDRESS
+
+wakeonlan -i $HOST -p $PORT $MACADDRESS
