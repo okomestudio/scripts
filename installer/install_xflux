@@ -9,6 +9,7 @@ set -e
 
 declare src=https://justgetflux.com/linux/xflux64.tgz
 declare dest=/usr/local
+declare cmd=xflux
 
 
 function install() {
@@ -19,11 +20,11 @@ function install() {
     return 1
   fi
 
-  declare tmpfile=$(mktemp /tmp/xflux.XXXXXX)
+  declare tmpfile=$(mktemp /tmp/${cmd}.XXXXXX)
 
   wget -O "$tmpfile" "$src" && \
     tar -C "$dest/" -xvf "$tmpfile" && \
-    chmod +x "$dest/xflux" || \
+    chmod +x "$dest/$cmd" || \
       echo "ERROR: Could not finish installation"
 
   rm "$tmpfile"
@@ -32,23 +33,45 @@ function install() {
 
 function usage() {
   echo ""
-  echo "usage: install_xflux [-u]"
+  echo "usage: install_${cmd} [-u]"
   echo ""
+  echo "       -d  Autostart a daemon with given zip code"
+  echo "       -f  Force reinstallation of binary"
+  echo "       -h  Help"
   echo "       -u  Install locally for the current user"
   echo ""
   exit 1
 }
 
 
-while getopts hu opt; do
+while getopts "d:fhu" opt; do
   case $opt in
-    u) dest=~/.local
-       ;;
-    h) usage
-       ;;
-    \?) usage
-        ;;
+    d)
+      zipcode="$OPTARG"
+      ;;
+    f)
+      force=1
+      ;;
+    h)
+      usage
+      ;;
+    u)
+      dest=~/.local
+      ;;
+    \?)
+      usage
+      ;;
   esac
 done
 
-install "$src" "$dest/bin"
+
+if ! hash "$cmd" 2> /dev/null || [[ -n "$force" ]]; then
+  install "$src" "$dest/bin"
+fi
+
+
+if [[ -n "$zipcode" ]]; then
+  mkdir -p ~/.kde4/Autostart
+  echo "xflux -z ${zipcode}" > ~/.kde4/Autostart/start_xflux
+  chmod +x ~/.kde4/Autostart/start_xflux
+fi
