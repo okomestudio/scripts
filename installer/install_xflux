@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# ``xflux`` is a utility for adjusting display color based on time
+#
+# See: https://justgetflux.com/
+#
+
+set -e
+
+declare src=https://justgetflux.com/linux/xflux64.tgz
+declare dest=/usr/local
+
+
+function install() {
+  declare src=$1
+  declare dest=$2
+  if [[ (! -d "$dest") || (! -w "$dest") ]]; then
+    echo "ERROR: $dest is not a directory or is not accessible"
+    return 1
+  fi
+
+  declare tmpfile=$(mktemp /tmp/xflux.XXXXXX)
+
+  wget -O "$tmpfile" "$src" && \
+    tar -C "$dest/" -xvf "$tmpfile" && \
+    chmod +x "$dest/xflux" || \
+      echo "ERROR: Could not finish installation"
+
+  rm "$tmpfile"
+}
+
+
+function usage() {
+  echo ""
+  echo "usage: install_xflux [-u]"
+  echo ""
+  echo "       -u  Install locally for the current user"
+  echo ""
+  exit 1
+}
+
+
+while getopts hu opt; do
+  case $opt in
+    u) dest=~/.local
+       ;;
+    h) usage
+       ;;
+    \?) usage
+        ;;
+  esac
+done
+
+install "$src" "$dest/bin"
