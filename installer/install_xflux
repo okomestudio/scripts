@@ -4,6 +4,11 @@
 #
 # See: https://justgetflux.com/
 #
+# TODO: The vanilla xflux does not work with GeForce GTX 980. Download
+# a patched version:
+#
+#   https://goo.gl/qKBuVw
+#
 
 set -e
 
@@ -71,7 +76,8 @@ fi
 
 
 if [[ -n "$zipcode" ]]; then
-  mkdir -p ~/.kde4/Autostart
-  echo "xflux -z ${zipcode}" > ~/.kde4/Autostart/start_xflux
-  chmod +x ~/.kde4/Autostart/start_xflux
+  autostartpath=~/.config/autostart-scripts
+  mkdir -p "$autostartpath"
+  echo "xflux -z ${zipcode}" > "$autostartpath/start_xflux"
+  chmod +x "$autostartpath/start_xflux"
 fi
