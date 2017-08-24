@@ -138,8 +138,15 @@ addpath /iraf/bin
 addpath /usr/local/stsci_python/bin
 addpath ~/bin
 addpath ~/.local/bin
+
+# NOTE: The following line for awscli is no longer necessary on
+# Stretch, as awscli can be installed via pip.
 addpath ~/lib/aws-emr
+
+# NOTE: The following line for arcanist is only relevant to releases
+# prior to Debian/Stretch. There is a deb package for Stretch.
 addpath ~/.arc_install/arcanist/bin
+
 export PATH
 
 # Add to PYTHONPATH.
