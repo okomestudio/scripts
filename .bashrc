@@ -89,18 +89,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Alias and completion for Git.
-if [[ -e /usr/share/bash-completion/completions/git ]]; then
-  . /usr/share/bash-completion/completions/git
-  __git_complete g __git_main
-  __git_complete gco _git_checkout
-  alias g='git'
-  alias gco='g checkout'
-  alias gst='g status'
-  # Want git push/pull aliased as well, but completion does not appear
-  # to work with <repo> [<refspec>] CLI.
-fi
-
 # Update fancy prompt
 PS1='[\u@\h \W]\$ '
 
