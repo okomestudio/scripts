@@ -9,7 +9,9 @@ source .local/include/xsessionrc_helpers.sh
 device_id=$(get_device_id "PS/2 Generic Mouse")
 if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
-  ${setp} --type=float "libinput Accel Speed" 1.0
+  ${setp} --type=float "libinput Accel Speed" 0.0
+  ${setp} "Coordinate Transformation Matrix" \
+          4.0, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.0
 fi
 
 device_id=$(get_device_id "SynPS/2 Synaptics TouchPad")
