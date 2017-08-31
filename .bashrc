@@ -122,14 +122,7 @@ addpythonpath() {
 }
 
 # Add to PATH.
-addpath /iraf/bin
-addpath /usr/local/stsci_python/bin
-addpath ~/bin
 addpath ~/.local/bin
-
-# NOTE: The following line for awscli is no longer necessary on
-# Stretch, as awscli can be installed via pip.
-addpath ~/lib/aws-emr
 
 # NOTE: The following line for arcanist is only relevant to releases
 # prior to Debian/Stretch. There is a deb package for Stretch.
@@ -138,11 +131,7 @@ addpath ~/.arc_install/arcanist/bin
 export PATH
 
 # Add to PYTHONPATH.
-addpythonpath /usr/local/stsci_python/lib/python
-addpythonpath /usr/local/pyds9/lib/python2.7/site-packages
-addpythonpath /usr/local/astLib/lib/python2.7/site-packages
-addpythonpath ~/lib/python2.7/site-packages
-addpythonpath /astro/DEEP2Wind/lib/python2.7/site-packages
+# addpythonpath /path/to/package
 export PYTHONPATH
 
 #export LS_COLORS='ex=00;35:ln=00;32'
