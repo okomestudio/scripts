@@ -11,7 +11,7 @@ if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
   ${setp} --type=float "libinput Accel Speed" 0.0
   ${setp} "Coordinate Transformation Matrix" \
-          4.0, 0.0, 0.0, 0.0, 4.0, 0.0, 0.0, 0.0, 1.0
+          6.0, 0.0, 0.0, 0.0, 6.0, 0.0, 0.0, 0.0, 1.0
 fi
 
 device_id=$(get_device_id "SynPS/2 Synaptics TouchPad")
