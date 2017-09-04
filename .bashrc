@@ -44,22 +44,22 @@ esac
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
 #force_color_prompt=yes
-if [ -n "$force_color_prompt" ]; then
-  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	  # We have color support; assume it's compliant with Ecma-48
-	  # (ISO/IEC-6429). (Lack of such support is extremely rare, and
-	  # such a case would tend to support setf rather than setaf.)
-	  color_prompt=yes
-  else
-	  color_prompt=
-  fi
-fi
-if [ "$color_prompt" = yes ]; then
-  PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-  PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+# if [ -n "$force_color_prompt" ]; then
+#   if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+# 	  # We have color support; assume it's compliant with Ecma-48
+# 	  # (ISO/IEC-6429). (Lack of such support is extremely rare, and
+# 	  # such a case would tend to support setf rather than setaf.)
+# 	  color_prompt=yes
+#   else
+# 	  color_prompt=
+#   fi
+# fi
+# if [ "$color_prompt" = yes ]; then
+#   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+# else
+#   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
+# fi
+# unset color_prompt force_color_prompt
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -69,6 +69,32 @@ case "$TERM" in
   *)
     ;;
 esac
+
+
+# Update fancy prompt
+paren_left='['
+paren_right=']'
+prompt='$'
+base_info='\u@\h \W'
+
+# When in a git repo, show the branch name
+if [[ -e /etc/bash_completion.d/git-prompt ]]; then
+  . /etc/bash_completion.d/git-prompt
+  base_info=${base_info}'$(__git_ps1 "(%s)")'
+fi
+
+PS1="${paren_left}${base_info}${paren_right}${prompt}"
+
+# For remote shell over SSH, add color
+if [[ -n "$SSH_CLIENT" ]]; then
+  PS1="\[\e[0;31m\]${PS1}\[\e[m\]"
+fi
+
+PS1="${PS1} "
+
+export PS1
+unset paren_left paren_right prompt base_info
+
 
 # Alias definitions.
 # You may want to put all your additions into a separate file like
@@ -89,21 +115,6 @@ if ! shopt -oq posix; then
   fi
 fi
 
-# Update fancy prompt
-PS1='[\u@\h \W]\$ '
-
-# For remote shell over SSH.
-if [[ -n "$SSH_CLIENT" ]]; then
-  PS1='\[\e[0;31m\][\u@\h \W]$\[\e[m\] '
-fi
-
-# When in a git repo, show the branch name.
-if [[ -e /etc/bash_completion.d/git-prompt ]]; then
-  . /etc/bash_completion.d/git-prompt
-  PS1='[\u@\h \W$(__git_ps1 "(%s)")]\$ '
-fi
-
-export PS1
 
 ##############################################################################
 # Setting PATH: Any path that needs to be set in non-login shell needs
