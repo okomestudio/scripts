@@ -90,6 +90,11 @@ if [[ -n "$SSH_CLIENT" ]]; then
   PS1="\[\e[0;31m\]${PS1}\[\e[m\]"
 fi
 
+# For prompts within `screen`, add color
+if [[ -n "$STY" ]]; then
+  PS1="\[\e[0;32m\]${PS1}\[\e[m\]"
+fi
+
 PS1="${PS1} "
 
 export PS1
