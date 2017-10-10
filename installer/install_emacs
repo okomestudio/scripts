@@ -5,6 +5,7 @@
 # This needs to be run before using emacs.
 
 sudo apt-get install emacs
+sudo apt-get install markdown
 
 # download .el file for sql-upcase
 installdir=~/.emacs.d/lisp
