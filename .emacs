@@ -102,6 +102,14 @@
 (neotree-toggle)
 
 
+;; ansible-mode
+(unless (package-installed-p 'ansible)
+  (package-refresh-contents) (package-install 'ansible))
+(add-hook 'yaml-mode-hook '(lambda () (ansible 1)))
+(setq ansible::vault-password-file "~/.vault-pass")
+(add-hook 'ansible-hook 'ansible::auto-decrypt-encrypt)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Shell/BASH
 
