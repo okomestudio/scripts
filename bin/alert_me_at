@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# Generate alert at specified times
+#
+# This script uses `notify-send` and `at` commands to generate desktop
+# alert(s) at specified times.
+#
+# To alert at 3PM and 3PM for example:
+#
+#   $ alert_me_at 3:00PM 8:00PM
+#
+
+for t in $@; do
+  echo "notify-send 'It is $t now!'" | at "$t" # 2> /dev/null
+done
