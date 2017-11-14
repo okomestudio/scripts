@@ -180,6 +180,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Markdown
+;;
+;; - Allows browser preview with C-c C-c v
+;;
 
 (unless (package-installed-p 'markdown-mode)
   (package-refresh-contents) (package-install 'markdown-mode))
