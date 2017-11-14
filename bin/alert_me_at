@@ -9,6 +9,10 @@
 #
 #   $ alert_me_at 3:00PM 8:00PM
 #
+# Requirements
+#
+#   $ sudo apt-get install at libnotify-bin
+#
 
 for t in $@; do
   echo "notify-send 'It is $t now!'" | at "$t" # 2> /dev/null
