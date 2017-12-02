@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# wait_for - Wait for a host is up on a port
+#
+set -e
+
+function usage() {
+  echo "usage: wait_for [-m <max wait in seconds>] [-p <port>] <host>"
+  exit 1
+}
+
+while getopts "hm:p:" opt; do
+  case $opt in
+    h)
+      usage
+      ;;
+    m)
+      max_wait=$OPTARG
+      ;;
+    p)
+      port=$OPTARG
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+
+shift $(($OPTIND - 1))
+readonly host=$1
+readonly port=${port:-22}
+readonly max_wait=${max_wait:-60}
+
+
+function main() {
+  (nc -w ${max_wait} -z ${host} ${port} 2> /dev/null) &
+  local child=$!
+  wait $child && result=0 || result=1
+  return $result
+}
+
+
+if main; then
+  (>&2 echo "Successfully connected to ${host}:${port}")
+  exit 0
+else
+  (>&2 echo "ERROR: ${host}:${port} is unreachable")
+  exit 1
+fi
