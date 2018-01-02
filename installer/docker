@@ -1,0 +1,13 @@
+#!/bin/bash
+
+osid=$(. /etc/os-release; echo "$ID")
+release=$(lsb_release -cs)
+
+curl -fsSL https://download.docker.com/linux/$osid/gpg \
+  | sudo apt-key add -
+
+echo "deb [arch=amd64] https://download.docker.com/linux/debian $release stable" \
+  | sudo tee -a /etc/apt/sources.list.d/docker.list
+
+sudo apt-get update
+sudo apt-get install docker-ce
