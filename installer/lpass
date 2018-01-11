@@ -15,7 +15,7 @@ for package in ${packages[@]} ; do
 done
 
 
-readonly targetdir=tmp/boo2
+readonly targetdir=$(mktemp -d)
 readonly version=v1.2.2
 
 git clone \
