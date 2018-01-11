@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+packages=(openssl
+          libcurl3
+          libxml2
+          libssl1.0-dev
+          libxml2-dev
+          libcurl4-openssl-dev
+          pinentry-curses
+          xclip
+          cmake)
+
+for package in ${packages[@]} ; do
+  sudo apt-get install $package
+done
+
+
+readonly targetdir=tmp/boo2
+readonly version=v1.2.2
+
+git clone \
+    --branch "$version" \
+    git@github.com:lastpass/lastpass-cli.git \
+    "$targetdir"
+
+(cd "$targetdir" && make && sudo make install)
+
+rm -rf "$targetdir"
