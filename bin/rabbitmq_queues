@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# `list_queues` command with all basic info
+#
+
+rabbitmqctl list_queues name messages_ready messages_unacknowledged messages consumers
