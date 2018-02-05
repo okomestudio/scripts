@@ -12,7 +12,7 @@ if [[ -n "$device_id" ]]; then
 
   # Activate scroll wheel emulation (use the trackball while pressing
   # vertical wheel down).
-  ${setp} 'libinput Accel Speed' 0.5
+  ${setp} 'libinput Accel Speed' 0.25
   ${setp} 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 .2
   # ${setp} "Evdev Wheel Emulation" 1
   # ${setp} "Evdev Wheel Emulation Axes" 6 7 4 5
