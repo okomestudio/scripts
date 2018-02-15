@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# Download and install docker-machine
+#
+set -e
+
+readonly version=${1:-0.13.0}
+
+readonly machine=$(uname -m)
+readonly kernel=$(uname -s)
+readonly repo=github.com/docker/machine
+readonly file=docker-machine-${kernel}-${machine}
+readonly target=/usr/local/bin/docker-machine
+readonly url=https://${repo}/releases/download/v${version}/${file}
+
+echo "Downloading docker-machine $version..."
+curl -L $url -o $target
+chmod +x $target
