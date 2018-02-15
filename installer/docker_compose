@@ -1,0 +1,17 @@
+#!/bin/bash
+#
+# Download and install docker-compose
+#
+set -e
+
+readonly version=${1:-1.19.0}
+readonly machine=$(uname -m)
+readonly kernel=$(uname -s)
+readonly repo=github.com/docker/compose
+readonly file=docker-compose-${kernel}-${machine}
+readonly target=/usr/local/bin/docker-compose
+readonly url=https://${repo}/releases/download/${version}/${file}
+
+echo "Downloading docker-compose $version..."
+curl -L $url -o $target
+chmod +x $target
