@@ -189,6 +189,13 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Dockefile
+
+(unless (package-installed-p 'dockerfile-mode)
+  (package-refresh-contents) (package-install 'dockerfile-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; YAML
 
 (unless (package-installed-p 'yaml-mode)
