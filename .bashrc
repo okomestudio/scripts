@@ -178,7 +178,7 @@ if hash virtualenvwrapper.sh 2>/dev/null; then
 fi
 
 # for Hadoop
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 export HADOOP_INSTALL=/usr/local/hadoop
 export HADOOP_HOME=$HADOOP_INSTALL
 export PATH=$PATH:$HADOOP_INSTALL/bin
@@ -191,4 +191,4 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
 
 # Spark
-export SPARK_HOME=/usr/local/lib/spark
+export SPARK_HOME=/home/taro/.local/spark

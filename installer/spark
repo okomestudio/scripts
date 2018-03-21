@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+#
+# Spark installer
+#
+
+set -e
+
+declare -r spark_version=2.3.0
+declare -r hadoop_version=2.7
+declare install_prefix=~/.local
+
+declare -r src_host=supergsego.com
+declare -r src_dir=apache/spark/spark-${spark_version}
+declare -r src_file=spark-${spark_version}-bin-hadoop${hadoop_version}.tgz
+declare -r src_url=http://${src_host}/${src_dir}/${src_file}
+
+
+function prepare_libdir() {
+  declare -r libdir=$1
+  declare -r backup=${2:-true}
+
+  if ! mkdir -p "$libdir" &> /dev/null ; then
+    echo "ERROR: ${libdir} cannot be created"
+    return 1
+  fi
+  if [[ ! -w "$libdir" ]]; then
+    echo "ERROR: ${libdir} is not accessible"
+    return 1
+  fi
+
+  if ${backup} ; then
+    [[ -d "${libdir}.bk" ]] && rm -rf "${libdir}.bk"
+    [[ -d "${libdir}" ]] && mv "${libdir}" "${libdir}.bk"
+  else
+    rm -rf "$libdir"
+  fi
+
+  mkdir -p "$libdir"
+}
+
+
+# Update ~/.bashrc with SPARK_HOME. Note that this will update .bashrc
+# for root user if running as su (likely undesirable).
+function update_envvar() {
+  local path=$1
+  local line="export SPARK_HOME=${path}"
+  local target=~/.bashrc
+  if ! grep -Fxq "$line" $target ; then
+    echo -e "\n# Spark\n$line" >> $target
+  fi
+}
+
+
+function install() {
+  declare -r src=$1
+  declare -r dest=$2
+  declare -r libdir=${dest}/spark
+  declare -r tmpfile=/tmp/${src_file}
+
+  prepare_libdir "$libdir" true
+
+  if ! ls ${tmpfile} &> /dev/null ; then
+    wget --content-disposition -P /tmp/ "$src"
+  fi
+  tar -C "$libdir" --strip-components=1 -xvzf ${tmpfile}
+
+  # rm ${tmpfile}
+  update_envvar "$libdir"
+}
+
+
+function usage() {
+  echo ""
+  echo "usage: spark [-p]"
+  echo ""
+  echo "       -p  Set the install prefix (default: ~/.local)"
+  echo ""
+  exit 1
+}
+
+
+while getopts hp: opt; do
+  case $opt in
+    p) install_prefix=$OPTARG
+       ;;
+    h) usage
+       ;;
+    \?) usage
+        ;;
+  esac
+done
+
+install "$src_url" "$install_prefix"
