@@ -1,0 +1,3 @@
+sudo apt-get install curl mplayer2 rtmpdump
+sudo apt-get install libcurl4-gnutls-dev libconfig-dev
+
