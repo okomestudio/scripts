@@ -2,6 +2,9 @@
 #
 # Download and install docker-machine
 #
+#   $ sudo ./installer/docker_machine
+#
+
 set -e
 
 readonly version=${1:-0.13.0}
