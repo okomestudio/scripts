@@ -1,13 +1,37 @@
-#!/bin/bash
+#!/usr/bin/env bash
+#
+#   $ sudo ./installer/docker
+#
 
-osid=$(. /etc/os-release; echo "$ID")
-release=$(lsb_release -cs)
+readonly osid=$(. /etc/os-release; echo "$ID")
+readonly release=$(lsb_release -cs)
+readonly sourcefile=/etc/apt/sources.list.d/docker.list
+readonly repo=https://download.docker.com/linux/debian
 
-curl -fsSL https://download.docker.com/linux/$osid/gpg \
-  | sudo apt-key add -
 
-echo "deb [arch=amd64] https://download.docker.com/linux/debian $release stable" \
-  | sudo tee -a /etc/apt/sources.list.d/docker.list
+function add_to_apt_keyring() {
+  curl -fsSL https://download.docker.com/linux/$osid/gpg \
+    | apt-key add -
+}
 
-sudo apt-get update
-sudo apt-get install docker-ce
+
+function update_source_list() {
+  local line="deb [arch=amd64] $repo $release stable"
+  local target=$sourcefile
+  touch $target
+  if ! grep -Fxq "$line" $target ; then
+    echo -e "\n$line" >> $target
+  fi
+}
+
+
+function main() {
+  add_to_apt_keyring
+  update_source_list
+
+  apt-get update
+  apt-get install docker-ce
+}
+
+
+main "$@"
