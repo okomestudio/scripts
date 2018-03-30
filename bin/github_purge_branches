@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+#
+# Delete all non-default branches
+#
+# Run this within a branch cloned from GitHub
+#
+#   $ github_purge_branches
+#
+# and all branches except the default will be deleted.
+#
+
+set -e
+
+
+function get_default_branch() {
+  git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@'
+}
+
+
+main() {
+  readonly default=$(get_default_branch)
+  for branch in $(git branch | grep -v $default) ; do
+    git branch -D $branch
+  done
+}
+
+
+main "$@"
