@@ -2,6 +2,8 @@
 #
 # Download and install docker-compose
 #
+#   $ sudo ./installer/docker_compose
+#
 set -e
 
 readonly version=${1:-1.19.0}
