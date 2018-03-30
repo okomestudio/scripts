@@ -37,7 +37,7 @@ readonly max_wait=${max_wait:-60}
 
 
 function main() {
-  (nc -w ${max_wait} -z ${host} ${port} 2> /dev/null) &
+  (nc -w ${max_wait} -i 10  -z ${host} ${port} 2> /dev/null) &
   local child=$!
   wait $child && result=0 || result=1
   return $result
