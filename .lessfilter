@@ -64,15 +64,9 @@ case $1 in
     pygmentize -f 256 -O bg=light -l sh $1
     ;;
   *)
-    # TODO: Parse shebang line and map command name to language?
-    grep "bin/env python" $1 > /dev/null
-    if [ $? -eq "0" ]; then
-      pygmentize -f 256 -O bg=light -l python $1
-    fi
-
-    grep "#\!/bin/bash" $1 > /dev/null
-    if [ $? -eq "0" ]; then
-      pygmentize -f 256 -O bg=light -l sh $1
+    prog=$(head -n1 $1 | grep -E '^#!(|/usr)/bin/env' | cut -d " " -f 2)
+    if [ ! -z $prog ]; then
+      pygmentize -f 256 -O bg=light -l $prog $1
     fi
     ;;
 esac
