@@ -2,11 +2,13 @@
 #
 # Delete all non-default branches
 #
-# Run this within a branch cloned from GitHub
+# Run this within a branch cloned from GitHub:
 #
-#   $ github_purge_branches
+#   $ github_purge_branches [branch]
 #
-# and all branches except the default will be deleted.
+# and all branches except the current and the default will be
+# deleted. Optionally, the default branch can be specified as a
+# command-line argument.
 #
 
 set -e
@@ -17,9 +19,9 @@ function get_default_branch() {
 }
 
 
-main() {
-  readonly default=$(get_default_branch)
-  for branch in $(git branch | grep -v $default) ; do
+function main() {
+  readonly default=${1:-$(get_default_branch)}
+  for branch in $(git branch | grep -v ^* | grep -v $default) ; do
     git branch -D $branch
   done
 }
