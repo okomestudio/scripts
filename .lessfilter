@@ -60,13 +60,20 @@ case $1 in
   *.el|.emacs)
     pygmentize -f 256 -O bg=light -l elisp $1
     ;;
-  .bashrc|.bash_aliases|.bash_environment)
-    pygmentize -f 256 -O bg=light -l sh $1
+  *.bash|.bashrc|.bash_aliases|.bash_environment)
+    pygmentize -f 256 -O bg=light -l bash $1
     ;;
   *)
     prog=$(head -n1 $1 | grep -E '^#!(|/usr)/bin/env' | cut -d " " -f 2)
     if [ ! -z $prog ]; then
-      pygmentize -f 256 -O bg=light -l $prog $1
+      case $prog in
+        bats)
+          pygmentize -f 256 -O bg=light -l bash $1
+          ;;
+        *)
+          pygmentize -f 256 -O bg=light -l $prog $1
+          ;;
+      esac
     fi
     ;;
 esac
