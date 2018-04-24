@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+
+# Parse components from url ($1)
+function parse_url() {
+  local proto="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  local netlocpath="$(echo ${1/$proto/})"
+  proto="${proto/:\/\//}"
+  local userpass="$(echo $netlocpath | grep @ | cut -d@ -f1)"
+  local user="$(echo $userpass | cut -d: -f1)"
+  local pass="$(echo $userpass | grep : | cut -d: -f2)"
+  local netloc="$(echo ${netlocpath/$userpass@/} | cut -d/ -f1 )"
+  local host="$(echo $netloc | cut -d: -f1 )"
+  local port="$(echo $netloc | \
+                sed -e 's,^.*:,:,g' -e 's,.*:\([0-9]*\).*,\1,g' \
+                -e 's,[^0-9],,g')"
+  local rest="$(echo $netlocpath | grep / | cut -d/ -f2- )"
+  local path="$(echo $rest | cut -d? -f1 )"
+  local query="$(echo $rest | cut -d? -f2- )"
+
+  declare -A map
+  map[proto]="$proto"
+  map[user]="$user"
+  map[pass]="$pass"
+  map[host]="$host"
+  map[port]="$port"
+  map[path]="$path"
+  map[query]="$query"
+  declare -p map
+}
+
+
+function main() {
+  local url=$1
+  local key=$2
+  tmp=$(parse_url "$1")
+  eval "${tmp/map=/parsed=}"
+  echo "${parsed[$key]}"
+}
+
+
+main "$@"

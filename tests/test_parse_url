@@ -1,0 +1,34 @@
+#!/usr/bin/env bats
+
+
+set -e
+
+readonly url="https://user:pass@domain.fm:1234/path/to/dir?key=val&k=v"
+
+@test "parse protocol" {
+  [ $(bin/parse_url "$url" proto) = "https" ]
+}
+
+@test "parse username" {
+  [ $(bin/parse_url "$url" user) = "user" ]
+}
+
+@test "parse password" {
+  [ $(bin/parse_url "$url" pass) = "pass" ]
+}
+
+@test "parse host" {
+  [ $(bin/parse_url "$url" host) = "domain.fm" ]
+}
+
+@test "parse port" {
+  [ $(bin/parse_url "$url" port) = "1234" ]
+}
+
+@test "parse path" {
+  [ $(bin/parse_url "$url" path) = "path/to/dir" ]
+}
+
+@test "parse query" {
+  [ $(bin/parse_url "$url" query) = "key=val&k=v" ]
+}
