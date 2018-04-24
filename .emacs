@@ -119,6 +119,7 @@
         sh-indentation 2))
 (add-hook 'sh-mode-hook 'setup-sh-mode)
 (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
+(add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
