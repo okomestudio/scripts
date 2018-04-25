@@ -1,0 +1,123 @@
+#!/usr/bin/env bash
+#
+# Archive script
+#
+
+set -e
+
+
+# Compression option used for tar command
+declare TAROPTS=-J
+
+# Number of archive files to keep
+declare -i KEEP=
+
+
+function error() {
+  >&2 echo $2
+  exit $1
+}
+
+
+function get_protocol() {
+  local proto="$(echo $1 | grep :// | sed -e's,^\(.*://\).*,\1,g')"
+  echo "${proto/:\/\//}"
+}
+
+
+function do_compress() {
+  local tmpfile=$(mktemp /tmp/archive.XXXXX)
+  tar $TAROPTS -cf $tmpfile $@ \
+    && echo $tmpfile \
+    || { code="$?"; rm $tmpfile; return "$code"; }
+}
+
+
+function keep_recent_k() {
+  local k=$1
+  local target=$2
+  for i in $(aws s3 ls $target | awk '{ print $4 }' | sort | head -n -$k) ; do
+    aws s3 rm "${target%/*}/$i"
+  done
+}
+
+
+function main() {
+  local target=$1
+  local paths=${@:2}
+
+  local protocol=$(get_protocol "$target")
+  [[ ! "$protocol" =~ ^(s3)$ ]] && \
+    error 1 "ERROR: Invalid protocol ($protocol)"
+
+  local tmpfile
+  tmpfile=$(do_compress ${paths[@]}) \
+    || error $? "ERROR: 'tar' failed"
+
+  declare -A fileext=([-j]=bz2 [-J]=xz [-z]=gz)
+  local key="${target}$(date '+%Y%m%d%s').tar.${fileext[$TAROPTS]}"
+  
+  case $protocol in
+    s3)
+      aws s3 cp "$tmpfile" "$key" \
+        || { code=$?; rm $tmpfile; error $code "ERROR: 'aws s3 cp' failed"; }
+      ;;
+    *)
+      rm $tmpfile
+      error 1 "ERROR: Invalid protocol ($protocol)"
+      ;;
+  esac
+
+  [ -f $tmpfile ] && rm $tmpfile
+
+  [ $KEEP -gt 0 ] && keep_recent_k "$KEEP" "$target"
+}
+
+
+function usage() {
+  cat <<EOF
+Usage: ${0##*/} [OPTION...] TARGET FILE...
+
+Compress files and/or directories (FILE...) and archive to a location
+specified by TARGET. TARGET is a URL prefix. Timestamp (with format
++%Y%m%d%s) and file extension are appended upon archiving.
+
+Options:
+
+  -k  Number of archive files to keep
+  -j  Filter the archive through bzip2
+  -J  Filter the archive through xz
+  -z  Filter the archive through gzip
+
+EOF
+}
+
+
+while getopts jk:Jz opt; do
+  case $opt in
+    j)
+      # bzip2
+      TAROPTS=-j
+      ;;
+    k)
+      KEEP=$OPTARG
+      ;;
+    J)
+      # xz
+      TAROPTS=-J
+      ;;
+    z)
+      # gzip
+      TAROPTS=-z
+      ;;
+    \?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+[ $# -lt 2 ] && usage && exit 1
+
+main "$@"
