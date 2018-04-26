@@ -14,6 +14,17 @@
 # and save this file as ~/.lessfilter
 #
 
+
+parse_shebang() {
+  line=$(head -n1 $1)
+  prog=$(echo "$line" | grep -E '^#!(|/usr)/bin/env' | cut -d " " -f 2)
+  if [ -z $prog ]; then
+    prog=$(echo "$line" | grep -Po '/bin/\K[^ ]+')
+  fi
+  echo $prog
+}
+
+
 case $1 in
   *.ad[asb]|\
   *.asm|\
@@ -64,7 +75,7 @@ case $1 in
     pygmentize -f 256 -O bg=light -l bash $1
     ;;
   *)
-    prog=$(head -n1 $1 | grep -E '^#!(|/usr)/bin/env' | cut -d " " -f 2)
+    prog=$(parse_shebang $1)
     if [ ! -z $prog ]; then
       case $prog in
         bats)
