@@ -1,3 +1,8 @@
 #!/usr/bin/env bash
+#
+# Remove untagged Docker images
+#
 
-docker rmi $(docker images | grep "^<none>" | awk '{print $3}')
+for i in $(docker images | grep "^<none>" | awk '{print $3}'); do
+  docker rmi $i
+done
