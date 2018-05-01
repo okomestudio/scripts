@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Personal script installer
+#
+
+cp $1 ~/.local/bin/
