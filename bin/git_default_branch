@@ -1,0 +1,80 @@
+#!/usr/bin/env bash
+set -e
+
+
+function usage() {
+  cat <<EOF
+Usage: git_default_branch [OPTION...]
+
+Options:
+
+  -r  Get the default branch of remote
+  -s  Sync local default branch to the remote
+
+EOF
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit "${2:-1}"
+}
+
+
+function within_git_repo() {
+  [[ -d .git ]] || error "Not in a Git repository"
+}
+
+
+function remote_default_branch() {
+  git fetch origin
+  local s=$(git remote show origin \
+               | grep -E 'HEAD branch:' \
+               | sed -E 's/^\s+HEAD branch: ([\/\-_\.0-9a-zA-Z]+)$/\1/')
+  [[ $s == "(unknown)" ]] \
+    && error "No remote branch found ($s)"
+  [[ "$s" =~ .*HEAD\ branch.* ]] \
+    && error "Branch name could not be extracted ($s)"
+  echo $s
+}
+
+
+function local_default_branch() {
+  { git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null \
+      || error "No symbolic reference found"; } \
+    | sed 's@^refs/remotes/origin/@@'
+}
+
+
+function sync_default_branch() {
+  local remote=$(remote_default_branch)
+  local branch=$(local_default_branch)
+
+  if [[ $branch == $remote ]]; then
+    >&2 echo "Local branch ($branch) already in sync"
+    exit 0
+  fi
+  
+  git remote set-head origin "$remote"
+}
+
+
+while getopts rs opt; do
+  case $opt in
+    r)
+      within_git_repo && remote_default_branch
+      exit 0
+      ;;
+    s)
+      within_git_repo && sync_default_branch
+      exit 0
+      ;;
+    \?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+within_git_repo && local_default_branch
