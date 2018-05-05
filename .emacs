@@ -201,6 +201,7 @@
 
 (unless (package-installed-p 'yaml-mode)
   (package-refresh-contents) (package-install 'yaml-mode))
+(add-to-list 'auto-mode-alist '("\\.yml.j2\\'" . yaml-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
