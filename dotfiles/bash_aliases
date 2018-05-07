@@ -33,3 +33,13 @@ if [[ -e /usr/share/bash-completion/completions/git ]]; then
   # Want git push/pull aliased as well, but completion does not appear
   # to work with <repo> [<refspec>] CLI.
 fi
+
+
+# Override command `cd` to source .bashrc if exists.
+function cd() {
+  command cd "$@" || return
+  if [[ $PWD != $HOME && -f "$PWD/.bashrc" ]]; then
+    source $PWD/.bashrc
+    >&2 echo "Sourced $PWD/.bashrc"
+  fi
+}
