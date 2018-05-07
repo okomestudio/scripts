@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+set -e
+
+function usage() {
+  cat <<EOF
+Usage: mkpw PASSWORD_TYPE
+
+PASSWORD_TYPE can be aws.
+
+Options:
+
+  TBD.
+
+EOF
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit "${2:-1}"
+}
+
+
+function aws() {
+  # Must not be the same as your old password
+  # Must be at least 14 characters long
+  # Must contain at least one number (0-9)
+  # Must contain at least one uppercase letter (A-Z)
+  # Must contain at least one lowercase letter (a-z)
+  pwgen -nc 14 1
+}
+
+
+function main() {
+  case $1 in
+    aws)
+      aws
+      ;;
+    *)
+      error "Unknown password type ($1)"
+      ;;
+  esac
+}
+
+
+while getopts "" opt; do
+  case $opt in
+    \?)
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+                     
+main "$@"
