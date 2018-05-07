@@ -3,4 +3,13 @@
 # Personal script installer
 #
 
-cp $1 ~/.local/bin/
+readonly scriptname=$1
+readonly userbin=~/.local/bin
+
+if [[ -f bin/$scriptname ]]; then
+  cp bin/$scriptname $userbin/$scriptname
+  chmod +x $userbin/$scriptname
+else
+  >&2 echo "ERROR: $scriptname does not exit"
+  exit 1
+fi
