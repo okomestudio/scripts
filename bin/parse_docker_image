@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+
+# Parse Docker image name ($1)
+function parse() {
+  local repo_and_tag="$(echo $1 | rev | cut -d/ -f1 | rev)"
+  local hosturl="${1/${repo_and_tag}/}"
+  hosturl="${hosturl%/}"
+  local repo="$(echo $repo_and_tag | cut -d: -f1)"
+  local tag="$(echo $repo_and_tag | grep : | cut -d: -f2)"
+
+  declare -A map
+  map[hosturl]="$hosturl"
+  map[repo]="$repo"
+  map[tag]="$tag"
+  declare -p map
+}
+
+
+function main() {
+  local url=$1
+  local key=$2
+  local tmp=$(parse "$1")
+  eval "${tmp/map=/parsed=}"
+  echo "${parsed[$key]}"
+}
+
+
+main "$@"

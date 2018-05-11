@@ -1,0 +1,71 @@
+#!/usr/bin/env bats
+
+
+set -e
+
+
+readonly script=bin/parse_docker_image
+declare -g -A urls
+
+
+function setup() {
+  urls[A]="https://registry:1234/repo:tag"
+  urls[B]="https://registry:1234/repo"
+  urls[C]="registry/repo"
+  urls[D]="repo"
+}
+
+
+function try() {
+  local p=$($script "${urls[$1]}" $2) e="$3"
+  echo "Expected '$e' from ${urls[$1]} and got '$p'" && [ "$p" = "$e" ]
+}
+
+
+@test "Parse tag from A" {
+  try A tag tag
+}
+
+@test "Parse repo from A" {
+  try A repo repo
+}
+
+@test "Parse hosturl from A" {
+  try A hosturl https://registry:1234
+}
+
+@test "Parse tag from B" {
+  try B tag ""
+}
+
+@test "Parse repo from B" {
+  try B repo repo
+}
+
+@test "Parse hosturl from B" {
+  try B hosturl https://registry:1234
+}
+
+@test "Parse tag from C" {
+  try C tag ""
+}
+
+@test "Parse repo from C" {
+  try C repo repo
+}
+
+@test "Parse hosturl from C" {
+  try C hosturl registry
+}
+
+@test "Parse tag from D" {
+  try D tag ""
+}
+
+@test "Parse repo from D" {
+  try D repo repo
+}
+
+@test "Parse hosturl from D" {
+  try D hosturl ""
+}
