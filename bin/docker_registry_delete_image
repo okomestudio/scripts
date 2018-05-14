@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE
+Usage: ${0##*/} REGISTRY/REPOSITORY:TAG
+
+Delete a Docker image from a registry.
+
+This program requires "docker", "curl", and "jq".
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+# Parse Docker image name ($1)
+function parse() {
+  local repo_and_tag="$(echo $1 | rev | cut -d/ -f1 | rev)"
+  local registry="${1/${repo_and_tag}/}"
+  registry="${registry%/}"
+  local repo="$(echo $repo_and_tag | cut -d: -f1)"
+  local tag="$(echo $repo_and_tag | grep : | cut -d: -f2)"
+
+  declare -A map
+  map[registry]="$registry"
+  map[repo]="$repo"
+  map[tag]="$tag"
+  declare -p map
+}
+
+
+function get_digest() {
+  docker pull $1 | grep -e ^Digest | cut -d' ' -f2
+}
+
+
+function delete_image() {
+  curl -X DELETE https://HOST/v2/REPO/manifests/DIGEST
+}
+
+
+function main() {
+  [[ -z $1 ]] && usage 1
+
+  local tmp=$(parse "$1")
+  eval "${tmp/map=/img=}"
+
+  local registry="${img[registry]}"
+  [[ -z $registry ]] && error "Registry is required"
+
+  local repo="${img[repo]}"
+  [[ -z $repo ]] && error "Repository is required"
+
+  local tag="${img[tag]}"
+  [[ -z $tag ]] && error "Tag is required"
+
+  local ref="${registry}/${repo}:${tag}"
+  local digest=$(get_digest "$ref")
+  if [[ "$digest" =~ ^sha256:[0-9a-f]+$ ]]; then
+    curl -X DELETE "https://${registry}/v2/${repo}/manifests/${digest}"
+  else
+    error "Could not delete registry image ($ref)"
+  fi
+}
+
+
+while getopts h opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+
+main "$@"
