@@ -5,7 +5,7 @@ set -e
 
 function usage() {
   cat <<USAGE
-Usage: docker_image_exists REGISTRY/REPOSITORY[:TAG]
+Usage: ${0##*/} REGISTRY/REPOSITORY[:TAG]
 
 Test if a Docker image exists on a registry. If the image exists, the
 command exits with status code 0. If it does not, the command exits
