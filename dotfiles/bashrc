@@ -137,7 +137,7 @@ addpythonpath() {
   fi
 }
 
-# Add to PATH.
+# Add directories containing commands to PATH
 addpath ~/.local/bin
 
 # NOTE: The following line for arcanist is only relevant to releases
@@ -191,4 +191,7 @@ export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
 export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
 
 # Spark
-export SPARK_HOME=/home/taro/.local/spark
+if [ -d ~/.local/spark ] ; then
+  export SPARK_HOME=~/.local/spark
+  addpath ~/.local/spark/bin
+fi
