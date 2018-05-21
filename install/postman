@@ -22,9 +22,9 @@ function error() {
 
 function get_prefix() {
   if [[ $USER == root ]]; then
-    echo "/usr/local"
+    echo /usr/local
   else
-    echo "~/.local"
+    echo ~/.local
   fi
 }
 
@@ -34,15 +34,13 @@ function main() {
   local dest=$(get_prefix)
   [[ -z $dest ]] && error "Cannot define installation target"
   
-  local libdir="${dest}/postman"
+  local libdir="$dest/postman"
 
   if ! mkdir -p "$libdir" &> /dev/null ; then
     error "$libdir cannot be created"
   fi
 
-  if [[ ! -w "$libdir" ]]; then
-    error "$libdir is not accessible"
-  fi
+  [[ ! -w "$libdir" ]] && error "$libdir is not accessible"
 
   [[ -e "${dest}/bin/Postman" ]] && rm "${dest}/bin/Postman"
   [[ -d "${libdir}.bk" ]] && rm -rf "${libdir}.bk"
@@ -53,7 +51,7 @@ function main() {
     wget --content-disposition -P /tmp/ "$src"
   fi
   tar -C "$libdir" --strip-components=1 -xvzf /tmp/Postman-*.tar.gz
-  ln -s "$libdir/Postman" "${dest}/bin/Postman"
+  ln -s "$libdir/Postman" "$dest/bin/Postman"
   
   rm /tmp/Postman-*.tar.gz
 }
