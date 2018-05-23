@@ -364,3 +364,16 @@
       (revert-buffer :ignore-auto :noconfirm)
     (error "The buffer has been modified")))
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flyspell
+
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+(add-hook 'python-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            ; ...
+          ))
