@@ -221,8 +221,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org
 
-(unless (package-installed-p 'org-mode)
-  (package-refresh-contents) (package-install 'org-mode))
+(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+(unless (package-installed-p 'org)
+  (package-refresh-contents) (package-install 'org))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
