@@ -1,0 +1,113 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} [-h] COMMAND APP
+
+Manage applications defined as a Docker compose.
+
+The COMMAND parameter can be 'start', 'restart', or 'stop'. The APP
+parameter is the application name.
+
+To use this script, create a directory with the same name as the
+application name, and place the 'docker-compose.yml' file there.
+
+  -h  Show help
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+# Get the full path to this script's current directory.
+function scriptdir() {
+  echo "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+}
+
+
+# Save variables (${@:2}) to a directory ($1).
+function save_vars() {
+  local vardir=$1
+  mkdir -p $vardir
+  rm -f "$vardir"/*
+  for name in "${@:2}" ; do
+    [[ ! -z ${!name} ]] && echo "${!name}" > $vardir/$name
+  done
+}
+
+
+# Load variable ($2) from a directory ($1) if not already defined.
+function load_var() {
+  local name=$2
+  local varfile="$1/$name"
+  if [[ -z ${!name+x} ]]; then
+    if [[ -f $varfile ]]; then
+      declare $name=$(cat $varfile)
+    fi
+  fi
+}
+
+
+function main() {
+  local action=$1
+  local app=$2 && [[ -z $app ]] && error "APP is required"
+
+  local appdir="$(scriptdir)/$app"
+  local vardir="$appdir/env"
+
+  load_var "$vardir" VERSION \
+    && [[ -z $VERSION ]] && error "VERSION cannot be found"
+  load_var "$vardir" LOG_FILTER
+  load_var "$vardir" LOG_LEVEL
+
+  local compose=$appdir/docker-compose.yml \
+    && [[ ! -f $compose ]] && error "Compose file ($compose) not found"
+
+  export LOG_FILTER LOG_LEVEL VERSION
+  
+  case $action in
+    start)
+      docker-compose -f $compose up -d
+      ;;
+    restart)
+      docker-compose -f $compose down
+      docker-compose -f $compose up -d
+      ;;
+    stop)
+      docker-compose -f $compose down
+      ;;
+    *)
+      error "Bad action ($action)"
+      ;;
+  esac
+
+  save_vars "$vardir" LOG_FILTER LOG_LEVEL VERSION
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      echo "Option -$OPTARG requires an argument." >&2
+      exit 1
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+main "$@"
