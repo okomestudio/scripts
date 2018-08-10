@@ -51,7 +51,7 @@ function load_var() {
   local varfile="$1/$name"
   if [[ -z ${!name+x} ]]; then
     if [[ -f $varfile ]]; then
-      declare $name=$(cat $varfile)
+      echo $(cat $varfile)
     fi
   fi
 }
@@ -64,10 +64,10 @@ function main() {
   local appdir="$(scriptdir)/$app"
   local vardir="$appdir/env"
 
-  load_var "$vardir" VERSION \
+  VERSION=$(load_var "$vardir" VERSION) \
     && [[ -z $VERSION ]] && error "VERSION cannot be found"
-  load_var "$vardir" LOG_FILTER
-  load_var "$vardir" LOG_LEVEL
+  LOG_FILTER=$(load_var "$vardir" LOG_FILTER)
+  LOG_LEVEL=$(load_var "$vardir" LOG_LEVEL)
 
   local compose=$appdir/docker-compose.yml \
     && [[ ! -f $compose ]] && error "Compose file ($compose) not found"
