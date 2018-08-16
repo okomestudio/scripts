@@ -5,15 +5,17 @@ set -e
 
 function usage() {
   cat <<USAGE >&2
-Usage: ${0##*/} [-h] COMMAND APP
+Usage: ${0##*/} [-h] APP COMMAND [ARGS ...]
 
 Manage applications defined as a Docker compose.
 
-The COMMAND parameter can be 'start', 'restart', or 'stop'. The APP
-parameter is the application name.
+The APP parameter is the application name. To use this script, create
+a directory with the same name as the application name, and place the
+'docker-compose.yml' file there.
 
-To use this script, create a directory with the same name as the
-application name, and place the 'docker-compose.yml' file there.
+The script works as a wrapper of the docker-compose command. As such,
+the COMMAND and ARGS parameters are anything that can be valid for
+that command.
 
   -h  Show help
 
@@ -34,7 +36,7 @@ function scriptdir() {
 }
 
 
-# Save variables (${@:2}) to a directory ($1).
+# Save variables (${@:2}) to the cache directory ($1).
 function save_vars() {
   local vardir=$1
   mkdir -p $vardir
@@ -45,7 +47,9 @@ function save_vars() {
 }
 
 
-# Load variable ($2) from a directory ($1) if not already defined.
+# Echo the content of the variable ($2) from the cache directory ($1)
+# if the variable is not set. If it is set, then simply echo the
+# content of the variable.
 function load_var() {
   local name=$2
   local varfile="$1/$name"
@@ -53,16 +57,22 @@ function load_var() {
     if [[ -f $varfile ]]; then
       echo $(cat $varfile)
     fi
+  else
+    echo ${!name}
   fi
 }
 
 
 function main() {
-  local action=$1
-  local app=$2 && [[ -z $app ]] && error "APP is required"
+  local app=$1 && [[ -z $app ]] && error "APP is required"
+  local command=$2
+  local args="${@:3}"
 
   local appdir="$(scriptdir)/$app"
+  [[ ! -d $appdir ]] && error "Application directory not found"
+
   local vardir="$appdir/env"
+  mkdir -p $vardir
 
   VERSION=$(load_var "$vardir" VERSION) \
     && [[ -z $VERSION ]] && error "VERSION cannot be found"
@@ -73,22 +83,8 @@ function main() {
     && [[ ! -f $compose ]] && error "Compose file ($compose) not found"
 
   export LOG_FILTER LOG_LEVEL VERSION
-  
-  case $action in
-    start)
-      docker-compose -f $compose up -d
-      ;;
-    restart)
-      docker-compose -f $compose down
-      docker-compose -f $compose up -d
-      ;;
-    stop)
-      docker-compose -f $compose down
-      ;;
-    *)
-      error "Bad action ($action)"
-      ;;
-  esac
+
+  docker-compose -f $compose $command $args
 
   save_vars "$vardir" LOG_FILTER LOG_LEVEL VERSION
 }
