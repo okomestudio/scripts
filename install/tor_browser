@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+set -e
+
+declare -r ver=7.5.6
+declare -r arch=linux64
+declare -r lang=en-US
+declare -r host=www.torproject.org
+declare -r path=dist/torbrowser
+
+
+function install() {
+  local filename=tor-browser-$arch-${ver}_$lang.tar.xz
+  local url=https://$host/$path/$ver/$filename
+  local tmpfile=/tmp/$filename
+  local libdir=~/.local/tor_browser
+
+  [[ ! -f $tmpfile ]] \
+    && wget -P /tmp/ $url
+
+  mkdir -p $libdir
+  tar -C $libdir --strip-components=1 -xvJf $tmpfile
+
+  ln -s $libdir/Browser/start-tor-browser ~/.local/bin/tor-browser
+
+  [[ -f $tmpfile ]] \
+    && rm $tmpfile
+}
+
+
+install
