@@ -23,14 +23,17 @@
  '(mouse-wheel-mode t nil (mwheel))
  '(mouse-wheel-progressive-speed nil)
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
+ '(package-selected-packages
+   (quote
+    (plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode nil)
+ '(select-enable-clipboard t)
  '(show-paren-mode t nil (paren))
  '(size-indication-mode t)
  '(tab-always-indent t)
  '(tab-width 2)
  '(tool-bar-mode nil)
- '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
- '(x-select-enable-clipboard t))
+ '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -185,8 +188,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PlantUML
 
-(unless (package-installed-p 'plantuml-mode)
-  (package-refresh-contents) (package-install 'plantuml-mode))
+(if (version< emacs-version "25")
+    (unless (package-installed-p 'plantuml-mode)
+      (package-refresh-contents) (package-install 'plantuml-mode))
+  (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
