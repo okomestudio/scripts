@@ -188,9 +188,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PlantUML
 
-(if (version< emacs-version "25")
-    (unless (package-installed-p 'plantuml-mode)
-      (package-refresh-contents) (package-install 'plantuml-mode))
+(if (version< emacs-version "25.0")
+    (message "is before 25.0")
+  (unless (package-installed-p 'plantuml-mode)
+    (package-refresh-contents) (package-install 'plantuml-mode))
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
 
 
