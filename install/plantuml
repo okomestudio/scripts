@@ -1,0 +1,96 @@
+#!/usr/bin/env bash
+#
+# PlantUML installer
+#
+
+set -e
+
+
+function usage() {
+  echo ""
+  echo "usage: install/plantuml [-p]"
+  echo ""
+  echo "       -p  Set the install prefix (default: ~/.local)"
+  echo ""
+  exit 1
+}
+
+
+declare -r version=1.2018.11
+declare install_prefix=~/.local
+
+declare -r src_host=sourceforge.net
+declare -r src_dir=projects/plantuml/files/${version}/plantuml.${version}.jar
+declare -r src_file=download
+declare -r src_url=https://${src_host}/${src_dir}/${src_file}
+
+
+function prepare_libdir() {
+  declare -r libdir=$1
+  declare -r backup=${2:-false}
+
+  if ! mkdir -p "$libdir" &> /dev/null ; then
+    echo "ERROR: ${libdir} cannot be created"
+    return 1
+  fi
+  if [[ ! -w "$libdir" ]]; then
+    echo "ERROR: ${libdir} is not accessible"
+    return 1
+  fi
+
+  if ${backup} ; then
+    [[ -d "${libdir}.bk" ]] && rm -rf "${libdir}.bk"
+    [[ -d "${libdir}" ]] && mv "${libdir}" "${libdir}.bk"
+  else
+    rm -rf "$libdir"
+  fi
+
+  mkdir -p "$libdir"
+}
+
+
+function install_launcher() {
+  cat << EOF > $1
+#!/usr/bin/env bash
+if [ -n "\${JAVA_HOME}" ] && [ -x "\${JAVA_HOME}/bin/java" ] ; then
+  JAVA="\${JAVA_HOME}/bin/java"
+elif [ -x /usr/bin/java ] ; then
+  JAVA=/usr/bin/java
+else
+  echo Cannot find JVM
+  exit 1
+fi
+
+\$JAVA -jar $2 \${@}
+EOF
+}
+
+
+function install() {
+  declare -r src=$1
+  declare -r dest=$2
+  declare -r libdir=${dest}/plantuml
+  declare -r jar=${libdir}/plantuml.jar
+  declare -r scriptpath=${dest}/bin/plantuml
+
+  prepare_libdir "$libdir"
+
+  wget ${src} -O ${jar}
+
+  install_launcher "${scriptpath}" "${jar}"
+  chmod +x ${scriptpath}
+}
+
+
+while getopts hp: opt; do
+  case $opt in
+    p) install_prefix=$OPTARG
+       ;;
+    h) usage
+       ;;
+    \?) usage
+        ;;
+  esac
+done
+
+install "$src_url" "$install_prefix"
