@@ -342,6 +342,12 @@
                '("\\.py\\'" flymake-pycodecheck-init)))
 (add-hook 'python-mode-hook 'flymake-mode)
 
+;; black
+(if (version< emacs-version "25.2")
+    (message "is before 25.2")
+  (unless (package-installed-p 'blacken-mode)
+    (package-refresh-contents) (package-install 'blacken))
+  (add-hook 'python-mode-hook 'blacken-mode))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
