@@ -2,6 +2,11 @@
 #
 # Install an alternative version of Python
 #
+# Reference
+# ---------
+#
+#   https://unix.stackexchange.com/questions/332641/how-to-install-python-3-6
+#
 
 declare -r version=3.7.0
 
