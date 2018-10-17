@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+
+
+function upinst() {
+  if [[ -d ~/.pyenv ]]; then
+    pyenv update
+  else
+    url=https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
+    curl -L $url | bash
+  fi
+}
+
+
+function update_bashrc() {
+  local target=~/.bashrc
+  local firstline="# pyenv"
+  local line=$'\n'"$firstline"$'\n'
+  line="${line}export PATH=\"~/.pyenv/bin:\$PATH\""$'\n'
+  line="${line}eval \"\$(pyenv init -)\""$'\n'
+  line="${line}eval \"\$(pyenv virtualenv-init -)\""$'\n'
+  if ! grep -Fxq "$firstline" $target ; then
+    echo -e "$line" >> $target
+  fi
+}
+
+
+upinst
+update_bashrc
