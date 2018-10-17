@@ -200,6 +200,13 @@ fi
 export SPARK_HOME=/home/taro/.local/spark
 
 # pyenv
-export PATH="~/.pyenv/bin:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
+if [[ -d ~/.pyenv ]]; then
+  if [[ ":$PATH:" != *":~/.pyenv/bin:"* ]]; then
+    export PATH="~/.pyenv/bin:$PATH"
+  fi
+  if command -v pyenv 1>/dev/null 2>&1; then
+    eval "$(pyenv init - --no-rehash bash)"
+    eval "$(pyenv virtualenv-init - --no-rehash bash)"
+  fi
+fi
+

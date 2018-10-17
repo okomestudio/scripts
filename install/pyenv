@@ -3,7 +3,7 @@
 
 
 function upinst() {
-  if [[ -d ~/.pyenv ]]; then
+  if command -v pyenv 1>/dev/null 2>&1; then
     pyenv update
   else
     url=https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
@@ -15,12 +15,18 @@ function upinst() {
 function update_bashrc() {
   local target=~/.bashrc
   local firstline="# pyenv"
-  local line=$'\n'"$firstline"$'\n'
-  line="${line}export PATH=\"~/.pyenv/bin:\$PATH\""$'\n'
-  line="${line}eval \"\$(pyenv init -)\""$'\n'
-  line="${line}eval \"\$(pyenv virtualenv-init -)\""$'\n'
+  local l=$'\n'"$firstline"$'\n'
+  l="${l}if [[ -d ~/.pyenv ]]; then"$'\n'
+  l="${l}  if [[ \":\$PATH:\" != *\":~/.pyenv/bin:\"* ]]; then"$'\n'
+  l="${l}    export PATH=\"~/.pyenv/bin:\$PATH\""$'\n'
+  l="${l}  fi"$'\n'
+  l="${l}  if command -v pyenv 1>/dev/null 2>&1; then"$'\n'
+  l="${l}    eval \"\$(pyenv init - --no-rehash bash)\""$'\n'
+  l="${l}    eval \"\$(pyenv virtualenv-init - --no-rehash bash)\""$'\n'
+  l="${l}  fi"$'\n'
+  l="${l}fi"$'\n'
   if ! grep -Fxq "$firstline" $target ; then
-    echo -e "$line" >> $target
+    echo -e "$l" >> $target
   fi
 }
 
