@@ -26,7 +26,8 @@
  '(package-selected-packages
    (quote
     (blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
- '(scroll-bar-mode nil)
+ '(scroll-bar-mode t)
+ '(scroll-bar-width 10)
  '(select-enable-clipboard t)
  '(show-paren-mode t nil (paren))
  '(size-indication-mode t)
