@@ -349,6 +349,19 @@
     (package-refresh-contents) (package-install 'blacken))
   (add-hook 'python-mode-hook 'blacken-mode))
 
+;; max line width
+(defun my-py-fill-string (&optional justify)
+  (let ((old-fill-column fill-column))
+    (setq fill-column 72)
+    (python-fill-string justify)
+    (setq fill-column old-fill-column)))
+
+(add-hook 'python-mode-hook
+          (lambda () (interactive)
+            (setq python-fill-docstring-style 'pep-257-nn)
+            (set-fill-column 87)
+            (setq python-fill-string-function my-py-fill-string)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
 
