@@ -25,7 +25,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode nil)
  '(select-enable-clipboard t)
  '(show-paren-mode t nil (paren))
