@@ -199,6 +199,11 @@ fi
 # Spark
 export SPARK_HOME=/home/taro/.local/spark
 
+
+# emacs
+[[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
+
+
 # pyenv
 if [[ -d ~/.pyenv ]]; then
   if [[ ":$PATH:" != *":~/.pyenv/bin:"* ]]; then
