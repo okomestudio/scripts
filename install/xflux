@@ -1,6 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
-# ``xflux`` is a utility for adjusting display color based on time
+# xflux installer
+#
+# xflux is a utility for adjusting display color based on time.
 #
 # See: https://justgetflux.com/
 #
@@ -12,17 +14,36 @@
 
 set -e
 
-declare src=https://justgetflux.com/linux/xflux64.tgz
-declare dest=/usr/local
-declare cmd=xflux
+function usage() {
+  cat <<USAGE >&2
+Usage: install/xflux [-dfhp]
+
+  -d  Autostart a daemon with given zip code
+  -f  Force reinstallation of binary
+  -h  Help
+  -p  Set the install prefix (default: ~/.local)
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+declare -r src=https://justgetflux.com/linux/xflux64.tgz
+declare -r cmd=xflux
+declare dest=~/.local
 
 
 function install() {
   declare src=$1
   declare dest=$2
   if [[ (! -d "$dest") || (! -w "$dest") ]]; then
-    echo "ERROR: $dest is not a directory or is not accessible"
-    return 1
+    error "$dest is not a directory or is not accessible"
   fi
 
   declare tmpfile=$(mktemp /tmp/${cmd}.XXXXXX)
@@ -30,26 +51,13 @@ function install() {
   wget -O "$tmpfile" "$src" && \
     tar -C "$dest/" -xvf "$tmpfile" && \
     chmod +x "$dest/$cmd" || \
-      echo "ERROR: Could not finish installation"
+      error "Could not finish installation"
 
   rm "$tmpfile"
 }
 
 
-function usage() {
-  echo ""
-  echo "usage: install_${cmd} [-u]"
-  echo ""
-  echo "       -d  Autostart a daemon with given zip code"
-  echo "       -f  Force reinstallation of binary"
-  echo "       -h  Help"
-  echo "       -u  Install locally for the current user"
-  echo ""
-  exit 1
-}
-
-
-while getopts "d:fhu" opt; do
+while getopts "d:fhp:" opt; do
   case $opt in
     d)
       zipcode="$OPTARG"
@@ -58,13 +66,16 @@ while getopts "d:fhu" opt; do
       force=1
       ;;
     h)
-      usage
+      usage 0
       ;;
-    u)
-      dest=~/.local
+    p)
+      dest=$OPTARG
       ;;
     \?)
       usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
       ;;
   esac
 done
