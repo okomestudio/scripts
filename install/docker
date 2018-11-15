@@ -2,6 +2,7 @@
 #
 #   $ sudo ./installer/docker
 #
+set -e
 
 readonly osid=$(. /etc/os-release; echo "$ID")
 readonly release=$(lsb_release -cs)
