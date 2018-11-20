@@ -117,8 +117,17 @@
 ;; ansible-mode
 (unless (package-installed-p 'ansible)
   (package-refresh-contents) (package-install 'ansible))
-(add-hook 'yaml-mode-hook '(lambda () (ansible 1)))
-(setq ansible::vault-password-file "~/.vault-pass")
+(defun find-vault-password (name)
+  (setq dir (locate-dominating-file default-directory name))
+  (if dir
+      (concat dir name)
+    "~/vault_pass"))
+(defun setup-ansible-mode ()
+  (interactive)
+  (setq ansible::vault-password-file (find-vault-password "vault-password"))
+  (ansible 1))
+(add-hook 'yaml-mode-hook 'setup-ansible-mode)
+
 (add-hook 'ansible-hook 'ansible::auto-decrypt-encrypt)
 
 
