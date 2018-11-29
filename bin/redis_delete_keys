@@ -1,62 +1,79 @@
-#!/bin/bash
-#
-# Delete redis keys
-#
-# Requirement
-# -----------
-#
-# redis-cli
+#!/usr/bin/env bash
 
 set -e
 
-usage() {
-  cat <<EOF
-$0 pattern
+function usage() {
+  cat <<USAGE >&2
+Usage: redis_delete_keys somekeypattern*
 
-  pattern  Redis key name pattern
+Delete Redis keys that match a (wildcard) pattern.
 
-EOF
-  exit 1
+If the Redis service is not at 127.0.0.1:6379, use REDIS_HOST and
+REDIS_PORT environment variables to specify different host/port.
+
+Requirements:
+
+  redis-cli
+
+USAGE
+  exit ${1:-1}
 }
 
-if [[ ! $# -eq 1 ]]; then
-  usage
-fi
 
-pattern=$1
-readonly pattern
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
 
-to_be_deleted=()
 
-for key in $(redis-cli keys '__*'); do
-  if [[ $key =~ $pattern ]]; then
-    to_be_deleted+=($key)
-  fi
+function main() {
+  readonly pattern=$1
+  [[ -z "$pattern" ]] && error "No pattern given"
+
+  rediscmd="redis-cli -h $REDIS_HOST -p $REDIS_PORT"
+  
+  to_be_deleted=()
+  for key in $($rediscmd keys '__*'); do
+    if [[ $key =~ $pattern ]]; then
+      to_be_deleted+=($key)
+    fi
+  done
+  readonly to_be_deleted
+
+  [[ -z "${to_be_deleted[@]}" ]] && error "No keys selected with the pattern" 0
+
+  # Preview the keys to be deleted
+  for key in ${to_be_deleted[@]}; do
+    echo "$key"
+  done
+
+  echo -n 'Delete these Redis keys? (y/N) '
+  read resp
+  [[ ! "$resp" = "y" ]] && error "Quit without delete" 0
+
+  echo -n 'REALLY delete these Redis keys? The operation is undoable! (y/N) '
+  read resp
+  [[ ! "$resp" = "y" ]] && error "Quit without delete" 0
+
+  $rediscmd del ${to_be_deleted[@]}
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
 done
-readonly to_be_deleted
+shift $(($OPTIND - 1))
 
-if [[ -z "${to_be_deleted[@]}" ]]; then
-  echo "No keys selected with the pattern."
-  exit 0
-fi
-
-# preview the keys to be deleted
-for key in ${to_be_deleted[@]}; do
-  echo "$key"
-done
-
-echo -n 'Delete these Redis keys? (y/N) '
-read resp
-if [[ ! "$resp" = "y" ]]; then
-  echo "Quit without delete."
-  exit 0
-fi
-
-echo -n 'REALLY delete these Redis keys? The operation is undoable! (y/N) '
-read resp
-if [[ ! "$resp" = "y" ]]; then
-  echo "Quit without delete."
-  exit 0
-fi
-
-redis-cli del ${to_be_deleted[@]}
+export REDIS_HOST=${REDIS_HOST:-127.0.0.1}
+export REDIS_PORT=${REDIS_PORT:-6379}
+main "$@"
