@@ -165,9 +165,6 @@ export PAGER=less
 export LESS='-R'
 export LESSOPEN='|~/.lessfilter %s'
 
-# Lahman database
-export LAHMANDB=/usr/local/lahman/2013
-
 # Python ####
 export PYTHONIOENCODING=utf-8
 
@@ -196,13 +193,8 @@ if [ -d ~/.local/spark ] ; then
   addpath ~/.local/spark/bin
 fi
 
-# Spark
-export SPARK_HOME=/home/taro/.local/spark
-
-
 # emacs
 [[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
-
 
 # pyenv
 if [[ -d ~/.pyenv ]]; then
