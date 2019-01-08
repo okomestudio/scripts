@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} [path]
+
+Prepare the current directory or the directory at the given path to be
+used with Python's black code formatter.
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+function dirlocals() {
+  set +e
+  read -r -d '' content <<EOF
+(
+ (python-mode . (
+                 (eval . (blacken-mode 1))
+                 (python-fill-docstring-style . pep-257-nn)
+                 (fill-column . 88)
+                 )))
+EOF
+  set -e
+  echo "$content"
+}
+
+
+function flake8() {
+  set +e
+  read -r -d '' content <<EOF
+[flake8]
+max-line-length = 88
+EOF
+  set -e
+  echo "$content"
+}
+
+
+function ensure() {
+  local path=$1
+  local content=$2
+  [[ ! -f $path ]] \
+    && { echo "$content" > "$path" ; echo "${path} created"; } \
+    || echo "${path} already exists"
+}
+
+
+function main() {
+  local path=${1:-.}
+  [[ ! -d $path ]] && error "$path is not a directory"
+  ensure "${path%/}/.flake8" "$(flake8)"
+  ensure "${path%/}/.dir-locals.el" "$(dirlocals)"
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+main "$@"
