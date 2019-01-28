@@ -56,11 +56,18 @@ function ensure() {
 }
 
 
+function install_packages() {
+  pip install black
+  pip install flake8
+}
+
+
 function main() {
   local path=${1:-.}
   [[ ! -d $path ]] && error "$path is not a directory"
   ensure "${path%/}/.flake8" "$(flake8)"
   ensure "${path%/}/.dir-locals.el" "$(dirlocals)"
+  install_pip_packages
 }
 
 
