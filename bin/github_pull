@@ -37,16 +37,18 @@ TODO
 import getpass
 import logging
 import os
-import subprocess
 import sys
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
+from dataclasses import dataclass
+from subprocess import Popen
 
 try:
     from github import Github
+    from github.GithubException import GithubException
     from github.GithubException import BadCredentialsException
 except ImportError:
-    pass
+    raise ImportError("Install the PyGithub package")
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -55,12 +57,8 @@ log = logging.getLogger(__name__)
 CLONE_URL_FORMAT = "git@github.com:{login}/{repo}.git"
 
 
-class GitHubException(Exception):
-    pass
-
-
 def sh(cmd):
-    p = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+    p = Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
     stdout, stderr = p.communicate()
     return p.returncode
 
@@ -74,46 +72,71 @@ def get_user(username_or_token):
         password = getpass.getpass(prompt="Enter password: ")
         g = Github(username_or_token, password)
         user = g.get_user()
-        user.name  # to trigger authentication or fail
+        try:
+            user.name  # to trigger authentication or fail
+        except GithubException as exc:
+            if exc.status == 401:
+                # onetime_password = getpass.getpass(prompt="Enter one-time password: ")
+                print(list(user.get_authorizations()))
+
+                # auth = user.create_authorization(
+                #     scopes=["repo"], note="demo", onetime_password=onetime_password
+                # )
+                # print(auth.id)
+                # print(user.name)
+                # two-factor
+                # raise Exception("twofactor")
+            else:
+                raise
+        # print(user.create_authorization())
     return user
+
+
+@dataclass
+class RepoInfo:
+    name: str
+    login: str
+    default_branch: str
+    clone_url: str
 
 
 def get_repos(username_or_token, org=None):
     user = get_user(username_or_token)
     if not org:
         for repo in user.get_repos(type="owner"):
-            clone_url = CLONE_URL_FORMAT.format(login=user.login, repo=repo.name)
-            yield {
-                "name": repo.name,
-                "login": user.login,
-                "default_branch": repo.default_branch,
-                "clone_url": clone_url,
-            }
+            yield RepoInfo(
+                repo.name,
+                user.login,
+                repo.default_branch,
+                CLONE_URL_FORMAT.format(login=user.login, repo=repo.name),
+            )
     else:
         for _org in user.get_orgs():
             if org == _org.login:
                 break
         else:
-            raise ValueError("{} not found".format(org))
+            raise ValueError(f"{org} not found")
 
         for repo in _org.get_repos():
-            clone_url = CLONE_URL_FORMAT.format(login=_org.login, repo=repo.name)
-            yield {
-                "name": repo.name,
-                "login": _org.login,
-                "default_branch": repo.default_branch,
-                "clone_url": clone_url,
-            }
+            yield RepoInfo(
+                repo.name,
+                _org.login,
+                repo.default_branch,
+                CLONE_URL_FORMAT.format(login=_org.login, repo=repo.name),
+            )
 
 
 def clone(repo, root_dir):
     path = os.path.join(root_dir, repo["login"])
     cmds = (
-        "mkdir -p {path}; " "cd {path}; " 'echo "In $(pwd)"; ' "git clone {clone_url};"
+        "mkdir -p {path}; "
+        "cd {path}; "
+        'echo "In $(pwd)"; '
+        "git clone {clone_url};  "
     ).format(path=path, **repo)
     retcode = sh(cmds)
     if retcode:
-        raise GitHubException(stderr)
+        raise Exception(stderr)
 
 
 def pull(repo, root_dir):
@@ -127,12 +150,13 @@ def pull(repo, root_dir):
     ).format(path=path, **repo)
     retcode = sh(cmds)
     if retcode:
-        raise GitHubException(stderr)
+        raise Exception(stderr)
 
 
-def main(args):
-    root_dir = args.root_dir or "."
-    for repo in get_repos(username_or_token=args.username_or_token, org=args.org):
+def main(username_or_token, root_dir, org):
+    print(get_user(username_or_token))
+    return
+    for repo in get_repos(username_or_token=username_or_token, org=org):
         repo_dir = os.path.join(root_dir, repo["login"], repo["name"])
 
         if not os.path.exists(repo_dir):
@@ -155,5 +179,7 @@ if __name__ == "__main__":
     p = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
     p.add_argument("username_or_token", help="GitHub username or access token")
     p.add_argument("--org", help="GitHub organization")
-    p.add_argument("--root-dir", help="root directory where repos are cloned locally")
-    main(p.parse_args())
+    p.add_argument(
+        "--root-dir", default=".", help="root directory where local repos are cloned"
+    )
+    main(**vars(p.parse_args()))
