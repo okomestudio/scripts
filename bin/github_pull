@@ -24,7 +24,7 @@ where <org> is the organization login name.
 Requirements
 ------------
 
-Python packages: PyGithub
+Python packages: github3.py
 
 
 TODO
@@ -32,129 +32,115 @@ TODO
 
 - Gracefully handle when checkout to the default branch cannot be done
   cleanly due to modified files.
+- Get token instead of keep doing 2FA. (?)
+- Colorize error messages.
 
 """
 import getpass
 import logging
-import os
-import subprocess
-import sys
 from argparse import ArgumentParser
 from argparse import RawTextHelpFormatter
+from pathlib import Path
+from subprocess import Popen
+from tempfile import TemporaryFile
 
-from github import Github
-from github.GithubException import BadCredentialsException
+try:
+    from github3 import login as login_to_github
+except ImportError:
+    raise ImportError("Install the github3.py package")
 
 
-logging.basicConfig()
 log = logging.getLogger(__name__)
 
 
-CLONE_URL_FORMAT = 'git@github.com:{login}/{repo}.git'
-
-
-class GitHubException(Exception):
-    pass
-
-
 def sh(cmd):
-    p = subprocess.Popen(cmd, shell=True, stdout=sys.stdout, stderr=sys.stderr)
-    stdout, stderr = p.communicate()
-    return p.returncode
+    with TemporaryFile() as f:
+        p = Popen(cmd, shell=True, stdout=f, stderr=f)
+        stdout, stderr = p.communicate()
+        if p.returncode:
+            f.seek(0)
+            raise Exception(f.read())
 
 
-def get_user(username_or_token):
-    try:
-        g = Github(username_or_token)
-        user = g.get_user()
-        user.name  # to trigger authentication or fail
-    except BadCredentialsException:
-        password = getpass.getpass(prompt='Enter password: ')
-        g = Github(username_or_token, password)
-        user = g.get_user()
-        user.name  # to trigger authentication or fail
-    return user
+def get_api(username_or_token):
+    password = getpass.getpass(prompt=f"Enter password for {username_or_token}: ")
+    return login_to_github(
+        username_or_token,
+        password,
+        two_factor_callback=lambda: input("Enter 2FA code: "),
+    )
 
 
-def get_repos(username_or_token, org=None):
-    user = get_user(username_or_token)
+def get_repos(gh, org=None):
     if not org:
-        for repo in user.get_repos(type='owner'):
-            clone_url = CLONE_URL_FORMAT.format(login=user.login, repo=repo.name)
-            yield {'name': repo.name,
-                   'login': user.login,
-                   'default_branch': repo.default_branch,
-                   'clone_url': clone_url}
+        for repo in gh.repositories(type="owner"):
+            yield repo
     else:
-        for _org in user.get_orgs():
+        for _org in gh.organizations():
             if org == _org.login:
                 break
         else:
-            raise ValueError('{} not found'.format(org))
+            raise ValueError(f"{org} not found")
 
-        for repo in _org.get_repos():
-            clone_url = CLONE_URL_FORMAT.format(login=_org.login, repo=repo.name)
-            yield {'name': repo.name,
-                   'login': _org.login,
-                   'default_branch': repo.default_branch,
-                   'clone_url': clone_url}
+        for repo in _org.repositories():
+            yield repo
 
 
 def clone(repo, root_dir):
-    path = os.path.join(root_dir, repo['login'])
-    cmds = ('mkdir -p {path}; '
-            'cd {path}; '
-            'echo "In $(pwd)"; '
-            'git clone {clone_url};').format(path=path, **repo)
-    retcode = sh(cmds)
-    if retcode:
-        raise GitHubException(stderr)
+    path = root_dir / repo.owner.login
+    clone_url = f"git@github.com:{repo.owner.login}/{repo.name}.git"
+    print(f"CLONE {repo}")
+    cmds = (
+        "mkdir -p {path}; "
+        "cd {path}; "
+        'echo "In $(pwd)"; '
+        "git clone {clone_url};  "
+    ).format(path=path, clone_url=clone_url)
+    sh(cmds)
 
 
 def pull(repo, root_dir):
-    path = os.path.join(root_dir, repo['login'], repo['name'])
-    cmds = ('cd {path}; '
-            'echo "In $(pwd)"; '
-            'git fetch; '
-            'git checkout {default_branch}; '
-            'git pull origin {default_branch};').format(path=path, **repo)
-    retcode = sh(cmds)
-    if retcode:
-        raise GitHubException(stderr)
+    path = root_dir / repo.owner.login / repo.name
+    print(f"PULL {repo}")
+    cmds = (
+        "cd {path}; "
+        "git fetch -p; "
+        "git checkout {default_branch}; "
+        "git pull origin {default_branch}; "
+    ).format(path=path, default_branch=repo.default_branch)
+    sh(cmds)
 
 
-def main(args):
-    root_dir = args.root_dir or '.'
-    for repo in get_repos(
-            username_or_token=args.username_or_token, org=args.org):
-        repo_dir = os.path.join(root_dir, repo['login'], repo['name'])
+def main(username_or_token, root_dir, org=None, include=None):
+    gh = get_api(username_or_token)
+    for repo in get_repos(gh, org=org):
+        if include:
+            if repo.name not in include:
+                continue
 
-        if not os.path.exists(repo_dir):
-            try:
-                clone(repo, root_dir)
-            except Exception:
-                log.exception('Error cloning %s', repo['name'])
+        repo_dir = root_dir / repo.owner.login / repo.name
+        if not repo_dir.exists():
+            func = clone
         else:
-            if not os.path.isdir(repo_dir):
-                raise IOError(
-                    ('{} is not a directory. '
-                     'Make sure it is a proper Git repo').format(repo_dir))
-            try:
-                pull(repo, root_dir)
-            except Exception:
-                log.exception('Error pulling %s', repo['name'])
+            if not (repo_dir.is_dir() and (repo_dir / ".git").is_dir()):
+                raise IOError(f"{repo_dir} is not a Git repository")
+            func = pull
+
+        try:
+            func(repo, root_dir)
+        except Exception:
+            log.exception(f"Error on {func.__name__}({repo.owner.login}/{repo.name})")
 
 
-if __name__ == '__main__':
-    p = ArgumentParser(
-        description=__doc__, formatter_class=RawTextHelpFormatter)
+if __name__ == "__main__":
+    p = ArgumentParser(description=__doc__, formatter_class=RawTextHelpFormatter)
+    p.add_argument("username_or_token", help="GitHub username or access token")
+    p.add_argument("-i", "--include", action="append", help="Repositories to include")
+    p.add_argument("-o", "--org", help="GitHub organization")
     p.add_argument(
-        'username_or_token',
-        help='GitHub username or access token')
-    p.add_argument(
-        '--org',
-        help='GitHub organization')
-    p.add_argument(
-        '--root-dir',
-        help='root directory where repos are cloned locally')
-    main(p.parse_args())
+        "--root-dir",
+        type=Path,
+        default=".",
+        help="Root directory under which local repos are cloned",
+    )
+    main(**vars(p.parse_args()))
