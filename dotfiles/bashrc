@@ -198,6 +198,9 @@ fi
 
 # pyenv
 if [[ -d ~/.pyenv ]]; then
+  # Uncomment for prompt changing which has been deprecated.
+  export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+
   if [[ ":$PATH:" != *":~/.pyenv/bin:"* ]]; then
     export PATH="~/.pyenv/bin:$PATH"
   fi
