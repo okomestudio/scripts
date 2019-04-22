@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#
+# Echo the path to the current virtual environment if activated.
+#
+
+[[ ! -z $VIRTUAL_ENV ]] && echo $VIRTUAL_ENV
