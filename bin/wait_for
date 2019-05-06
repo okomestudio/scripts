@@ -1,53 +1,75 @@
-#!/bin/bash
-#
-# wait_for - Wait for a host is up on a port
-#
-set -e
+#!/usr/bin/env bash
 
 function usage() {
-  echo "usage: wait_for [-m <max wait in seconds>] [-p <port>] <host>"
-  exit 1
+  cat <<USAGE >&2
+Usage: ${0##*/} [-q] [-t TIMEOUT] HOST:PORT
+
+Use netcat to check if a TCP connection is alive. If the connection
+gets established, the program exists with zero status code. A non-zero
+status code means failure to establish the connection.
+
+Note that to use this script, the netcat utility (nc command) needs to
+be available (the netcat package in Debian).
+
+  HOST          Hostname of the service
+  PORT          Port which the service uses
+  -q            Do not output any status messages
+  -t TIMEOUT    Timeout in seconds, zero for no timeout (default: 60)
+
+USAGE
+  exit ${1:-1}
 }
 
-while getopts "hm:p:" opt; do
+
+TIMEOUT=60
+QUIET=0
+
+
+function error() {
+  [[ "$QUIET" -ne 1 ]] && >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+function wait_for() {
+  for i in $(seq $TIMEOUT); do
+    nc -z "$HOST" "$PORT" > /dev/null 2>&1
+    result=$?
+    [[ $result -eq 0 ]] && exit 0
+    sleep 1
+  done
+  error "Operation timed out"
+}
+
+
+while getopts "qt:h" opt; do
   case $opt in
     h)
-      usage
+      usage 0
       ;;
-    m)
-      max_wait=$OPTARG
+    q)
+      QUIET=1
       ;;
-    p)
-      port=$OPTARG
+    t)
+      TIMEOUT=$OPTARG
       ;;
     \?)
       usage
       ;;
     :)
-      echo "Option -$OPTARG requires an argument." >&2
-      exit 1
+      error "option -$OPTARG requires an argument"
       ;;
   esac
 done
-
 shift $(($OPTIND - 1))
-readonly host=$1
-readonly port=${port:-22}
-readonly max_wait=${max_wait:-60}
 
+HOST=$(printf "%s\n" "$1"| cut -d: -f 1)
+PORT=$(printf "%s\n" "$1"| cut -d: -f 2)
 
-function main() {
-  (nc -w ${max_wait} -i 10  -z ${host} ${port} 2> /dev/null) &
-  local child=$!
-  wait $child && result=0 || result=1
-  return $result
-}
+[ "$HOST" = "" -o "$PORT" = "" ] \
+  && error "You need to provide a host and port to test" 2
 
+! type nc > /dev/null \
+  && error "You need to install nc command"
 
-if main; then
-  (>&2 echo "Successfully connected to ${host}:${port}")
-  exit 0
-else
-  (>&2 echo "ERROR: ${host}:${port} is unreachable")
-  exit 1
-fi
+wait_for "$@"
