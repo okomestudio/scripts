@@ -27,7 +27,7 @@
    (quote
     (blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
- '(scroll-bar-width 6)
+ '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
  '(show-paren-mode t nil (paren))
  '(size-indication-mode t)
@@ -40,7 +40,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 108 :width normal)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -223,7 +223,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dockefile
+;; Dockerfile
 
 (unless (package-installed-p 'dockerfile-mode)
   (package-refresh-contents) (package-install 'dockerfile-mode))
@@ -252,17 +252,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Org
 
-(add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-(unless (package-installed-p 'org)
-  (package-refresh-contents) (package-install 'org))
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;; (unless (package-installed-p 'org)
+;;   (package-refresh-contents) (package-install 'org))
 
-(setq org-support-shift-select t)
+;; (setq org-support-shift-select t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SCALA
 
-(unless (package-installed-p 'scala-mode)
-  (package-refresh-contents) (package-install 'scala-mode))
+;; (unless (package-installed-p 'scala-mode)
+;;   (package-refresh-contents) (package-install 'scala-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -360,7 +360,7 @@
 (if (version< emacs-version "25.2")
     (message "is before 25.2")
   (unless (package-installed-p 'blacken-mode)
-    (package-refresh-contents) (package-install 'blacken))
+    (package-refresh-contents) (package-install 'blacken)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
@@ -418,5 +418,3 @@
       (revert-buffer :ignore-auto :noconfirm)
     (error "The buffer has been modified")))
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
-
-
