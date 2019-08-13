@@ -25,7 +25,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -47,6 +47,9 @@
 ;;
 ;; CONFIGS BY TS
 ;;
+
+;; For error: http elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y 
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MELPA
@@ -270,15 +273,18 @@
 (require 'sql)
 
 ;; Autocompletion
-(add-to-list 'load-path "~/.emacs.d/lisp/")
-(require 'sql-upcase)
-(when (require 'sql-upcase nil :noerror)
-  (add-hook 'sql-mode-hook 'sql-upcase-mode)
-  (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))
+(if (file-directory-p "~/.emacs.d/lisp/")
+    (progn (add-to-list 'load-path "~/.emacs.d/lisp/")
+           (require 'sql-upcase)
+           (when (require 'sql-upcase nil :noerror)
+             (add-hook 'sql-mode-hook 'sql-upcase-mode)
+             (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; PYTHON
+
+;;(setq python-shell-interpreter "python3")
 
 ;; python-mode
 (unless (package-installed-p 'python)
