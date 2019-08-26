@@ -35,12 +35,6 @@
  '(tab-width 2)
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:family "Hack" :foundry "SRC" :slant normal :weight normal :height 108 :width normal)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,11 +42,26 @@
 ;; CONFIGS BY TS
 ;;
 
-;; For error: http elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y 
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Fonts
+(when window-system
+  (create-fontset-from-ascii-font 
+   "Hack:weight=normal:slant=normal" nil "hackandjp")
+  (set-fontset-font "fontset-hackandjp"
+		                'unicode
+		                (font-spec :family "Noto Sans Mono CJK JP")
+		                nil 
+		                'append)
+  (add-to-list 'default-frame-alist '(font . "fontset-hackandjp")))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MELPA
+
+;; BUGFIX: For fixing a startup error message, "http
+;; elpa.gnu.org:443*-257153" has a running process; kill it? (y or n)
+;; y"
+(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
