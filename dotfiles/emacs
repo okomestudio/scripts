@@ -42,6 +42,10 @@
 ;; CONFIGS BY TS
 ;;
 
+;; Activate windmove to switch to another window by S-<U|D|L|R>
+(windmove-default-keybindings)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fonts
 (when window-system
