@@ -57,7 +57,7 @@
    "Hack:weight=normal:slant=normal:size=14" nil "hackandjp")
   (set-fontset-font "fontset-hackandjp"
 		                'unicode
-		                (font-spec :family "Noto Sans Mono CJK JP" :size 11)
+		                (font-spec :family "Noto Sans Mono CJK JP")
 		                nil 
 		                'append)
   (add-to-list 'default-frame-alist '(font . "fontset-hackandjp")))
