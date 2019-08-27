@@ -42,9 +42,13 @@
 ;; CONFIGS BY TS
 ;;
 
-;; Activate windmove to switch to another window by S-<U|D|L|R>
-(windmove-default-keybindings)
-
+;; Activate windmove to switch to another window by M-<U|D|L|R>
+(windmove-default-keybindings 'meta)
+;; ... or define global shortcuts:
+;; (global-set-key (kbd "C-c <left>")  'windmove-left)
+;; (global-set-key (kbd "C-c <right>") 'windmove-right)
+;; (global-set-key (kbd "C-c <up>")    'windmove-up)
+;; (global-set-key (kbd "C-c <down>")  'windmove-down)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fonts
@@ -401,13 +405,6 @@
 (global-set-key [C-s-right] 'enlarge-window-horizontally)
 (global-set-key [C-s-down] 'shrink-window)
 (global-set-key [C-s-up] 'enlarge-window)
-
-;; Window switch -- Disabled since ace-mode is better.
-;; (define-key global-map "\C-q" (make-sparse-keymap)) ; define prefix
-;; (global-set-key "\C-qh" 'windmove-left)
-;; (global-set-key "\C-qj" 'windmove-down)
-;; (global-set-key "\C-qk" 'windmove-up)
-;; (global-set-key "\C-ql" 'windmove-right)
 
 
 ;; ace-isearch -- Enhanced isearch
