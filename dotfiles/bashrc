@@ -165,7 +165,8 @@ export PAGER=less
 export LESS='-R'
 export LESSOPEN='|~/.lessfilter %s'
 
-# Python ####
+##############################################################################
+# Python
 export PYTHONIOENCODING=utf-8
 
 # Enable virtualenvwrapper if installed
@@ -173,28 +174,6 @@ if hash virtualenvwrapper.sh 2>/dev/null; then
   export WORKON_HOME=~/.virtualenvs
   . $(which virtualenvwrapper.sh)
 fi
-
-# for Hadoop
-export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-export HADOOP_INSTALL=/usr/local/hadoop
-export HADOOP_HOME=$HADOOP_INSTALL
-export PATH=$PATH:$HADOOP_INSTALL/bin
-export PATH=$PATH:$HADOOP_INSTALL/sbin
-export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
-export HADOOP_COMMON_HOME=$HADOOP_INSTALL
-export HADOOP_HDFS_HOME=$HADOOP_INSTALL
-export YARN_HOME=$HADOOP_INSTALL
-export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
-export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
-
-# Spark
-if [ -d ~/.local/spark ] ; then
-  export SPARK_HOME=~/.local/spark
-  addpath ~/.local/spark/bin
-fi
-
-# emacs
-[[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
 
 # pyenv
 if [[ -d ~/.pyenv ]]; then
@@ -210,3 +189,27 @@ if [[ -d ~/.pyenv ]]; then
   fi
 fi
 
+##############################################################################
+# Hadoop
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+export HADOOP_INSTALL=/usr/local/hadoop
+export HADOOP_HOME=$HADOOP_INSTALL
+export PATH=$PATH:$HADOOP_INSTALL/bin
+export PATH=$PATH:$HADOOP_INSTALL/sbin
+export HADOOP_MAPRED_HOME=$HADOOP_INSTALL
+export HADOOP_COMMON_HOME=$HADOOP_INSTALL
+export HADOOP_HDFS_HOME=$HADOOP_INSTALL
+export YARN_HOME=$HADOOP_INSTALL
+export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_INSTALL/lib/native
+export HADOOP_OPTS="-Djava.library.path=$HADOOP_INSTALL/lib"
+
+##############################################################################
+# Spark
+if [ -d ~/.local/spark ] ; then
+  export SPARK_HOME=~/.local/spark
+  addpath ~/.local/spark/bin
+fi
+
+##############################################################################
+# emacs
+[[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
