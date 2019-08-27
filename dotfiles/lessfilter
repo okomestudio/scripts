@@ -79,6 +79,12 @@ case $1 in
     prog=$(parse_shebang $1)
     if [ ! -z $prog ]; then
       case $prog in
+        python3*)
+          pygmentize -f 256 -O bg=light -l python3 $1
+          ;;
+        python2*)
+          pygmentize -f 256 -O bg=light -l python2 $1
+          ;;
         bats)
           pygmentize -f 256 -O bg=light -l bash $1
           ;;
