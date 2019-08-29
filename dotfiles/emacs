@@ -53,7 +53,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fonts
 (when window-system
-  (if (> (x-display-pixel-width) 2550)
+  (setq monn (length '(aref display-monitor-attributes-list 0)))
+  (if (> (/ (display-pixel-width) monn) 2550)
       (create-fontset-from-ascii-font 
        "Hack:weight=normal:slant=normal:size=18" nil "hackandjp")
     (create-fontset-from-ascii-font 
