@@ -181,49 +181,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; JAVASCRIPT
 
-;; for javascript.el
-;;(add-to-list 'auto-mode-alist '("\\.js\\'" . javascript-mode))
-;;(autoload 'javascript-mode "javascript" nil t)
+(unless (package-installed-p 'web-mode)
+  (package-refresh-contents) (package-install 'web-mode))
 
+(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
 
-;; for js2 mode
-;;(autoload 'js2-mode "js2" nil t)
-;;(add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+(setq web-mode-markup-indent-offset 2)
+(setq web-mode-css-indent-offset 2)
+(setq web-mode-code-indent-offset 2)
 
-
-;; js2 major mode
-;; ref: http://8-p.info/emacs-javascript.html
-;; (when (load "js2" t)
-;;   (setq js2-basic-offset 2
-;;         js2-cleanup-whitespace nil
-;;         js2-mirror-mode nil
-;;         js2-bounce-indent-flag t)
-  
-;;   (defun indent-and-back-to-indentation ()
-;;     (interactive)
-;;     (indent-for-tab-command)
-;;     (let ((point-of-indentation
-;;            (save-excursion
-;;              (back-to-indentation)
-;;              (point))))
-;;       (skip-chars-forward "\s " point-of-indentation)))
-;;   (define-key js2-mode-map "\C-i" 'indent-and-back-to-indentation)
-  
-;;   (define-key js2-mode-map "\C-m" nil)
-  
-;;   (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode)))
-
-;; (global-set-key "\C-m" 'newline-and-indent)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; HTML/CSS
-
-;; recognize .tpl as .html
-;; (add-to-list 'auto-mode-alist '("\\.tpl$" . html-helper-mode))
-
-;; css-mode
-;;(setq cssm-indent-function #'cssm-c-style-indenter)
+(setq web-mode-style-padding 2)
+(setq web-mode-script-padding 2)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
