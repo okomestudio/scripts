@@ -121,18 +121,8 @@ addpath() {
   fi
 }
 
-addpythonpath() {
-  if [ -d "$1" ] && [[ ":$PYTHONPATH:" != *":$1:"* ]]; then
-    PYTHONPATH="$1:$PYTHONPATH"
-  fi
-}
-
 # Add directories containing commands to PATH
 addpath ~/.local/bin
-
-# Add to PYTHONPATH.
-# addpythonpath /path/to/package
-export PYTHONPATH
 
 #export LS_COLORS='ex=00;35:ln=00;32'
 export LS_COLORS="${LS_COLORS}:ex=32"
@@ -174,8 +164,6 @@ if command -v pyenv 1>/dev/null 2>&1; then
   eval "$(pyenv virtualenv-init - --no-rehash bash)"
 fi
 
-export PATH
-
 ##############################################################################
 # Java
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
@@ -190,3 +178,5 @@ fi
 ##############################################################################
 # emacs
 [[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
+
+export PATH
