@@ -16,9 +16,10 @@ alias ds9='ds9 -zscale'
 
 alias less='less -S'
 
+# Variations of ls
 alias l='ls -CF'
 alias la='ls -A'
-alias ll='ls -lh'
+alias ll='ls -alh'
 
 alias open='xdg-open'
 
