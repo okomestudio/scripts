@@ -19,8 +19,6 @@ if [[ ! -z "$use_color" ]] && [ -x /usr/bin/dircolors ]; then
   # alias egrep='egrep --color=auto'
 fi
 
-alias less='less -S'
-
 # Variations of ls
 alias l='ls -CF'
 alias la='ls -A'

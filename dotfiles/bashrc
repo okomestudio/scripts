@@ -162,7 +162,7 @@ export VISUAL="emacsclient -c -a emacs"
 export PAGER=less
 
 # Add syntax highlighting via Pygments (do: pip install Pygments)
-export LESS='-R'
+export LESS='-S -R'
 export LESSOPEN='|~/.lessfilter %s'
 
 ##############################################################################
