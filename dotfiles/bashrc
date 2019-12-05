@@ -130,8 +130,6 @@ addpythonpath() {
 # Add directories containing commands to PATH
 addpath ~/.local/bin
 
-export PATH
-
 # Add to PYTHONPATH.
 # addpythonpath /path/to/package
 export PYTHONPATH
@@ -165,25 +163,18 @@ unset color_prompt
 # Python
 export PYTHONIOENCODING=utf-8
 
-# Enable virtualenvwrapper if installed
-if hash virtualenvwrapper.sh 2>/dev/null; then
-  export WORKON_HOME=~/.virtualenvs
-  . $(which virtualenvwrapper.sh)
-fi
-
 # pyenv
-if [[ -d ~/.pyenv ]]; then
-  # Uncomment for prompt changing which has been deprecated.
+addpath ~/.pyenv/bin
+
+if command -v pyenv 1>/dev/null 2>&1; then
+  # Uncomment for prompt changing which has been deprecated
   export PYENV_VIRTUALENV_DISABLE_PROMPT=1
 
-  if [[ ":$PATH:" != *":~/.pyenv/bin:"* ]]; then
-    export PATH="~/.pyenv/bin:$PATH"
-  fi
-  if command -v pyenv 1>/dev/null 2>&1; then
-    eval "$(pyenv init - --no-rehash bash)"
-    eval "$(pyenv virtualenv-init - --no-rehash bash)"
-  fi
+  eval "$(pyenv init - --no-rehash bash)"
+  eval "$(pyenv virtualenv-init - --no-rehash bash)"
 fi
+
+export PATH
 
 ##############################################################################
 # Hadoop
