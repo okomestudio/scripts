@@ -79,7 +79,7 @@ fi
 
 PS1="${PS1} "
 
-unset color_prompt force_color_prompt base_info
+unset force_color_prompt base_info
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -130,10 +130,6 @@ addpythonpath() {
 # Add directories containing commands to PATH
 addpath ~/.local/bin
 
-# NOTE: The following line for arcanist is only relevant to releases
-# prior to Debian/Stretch. There is a deb package for Stretch.
-addpath ~/.arc_install/arcanist/bin
-
 export PATH
 
 # Add to PYTHONPATH.
@@ -146,14 +142,24 @@ export LC_COLLATE=C
 
 # Misc
 export BROWSER=google-chrome
-export ALTERNATE_EDITOR=""
 export EDITOR="emacsclient -t"
+export ALTERNATE_EDITOR="nano"
 export VISUAL="emacsclient -c -a emacs"
 export PAGER=less
 
-# Add syntax highlighting via Pygments (do: pip install Pygments)
-export LESS='-S -R'
-export LESSOPEN='|~/.lessfilter %s'
+##############################################################################
+# less
+LESS='-S'
+
+# Add syntax highlighting via Pygments if possible
+if [ -n "$color_prompt" ] && command -v pygmentize >&/dev/null; then
+  LESS="$LESS -R"
+  LESSOPEN='|~/.lessfilter %s'
+  export LESSOPEN
+fi
+export LESS
+
+unset color_prompt
 
 ##############################################################################
 # Python
