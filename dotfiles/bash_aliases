@@ -1,8 +1,17 @@
 #!/bin/bash
 
+
+if [ -x /usr/bin/tput ] && tput setaf 1 >& /dev/null; then
+	use_color=t
+fi
+
+
 # Enable color support of ls and also add handy aliases.
-if [ -x /usr/bin/dircolors ]; then
-  test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+if [[ ! -z "$use_color" ]] && [ -x /usr/bin/dircolors ]; then
+  test -r ~/.dircolors \
+    && eval "$(dircolors -b ~/.dircolors)" \
+      || eval "$(dircolors -b)"
+
   alias ls='ls --color=auto --classify'
 
   alias grep='grep --color=auto'
@@ -18,6 +27,7 @@ alias la='ls -A'
 alias ll='ls -alh'
 
 alias open='xdg-open'
+
 
 # Alias and completion for Git.
 if [[ -e /usr/share/bash-completion/completions/git ]]; then
@@ -37,6 +47,8 @@ function cd() {
   command cd "$@" || return
   if [[ $PWD != $HOME && -f "$PWD/.bashrc" ]]; then
     source $PWD/.bashrc
-    >&2 echo -e "Sourced $PWD/.bashrc"
+    msg="Sourced $PWD/.bashrc"
+    [[ ! -z "$use_color" ]] && msg="\033[0;32m${msg}\033[0m"
+    >&2 echo -e "$msg"
   fi
 }
