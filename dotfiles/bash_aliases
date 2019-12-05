@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# ~/.bash_aliases
-
 # Enable color support of ls and also add handy aliases.
 if [ -x /usr/bin/dircolors ]; then
   test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -11,8 +9,6 @@ if [ -x /usr/bin/dircolors ]; then
   # alias fgrep='fgrep --color=auto'
   # alias egrep='egrep --color=auto'
 fi
-
-alias ds9='ds9 -zscale'
 
 alias less='less -S'
 
@@ -41,6 +37,6 @@ function cd() {
   command cd "$@" || return
   if [[ $PWD != $HOME && -f "$PWD/.bashrc" ]]; then
     source $PWD/.bashrc
-    >&2 echo "Sourced $PWD/.bashrc"
+    >&2 echo -e "Sourced $PWD/.bashrc"
   fi
 }
