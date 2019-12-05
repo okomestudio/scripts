@@ -37,29 +37,49 @@ fi
 
 # set a fancy prompt (non-color, unless we know we "want" color)
 case "$TERM" in
-  xterm-color) color_prompt=yes;;
+  xterm-color|*-256color) color_prompt=yes;;
 esac
 
 # uncomment for a colored prompt, if the terminal has the capability; turned
 # off by default to not distract the user: the focus in a terminal window
 # should be on the output of commands, not on the prompt
-#force_color_prompt=yes
-# if [ -n "$force_color_prompt" ]; then
-#   if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-# 	  # We have color support; assume it's compliant with Ecma-48
-# 	  # (ISO/IEC-6429). (Lack of such support is extremely rare, and
-# 	  # such a case would tend to support setf rather than setaf.)
-# 	  color_prompt=yes
-#   else
-# 	  color_prompt=
-#   fi
-# fi
-# if [ "$color_prompt" = yes ]; then
-#   PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-# else
-#   PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-# fi
-# unset color_prompt force_color_prompt
+force_color_prompt=yes
+
+if [ -n "$force_color_prompt" ]; then
+  if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
+	  # We have color support; assume it's compliant with Ecma-48
+    # (ISO/IEC-6429). (Lack of such support is extremely rare, and
+    # such a case would tend to support setf rather than setaf.)
+ 	  color_prompt=yes
+  else
+ 	  color_prompt=
+  fi
+fi
+
+# Update fancy prompt
+base_info='${debian_chroot:+($debian_chroot)}\u@\h \W'
+
+# When in a git repo tree, show the branch name
+if [[ -e /etc/bash_completion.d/git-prompt ]]; then
+  . /etc/bash_completion.d/git-prompt
+  base_info=${base_info}'$(__git_ps1 "(%s)")'
+fi
+
+PS1="[${base_info}]\$"
+
+if [ -n "$color_prompt" ]; then
+  if [[ -n "$SSH_CLIENT" ]]; then
+    # Remote shell over SSH
+    PS1="\[\e[0;31m\]${PS1}\[\e[m\]"
+  elif [[ -n "$STY" ]]; then
+    # Within the `screen` command
+    PS1="\[\e[0;32m\]${PS1}\[\e[m\]"
+  fi
+fi
+
+PS1="${PS1} "
+
+unset color_prompt force_color_prompt base_info
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
@@ -69,36 +89,6 @@ case "$TERM" in
   *)
     ;;
 esac
-
-
-# Update fancy prompt
-paren_left='['
-paren_right=']'
-prompt='$'
-base_info='\u@\h \W'
-
-# When in a git repo, show the branch name
-if [[ -e /etc/bash_completion.d/git-prompt ]]; then
-  . /etc/bash_completion.d/git-prompt
-  base_info=${base_info}'$(__git_ps1 "(%s)")'
-fi
-
-PS1="${paren_left}${base_info}${paren_right}${prompt}"
-
-# For remote shell over SSH, add color
-if [[ -n "$SSH_CLIENT" ]]; then
-  PS1="\[\e[0;31m\]${PS1}\[\e[m\]"
-fi
-
-# For prompts within `screen`, add color
-if [[ -n "$STY" ]]; then
-  PS1="\[\e[0;32m\]${PS1}\[\e[m\]"
-fi
-
-PS1="${PS1} "
-
-export PS1
-unset paren_left paren_right prompt base_info
 
 
 # Alias definitions.
