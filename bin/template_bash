@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} arg1 [optarg2 ...]
+
+This is a template for bash script.
+
+  arg1     Required argument
+  optarg2  Optional argument description
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+function main() {
+  echo "$@"        
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+main "$@"
