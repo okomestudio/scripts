@@ -1,19 +1,47 @@
-#!/bin/bash
-#
-# Generate alert at specified times
-#
-# This script uses `notify-send` and `at` commands to generate desktop
-# alert(s) at specified times.
-#
-# To alert at 3PM and 3PM for example:
-#
-#   $ alert_me_at 3:00PM 8:00PM
-#
-# Requirements
-#
-#   $ sudo apt-get install at libnotify-bin
-#
+#!/usr/bin/env bash
 
-for t in $@; do
-  echo "notify-send 'It is $t now!'" | at "$t" # 2> /dev/null
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} time1 [time2 ...]
+
+Generate alert at specified times. This script uses `notify-send` and
+`at` commands to generate desktop alert(s) at specified times.
+
+To alert at 3PM and 3PM for example:
+
+  $ alert_me_at 3:00PM 8:00PM
+
+Requirements:
+  - at
+  - libnotify-bin
+USAGE
+  exit ${1:-1}
+}
+
+
+function main() {
+  for t in $@; do
+    echo "notify-send 'It is $t now!'" | at "$t"
+  done
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
 done
+shift $(($OPTIND - 1))
+
+main "$@"
