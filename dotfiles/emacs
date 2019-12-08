@@ -114,6 +114,7 @@
 
 (unless (package-installed-p 'flycheck)
   (package-refresh-contents) (package-install 'flycheck))
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 
 ;; autocomplete
@@ -186,7 +187,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; JAVASCRIPT
+;; JavaScript/HTML/CSS
 
 (unless (package-installed-p 'web-mode)
   (package-refresh-contents) (package-install 'web-mode))
@@ -201,6 +202,44 @@
 
 (setq web-mode-style-padding 2)
 (setq web-mode-script-padding 2)
+
+;; This is necessary to format JSX within JavaScript
+(add-hook 'web-mode-hook
+          (lambda ()
+            (if (equal web-mode-content-type "javascript")
+                (web-mode-set-content-type "jsx"))))
+
+
+;; Flycheck configuration
+(require 'flycheck)
+
+;; Disable checkers not in use
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers '(json-jsonlist)))
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers '(javascript-jshint)))
+
+;; For linters, install the following:
+;;
+;;   $ sudo npm install -g eslint babel-eslint eslint-plugin-react
+;;   $ sudo apt install tidy
+;;   $ sudo npm install -g csslint
+;;
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+(flycheck-add-mode 'html-tidy 'web-mode)
+(flycheck-add-mode 'css-csslint 'web-mode)
+(add-hook 'web-mode-hook
+          (lambda ()
+            (cond ((string= web-mode-content-type "html")
+                   (when (executable-find "tidy")
+                     (flycheck-select-checker 'html-tidy)))
+                  ((string= web-mode-content-type "css")
+                   (when (executable-find "csslint")
+                     (flycheck-select-checker 'css-css-lint)))
+                  ((or (string= web-mode-content-type "javascript")
+                       (string= web-mode-content-type "jsx"))
+                   (when (executable-find "eslint")
+                     (flycheck-select-checker 'javascript-eslint))))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -358,7 +397,7 @@
 ;;   ((python-mode . ((eval . (blacken-mode 1)))))
 ;;
 ;; in .dir-locals.el.
-;;
+
 (if (version< emacs-version "25.2")
     (message "is before 25.2")
   (unless (package-installed-p 'blacken-mode)
