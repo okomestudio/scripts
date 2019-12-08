@@ -69,10 +69,14 @@ case $1 in
   *.sql)
     pygmentize -f 256 -O bg=light $1
     ;;
-  *.el|.emacs)
+  *.el|\
+  .emacs|*/.emacs)
     pygmentize -f 256 -O bg=light -l elisp $1
     ;;
-  *.bash|.bashrc|.bash_aliases|.bash_environment)
+  *.bash|\
+  .bashrc|*/.bashrc|\
+  .bash_aliases|*/.bash_aliases|\
+  .bash_environment|*/.bash_environment)
     pygmentize -f 256 -O bg=light -l bash $1
     ;;
   *)
