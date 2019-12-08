@@ -25,7 +25,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -70,17 +70,32 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; MELPA
 
-;; BUGFIX: For fixing a startup error message, "http
-;; elpa.gnu.org:443*-257153" has a running process; kill it? (y or n)
-;; y"
+;; BUGFIX: For fixing a startup error message:
+;;
+;;   http.elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y
+;;
+;; This bug should be fixed on and after Emacs version 26.3.
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 (require 'package)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
-;;(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-(when (< emacs-major-version 24) ; for important compatibility libraries like cl-lib
-  (add-to-list 'package-archives '("gnu" . "http://elpa.gnu.org/packages/")))
+(add-to-list 'package-archives
+             '("MELPA" . "https://melpa.org/packages/") t)
+;; (add-to-list 'package-archives
+;;              '("MELPA stable" . "https://stable.melpa.org/packages/") t)
+;; (add-to-list 'package-archives
+;;              '("Marmalade" . "https://marmalade-repo.org/packages/"))
+
+;; For important compatibility libraries like cl-lib
+;; (when (< emacs-major-version 24)
+;;   (add-to-list 'package-archives
+;;                '("gnu" . "https://elpa.gnu.org/packages/")))
+
 (package-initialize)
+
+
+;; use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents) (package-install 'use-package))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -112,10 +127,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flycheck
 
-(unless (package-installed-p 'flycheck)
-  (package-refresh-contents) (package-install 'flycheck))
-(add-hook 'after-init-hook #'global-flycheck-mode)
-
+;; (unless (package-installed-p 'flycheck)
+;;   (package-refresh-contents) (package-install 'flycheck))
+;; (add-hook 'after-init-hook #'global-flycheck-mode)
+(use-package flycheck
+             :ensure t
+             :init (global-flycheck-mode))
 
 ;; autocomplete
 (unless (package-installed-p 'auto-complete)
@@ -398,10 +415,10 @@
 ;;
 ;; in .dir-locals.el.
 
-(if (version< emacs-version "25.2")
-    (message "is before 25.2")
-  (unless (package-installed-p 'blacken-mode)
-    (package-refresh-contents) (package-install 'blacken)))
+;; (if (version< emacs-version "25.2")
+;;     (message "is before 25.2")
+;;   (unless (package-installed-p 'blacken-mode)
+;;     (package-refresh-contents) (package-install 'blacken)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -453,3 +470,9 @@
       (revert-buffer :ignore-auto :noconfirm)
     (error "The buffer has been modified")))
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
