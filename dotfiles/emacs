@@ -109,6 +109,13 @@
   (add-hook hook (lambda () (flyspell-mode 1))))
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; flycheck
+
+(unless (package-installed-p 'flycheck)
+  (package-refresh-contents) (package-install 'flycheck))
+
+
 ;; autocomplete
 (unless (package-installed-p 'auto-complete)
   (package-refresh-contents) (package-install 'auto-complete))
@@ -315,8 +322,6 @@
 ;;
 ;; Need `pip install flake8`
 ;;
-(unless (package-installed-p 'flycheck)
-  (package-refresh-contents) (package-install 'flycheck))
 (add-hook 'python-mode-hook 'flycheck-mode)
 
 ;; Spell checking
@@ -358,6 +363,7 @@
     (message "is before 25.2")
   (unless (package-installed-p 'blacken-mode)
     (package-refresh-contents) (package-install 'blacken)))
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM FUNCTIONS
