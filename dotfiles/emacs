@@ -412,10 +412,10 @@
 ;;
 ;; in .dir-locals.el.
 
-;; (if (version< emacs-version "25.2")
-;;     (message "is before 25.2")
-;;   (unless (package-installed-p 'blacken-mode)
-;;     (package-refresh-contents) (package-install 'blacken)))
+(if (version< emacs-version "25.2")
+    (message "is before 25.2")
+  (unless (package-installed-p 'blacken-mode)
+    (package-refresh-contents) (package-install 'blacken)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
