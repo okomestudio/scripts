@@ -127,9 +127,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; flycheck
 
-;; (unless (package-installed-p 'flycheck)
-;;   (package-refresh-contents) (package-install 'flycheck))
-;; (add-hook 'after-init-hook #'global-flycheck-mode)
 (use-package flycheck
              :ensure t
              :init (global-flycheck-mode))
