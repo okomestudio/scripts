@@ -25,7 +25,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -130,6 +130,14 @@
 (use-package flycheck
              :ensure t
              :init (global-flycheck-mode))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Magit for Git
+
+(use-package magit
+  :ensure t)
+
 
 ;; autocomplete
 (unless (package-installed-p 'auto-complete)
