@@ -158,12 +158,14 @@
   (load-theme 'professional-theme t))
 
 
-;; autocomplete
-(unless (package-installed-p 'auto-complete)
-  (package-refresh-contents) (package-install 'auto-complete))
-(require 'auto-complete-config)
-(ac-config-default)
-;; (setq ac-show-menu-immediately-on-auto-complete t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; auto-complete
+(use-package auto-complete
+  :ensure t
+  :config
+  ;; (setq ac-show-menu-immediately-on-auto-complete t)
+  (setq ac-max-width 0.35))
+
 
 ;; NeoTree
 (unless (package-installed-p 'neotree)
