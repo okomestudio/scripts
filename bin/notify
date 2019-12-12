@@ -30,7 +30,7 @@ function error() {
 
 
 function main() {
-  local msg=$1
+  local msg=$@
   if [ -x "$(command -v kdialog)" ]; then
     kdialog --msgbox "$msg"
   elif [ -x "$(command -v notify-send)" ]; then
