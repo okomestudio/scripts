@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} message
+
+Send a message through GUI.
+
+Arguments:
+  message     Message to show
+
+Requirements:
+
+One of the following command must be present.
+
+  - kdialog (via KDE)
+  - notify-send (via libnotify-bin)
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+function main() {
+  local msg=$1
+  if [ -x "$(command -v kdialog)" ]; then
+    kdialog --msgbox "$msg"
+  elif [ -x "$(command -v notify-send)" ]; then
+    notify-send "$msg"
+  else
+    error 'GUI notify command does not exit'
+  fi
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+main "$@"
