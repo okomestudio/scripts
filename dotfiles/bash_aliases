@@ -44,13 +44,18 @@ if [[ -e /usr/share/bash-completion/completions/git ]]; then
 fi
 
 
-# Override command `cd` to source .bashrc if exists.
+# Override command `cd` to source local .bashrc if exists.
 function cd() {
   command cd "$@" || return
-  if [[ $PWD != $HOME && -f "$PWD/.bashrc" ]]; then
-    source $PWD/.bashrc
-    msg="Sourced $PWD/.bashrc"
-    [[ ! -z "$use_color" ]] && msg="\033[0;32m${msg}\033[0m"
-    >&2 echo -e "$msg"
+  local bashrc="$PWD/.bashrc"
+  if [[ $PWD != $HOME && -f $bashrc ]]; then
+    read -p 'Load directory-specific Bash config? [Y/n]: ' resp
+    resp=${resp:-y}
+    if [[ $resp == "Y" ]] || [[ $resp == "y" ]]; then
+      source $bashrc
+      msg="Sourced $bashrc"
+      [[ ! -z "$use_color" ]] && msg="\033[0;32m${msg}\033[0m"
+      >&2 echo -e "$msg"
+    fi
   fi
 }
