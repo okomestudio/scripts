@@ -25,6 +25,15 @@ parse_shebang() {
 }
 
 
+parse_mode() {
+  # Read as a file local variable
+  prog=$(cat $1 | grep -E '\-\*\- mode: ' \
+           | sed -n -e 's/^;; -\*- mode: \([[:alnum:]-]\+\).*/\1/p')
+  # TODO: Parse in the local variables list
+  echo $prog
+}
+
+
 case $1 in
   *.ad[asb]|\
   *.asm|\
@@ -98,7 +107,20 @@ case $1 in
           pygmentize -f 256 -O bg=light -l $prog $1
           ;;
       esac
+    else
+      prog=$(parse_mode $1)
+      if [ ! -z $prog ]; then
+        case $prog in
+          emacs)
+            pygmentize -f 256 -O bg=light -l elisp $1
+            ;;
+          *)
+            pygmentize -f 256 -O bg=light -l $prog $1
+            ;;
+        esac
+      fi
     fi
+    
     ;;
 esac
 
