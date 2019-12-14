@@ -14,6 +14,11 @@ To alert at 3PM with a message "Time to go home", for example:
 
   $ alert_me_at 3:00PM Time to go home
 
+To alert at 10 minutes, two hours later from now, respectively:
+
+  $ alert_me_at 'now + 10 minute' Time to go home
+  $ alert_me_at 'now + 2 hour' Time to go home
+
 Requirements:
   - at
   - notify
