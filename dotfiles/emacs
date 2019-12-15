@@ -35,7 +35,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -297,6 +297,13 @@
   (unless (package-installed-p 'plantuml-mode)
     (package-refresh-contents) (package-install 'plantuml-mode))
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; any-ini-mode
+(if (file-exists-p "~/.emacs.d/lisp/any-ini-mode.el")
+    (progn (require 'any-ini-mode)
+           (add-to-list 'auto-mode-alist '(".*\\.service$" . any-ini-mode))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
