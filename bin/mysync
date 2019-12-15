@@ -1,0 +1,79 @@
+#!/usr/bin/env python
+import pathlib
+import time
+
+from argparse import ArgumentParser
+from subprocess import run
+
+try:
+    from watchdog.events import RegexMatchingEventHandler
+    from watchdog.observers import Observer
+except ImportError:
+    raise ImportError("The watchdog Python package is not available")
+
+
+class Synchronizer:
+    def __init__(self, file1, file2):
+        self.file1 = file1
+        self.file2 = file2
+
+    def synchronize(self):
+        result = run(
+            [
+                "unison",
+                "-batch",
+                "-prefer",
+                "newer",
+                self.file1.absolute(),
+                self.file2.absolute(),
+            ]
+        )
+
+
+class MyHandler(RegexMatchingEventHandler):
+    def on_modified(self, event):
+        print(f"event type: {event.event_type} path: {event.src_path}")
+
+
+def validate_file(path):
+    if not path.exists():
+        raise IOError(f"File does not exist: {path.absolute()}")
+    if not (path.is_file() and not path.is_symlink()):
+        raise IOError(f"Not valid files to watch: {path.absolute()}")
+
+
+def main(path1, path2):
+    paths = [path1, path2]
+    for path in paths:
+        validate_file(path)
+
+    observer = Observer()
+    for path in paths:
+        event_handler = MyHandler(regexes=[r"^" + str(path.absolute()) + r"$"])
+        observer.schedule(
+            event_handler, path=str(path.parent.absolute()), recursive=False
+        )
+    observer.start()
+
+    try:
+        while 1:
+            time.sleep(5)
+    except KeyboardInterrupt:
+        observer.stop()
+    observer.join()
+
+
+def check_requirements():
+    result = run(["which", "unison"])
+    if result.returncode != 0:
+        raise RuntimeError("unison is not available")
+
+
+if __name__ == "__main__":
+    check_requirements()
+
+    p = ArgumentParser()
+    p.add_argument("file1", type=pathlib.Path)
+    p.add_argument("file2", type=pathlib.Path)
+    args = p.parse_args()
+    main(args.file1, args.file2)
