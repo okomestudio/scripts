@@ -103,6 +103,11 @@
 (package-initialize)
 
 
+;; custom emacs lisp files
+(if (file-directory-p "~/.emacs.d/lisp/")
+    (add-to-list 'load-path "~/.emacs.d/lisp/"))
+
+
 ;; use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents) (package-install 'use-package))
