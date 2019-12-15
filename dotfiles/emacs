@@ -155,7 +155,7 @@
 (use-package professional-theme
   :ensure t
   :config
-  (load-theme 'professional-theme t))
+  (load-theme 'professional t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
