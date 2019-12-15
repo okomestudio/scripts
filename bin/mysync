@@ -8,6 +8,7 @@ watched by watchdog (a Python library) and sync is done by unison.
 """
 import pathlib
 import re
+import sys
 import time
 
 from argparse import ArgumentParser
@@ -20,12 +21,46 @@ except ImportError:
     raise ImportError("The watchdog Python package is not available")
 
 
-class Synchronizer:
-    def __init__(self, file1, file2):
-        self.file1 = file1
-        self.file2 = file2
+def err(*args, **kwargs):
+    print(*args, file=sys.stderr, **kwargs)
 
-    def synchronize(self):
+
+class Synchronizer:
+    def __init__(self, observer, eh1, eh2):
+        self.observer = observer
+        eh1.synchronize = self.synchronize
+        eh2.synchronize = self.synchronize
+        self.eh1 = eh1
+        self.eh2 = eh2
+        self.watches = {}
+        self.other = {eh1: eh2, eh2: eh1}
+
+    def schedule_all(self):
+        self.schedule(self.eh1)
+        self.schedule(self.eh2)
+
+    def schedule(self, event_handler):
+        watch = self.observer.schedule(
+            event_handler,
+            path=str(event_handler.path.parent.absolute()),
+            recursive=False,
+        )
+        self.watches[event_handler] = watch
+
+    def unschedule(self, event_handler):
+        self.observer.unschedule(self.watches[event_handler])
+        del self.watches[event_handler]
+
+    def synchronize(self, event_handler=None):
+        if event_handler:
+            other = self.other[event_handler]
+            self.unschedule(other)
+            self._synchronize()
+            self.schedule(other)
+        else:
+            self._synchronize()
+
+    def _synchronize(self):
         run(
             [
                 "unison",
@@ -33,24 +68,31 @@ class Synchronizer:
                 "-prefer",
                 "newer",
                 "-copyonconflict",
-                self.file1.absolute(),
-                self.file2.absolute(),
+                self.eh1.path.absolute(),
+                self.eh2.path.absolute(),
             ]
         )
 
 
 class MyHandler(RegexMatchingEventHandler):
+    def __init__(self, path, *args, **kwargs):
+        regexes = [r"^" + re.escape(str(path.absolute())) + r"$"]
+        kwargs["regexes"] = regexes
+        super().__init__(*args, **kwargs)
+        self.path = path
+
     def on_created(self, event):
-        self.synchronizer.synchronize()
+        err("CREATED", repr(event))
+        self.synchronize(self)
 
     def on_modified(self, event):
-        self.synchronizer.synchronize()
+        err("MODIFIED", repr(event))
+        self.synchronize(self)
 
     def on_moved(self, event):
-        self.synchronizer.synchronize()
-
-    def register_synchronizer(self, synchronizer):
-        self.synchronizer = synchronizer
+        err("MOVED", repr(event), self.path.absolute())
+        if event.dest_path == str(self.path.absolute()):
+            self.synchronize(self)
 
 
 def validate_file(path):
@@ -65,18 +107,15 @@ def main(path1, path2):
     for path in paths:
         validate_file(path)
 
-    synchronizer = Synchronizer(*paths)
-    synchronizer.synchronize()
-
     observer = Observer()
-    for path in paths:
-        event_handler = MyHandler(
-            regexes=[r"^" + re.escape(str(path.absolute())) + r"$"]
-        )
-        event_handler.register_synchronizer(synchronizer)
-        observer.schedule(
-            event_handler, path=str(path.parent.absolute()), recursive=False
-        )
+
+    event_handler1 = MyHandler(path1)
+    event_handler2 = MyHandler(path2)
+
+    synchronizer = Synchronizer(observer, event_handler1, event_handler2)
+    synchronizer.synchronize()
+    synchronizer.schedule_all()
+
     observer.start()
 
     try:
