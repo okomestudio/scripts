@@ -7,6 +7,7 @@ watched by watchdog (a Python library) and sync is done by unison.
   $ mysync file1 file2
 """
 import pathlib
+import re
 import time
 
 from argparse import ArgumentParser
@@ -39,8 +40,13 @@ class Synchronizer:
 
 
 class MyHandler(RegexMatchingEventHandler):
+    def on_created(self, event):
+        self.synchronizer.synchronize()
+
     def on_modified(self, event):
-        print(f"event type: {event.event_type} path: {event.src_path}")
+        self.synchronizer.synchronize()
+
+    def on_moved(self, event):
         self.synchronizer.synchronize()
 
     def register_synchronizer(self, synchronizer):
@@ -64,7 +70,9 @@ def main(path1, path2):
 
     observer = Observer()
     for path in paths:
-        event_handler = MyHandler(regexes=[r"^" + str(path.absolute()) + r"$"])
+        event_handler = MyHandler(
+            regexes=[r"^" + re.escape(str(path.absolute())) + r"$"]
+        )
         event_handler.register_synchronizer(synchronizer)
         observer.schedule(
             event_handler, path=str(path.parent.absolute()), recursive=False
