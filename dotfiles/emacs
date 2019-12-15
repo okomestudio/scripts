@@ -356,10 +356,10 @@
 ;; SQL
 (require 'sql)
 
+
 ;; Autocompletion
-(if (file-directory-p "~/.emacs.d/lisp/")
-    (progn (add-to-list 'load-path "~/.emacs.d/lisp/")
-           (require 'sql-upcase)
+(if (file-exists-p "~/.emacs.d/lisp/sql-upcase.el")
+    (progn (require 'sql-upcase)
            (when (require 'sql-upcase nil :noerror)
              (add-hook 'sql-mode-hook 'sql-upcase-mode)
              (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))))
