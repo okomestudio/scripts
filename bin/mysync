@@ -12,6 +12,7 @@ import sys
 import time
 
 from argparse import ArgumentParser
+from subprocess import DEVNULL
 from subprocess import run
 
 try:
@@ -61,7 +62,7 @@ class Synchronizer:
             self._synchronize()
 
     def _synchronize(self):
-        run(
+        result = run(
             [
                 "unison",
                 "-batch",
@@ -72,6 +73,17 @@ class Synchronizer:
                 self.eh2.path.absolute(),
             ]
         )
+        if result.returncode == 0:
+            result = run(["which", "notify-send"], stdout=DEVNULL, stderr=DEVNULL)
+            if result.returncode == 0:
+                run(
+                    [
+                        "notify-send",
+                        "Synched the following files:\n"
+                        f"{self.eh1.path.absolute()}\n"
+                        f"{self.eh2.path.absolute()}",
+                    ]
+                )
 
 
 class MyHandler(RegexMatchingEventHandler):
