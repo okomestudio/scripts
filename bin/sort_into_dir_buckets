@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} path
+
+Sort directory contents into buckets names by their prefixes.
+
+  path  Path to a directory under which files are sorted into buckets
+
+USAGE
+  exit ${1:-1}
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit ${2:-1}
+}
+
+
+function main() {
+  local path=$1
+
+  local valid_chars="[0-9a-zA-Z]"
+  
+  for f in $path/*; do
+    echo $f
+    echo ${f%/*}
+    echo ${f##*/}
+    echo
+  done
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h)
+      usage 0
+      ;;
+    \?)
+      usage
+      ;;
+    :)
+      error "Option -$OPTARG requires an argument"
+      ;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+main "$@"
