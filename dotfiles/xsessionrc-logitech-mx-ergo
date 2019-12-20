@@ -7,7 +7,6 @@ source .local/include/xsessionrc_helpers.sh
 device_id=$(get_device_id "Logitech MX Ergo")
 if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
-
   ${setp} 'libinput Accel Speed' 0.5
-  ${setp} 'Coordinate Transformation Matrix' 1 0 0 0 1 0 0 0 .3
+  ${setp} 'Coordinate Transformation Matrix' 0.5 0 0 0 0.5 0 0 0 .3
 fi
