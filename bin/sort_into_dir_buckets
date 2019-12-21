@@ -38,12 +38,13 @@ function sort_to_bucket() {
       prefix=UNSORTED
     fi
 
+    mkdir -p "$temporary/$prefix"
     mv "$filepath" "$temporary/$prefix/$filename"
   done
   
   if [ ! -z "$(ls -A $temporary)" ]; then
     for subdir in $temporary/*; do
-      mv $subdir $dirpath/
+      mv "$subdir" "${dirpath}/"
     done
   fi
 }
@@ -56,8 +57,8 @@ function main() {
   [ ! -d $dirpath ] && error "$dirpath is not a directory"
 
   local temporary=$(mktemp -d -p $dirpath .tmpdir-XXXX)
-  sort_to_bucket $dirpath $temporary
-  rmdir $temporary
+  sort_to_bucket "$dirpath" "$temporary"
+  rmdir "$temporary"
 }
 
 
