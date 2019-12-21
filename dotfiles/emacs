@@ -155,6 +155,16 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; highlight-indent-guides
+
+(use-package highlight-indent-guides
+  :ensure t
+  :config
+  (setq highlight-indent-guides-method 'character)
+  (setq highlight-indent-guides-auto-character-face-perc 45))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
 
 (use-package professional-theme
@@ -223,6 +233,8 @@
 (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
 (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
 
+(add-hook 'sh-mode-hook 'highlight-indent-guides-mode)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; C
@@ -238,6 +250,8 @@
 
 (unless (package-installed-p 'web-mode)
   (package-refresh-contents) (package-install 'web-mode))
+
+(add-hook 'web-mode-hook 'highlight-indent-guides-mode)
 
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
@@ -410,6 +424,9 @@
                       '(lambda ()
                          (save-excursion
                            (delete-trailing-whitespace))))))
+
+;; highlight-indent-guides-mode
+(add-hook 'python-mode-hook 'highlight-indent-guides-mode)
 
 ;; flycheck -- Python code checking
 ;;
