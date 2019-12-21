@@ -9,7 +9,7 @@ Usage: ${0##*/} path
 
 Sort directory contents into buckets names by their prefixes.
 
-  path  Path to a directory under which files are sorted into buckets
+  path  Path to the directory under which files are sorted into buckets
 
 USAGE
   exit ${1:-1}
@@ -22,17 +22,42 @@ function error() {
 }
 
 
-function main() {
-  local path=$1
-
+function sort_to_bucket() {
+  local dirpath=$1
+  local temporary=$2
   local valid_chars="[0-9a-zA-Z]"
-  
-  for f in $path/*; do
-    echo $f
-    echo ${f%/*}
-    echo ${f##*/}
-    echo
+  local prefix_len=1
+  local prefix
+
+  for filepath in $dirpath/*; do
+    filename=${filepath##*/}
+
+    prefix=$(echo "${filename:0:$prefix_len}" | tr '[:lower:]' '[:upper:]')
+
+    if [[ $prefix != $valid_chars ]]; then
+      prefix=UNSORTED
+    fi
+
+    mv "$filepath" "$temporary/$prefix/$filename"
   done
+  
+  if [ ! -z "$(ls -A $temporary)" ]; then
+    for subdir in $temporary/*; do
+      mv $subdir $dirpath/
+    done
+  fi
+}
+
+
+function main() {
+  local dirpath=${1:-.}
+  dirpath=$(echo "$dirpath" | sed 's:/*$::')
+
+  [ ! -d $dirpath ] && error "$dirpath is not a directory"
+
+  local temporary=$(mktemp -d -p $dirpath .tmpdir-XXXX)
+  sort_to_bucket $dirpath $temporary
+  rmdir $temporary
 }
 
 
