@@ -179,7 +179,8 @@
   :ensure t
   :config
   ;; (setq ac-show-menu-immediately-on-auto-complete t)
-  (setq ac-max-width 0.35))
+  (setq ac-max-width 0.35)
+  (ac-config-default))
 
 
 ;; NeoTree
