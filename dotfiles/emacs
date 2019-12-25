@@ -161,7 +161,7 @@
   :ensure t
   :config
   (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-auto-character-face-perc 45))
+  (setq highlight-indent-guides-auto-character-face-perc 25))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
