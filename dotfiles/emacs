@@ -155,6 +155,15 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Theme
+
+(use-package professional-theme
+  :ensure t
+  :config
+  (load-theme 'professional t))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; highlight-indent-guides
 
 (use-package highlight-indent-guides
@@ -168,15 +177,6 @@
   (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
   (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
   (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Theme
-
-(use-package professional-theme
-  :ensure t
-  :config
-  (load-theme 'professional t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
