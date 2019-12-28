@@ -192,25 +192,20 @@
   (ac-config-default))
 
 
-;; NeoTree
-(unless (package-installed-p 'neotree)
-  (package-refresh-contents) (package-install 'neotree))
-(require 'neotree)
-(global-set-key [f8] 'neotree-toggle)
-(setq neo-hidden-regexp-list '("^\\."
-                               "\\.cs\\.meta$"
-                               "\\.pyc$"
-                               "~$"
-                               "^#.*#$"
-                               "\\.elc$"
-                               "^__pycache__$"))
-
-;; Every time when the neotree window is opened, let it find current
-;; file and jump to node.
-(setq neo-smart-open t)
-
-;; Open the Neo Tree window on start.
-(neotree-toggle)
+(use-package neotree
+  :ensure t
+  :init
+  (setq neo-hidden-regexp-list '("^\\."
+                                 "\\.cs\\.meta$"
+                                 "\\.pyc$"
+                                 "~$"
+                                 "^#.*#$"
+                                 "\\.elc$"
+                                 "^__pycache__$"))
+  :config
+  (global-set-key [f8] 'neotree-toggle)
+  (setq neo-smart-open t)
+  (neotree-toggle))
 
 
 ;; ansible-mode
