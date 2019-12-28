@@ -170,13 +170,16 @@
   :ensure t
   :config
   (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-responsive 'top
-        highlight-indent-guides-delay 0
-        highlight-indent-guides-auto-enabled nil)
-  (set-face-background 'highlight-indent-guides-character-face "light yellow")
-  (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
-  (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
-  (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
+  (setq highlight-indent-guides-auto-enabled nil)
+  (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
+  ;; (setq highlight-indent-guides-responsive 'top
+  ;;       highlight-indent-guides-delay 0
+  ;;       highlight-indent-guides-auto-enabled nil)
+  ;; (set-face-background 'highlight-indent-guides-character-face "light yellow")
+  ;; (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
+  ;; (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
+  ;; (set-face-foreground 'highlight-indent-guides-top-character-face "gray")
+  )
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -258,8 +261,6 @@
 (unless (package-installed-p 'web-mode)
   (package-refresh-contents) (package-install 'web-mode))
 
-(add-hook 'web-mode-hook 'highlight-indent-guides-mode)
-
 (add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
@@ -271,11 +272,12 @@
 (setq web-mode-style-padding 2)
 (setq web-mode-script-padding 2)
 
+;; TODO: Remove this
 ;; This is necessary to format JSX within JavaScript
-(add-hook 'web-mode-hook
-          (lambda ()
-            (if (equal web-mode-content-type "javascript")
-                (web-mode-set-content-type "jsx"))))
+;; (add-hook 'web-mode-hook
+;;           (lambda ()
+;;             (if (equal web-mode-content-type "javascript")
+;;                 (web-mode-set-content-type "jsx"))))
 
 
 ;; Flycheck configuration
@@ -296,6 +298,7 @@
 (flycheck-add-mode 'javascript-eslint 'web-mode)
 (flycheck-add-mode 'html-tidy 'web-mode)
 (flycheck-add-mode 'css-csslint 'web-mode)
+
 (add-hook 'web-mode-hook
           (lambda ()
             (cond ((string= web-mode-content-type "html")
@@ -307,7 +310,8 @@
                   ((or (string= web-mode-content-type "javascript")
                        (string= web-mode-content-type "jsx"))
                    (when (executable-find "eslint")
-                     (flycheck-select-checker 'javascript-eslint))))))
+                     (flycheck-select-checker 'javascript-eslint))))
+            (highlight-indent-guides-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
