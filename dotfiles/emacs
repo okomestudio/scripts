@@ -272,14 +272,6 @@
 (setq web-mode-style-padding 2)
 (setq web-mode-script-padding 2)
 
-;; TODO: Remove this
-;; This is necessary to format JSX within JavaScript
-;; (add-hook 'web-mode-hook
-;;           (lambda ()
-;;             (if (equal web-mode-content-type "javascript")
-;;                 (web-mode-set-content-type "jsx"))))
-
-
 ;; Flycheck configuration
 (require 'flycheck)
 
@@ -310,7 +302,8 @@
                   ((or (string= web-mode-content-type "javascript")
                        (string= web-mode-content-type "jsx"))
                    (when (executable-find "eslint")
-                     (flycheck-select-checker 'javascript-eslint))))
+                     (flycheck-select-checker 'javascript-eslint))
+                   (web-mode-set-content-type "jsx")))
             (highlight-indent-guides-mode)))
 
 
