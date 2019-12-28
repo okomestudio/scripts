@@ -3,11 +3,13 @@
 ;;
 ;;; Commentary:
 ;;
-;; This should be placed at ~/.emacs.
+;; This should be placed at ~/.emacs.d/init.dl.
 ;;
 ;;
 ;;; Code:
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; BEGIN CUSTOM CONFIGS BY EMACS; DO NOT MODIFY
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -46,21 +48,22 @@
  '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
 
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;; CONFIGS BY TS
-;;
+;; CUSTOM CONFIGS BY TS; CAN MODIFY
 
-;; Activate windmove to switch to another window by M-<U|D|L|R>
-(windmove-default-keybindings 'meta)
-;; ... or define global shortcuts:
-;; (global-set-key (kbd "C-c <left>")  'windmove-left)
-;; (global-set-key (kbd "C-c <right>") 'windmove-right)
-;; (global-set-key (kbd "C-c <up>")    'windmove-up)
-;; (global-set-key (kbd "C-c <down>")  'windmove-down)
+;;(set-face-attribute 'default nil :height 75)
+;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+(setq frame-title-format '("" "%f"))  ;; for frame-cmds.el
+(setq ring-bell-function 'ignore)  ;; Disable beeping
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Fonts
 (when window-system
   (setq monn (length (display-monitor-attributes-list)))
@@ -76,24 +79,21 @@
 		                'append)
   (add-to-list 'default-frame-alist '(font . "fontset-hackandjp")))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; MELPA
-
-;; BUGFIX: For fixing a startup error message:
+;; BUGFIX: For fixing a startup error message
 ;;
 ;;   http.elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y
 ;;
 ;; This bug should be fixed on and after Emacs version 26.3.
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+
+;; PACKAGE CONFIGURATION
+
 (require 'package)
 (add-to-list 'package-archives
              '("MELPA" . "https://melpa.org/packages/") t)
-;; (add-to-list 'package-archives
-;;              '("MELPA stable" . "https://stable.melpa.org/packages/") t)
-;; (add-to-list 'package-archives
-;;              '("Marmalade" . "https://marmalade-repo.org/packages/"))
+;;           '("MELPA stable" . "https://stable.melpa.org/packages/") t)
+;;           '("Marmalade" . "https://marmalade-repo.org/packages/"))
 
 ;; For important compatibility libraries like cl-lib
 ;; (when (< emacs-major-version 24)
@@ -105,15 +105,28 @@
 (unless (package-installed-p 'use-package)
   (package-refresh-contents) (package-install 'use-package))
 
+;; Theme
+(use-package professional-theme
+  :ensure t
+  :config
+  (load-theme 'professional t))
+
+;; Utility packages
+(use-package epc
+  :ensure t)
+
+(use-package popup
+  :ensure t)
+
 (use-package url
   :ensure t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Utility variables and functions
+;; UTILITY VARIABLES AND FUNCTIONS
 
 ;; Custom emacs lisp directory for .el files
 (defconst my-lispdir "~/.emacs.d/lisp/")
+
 (if (not (file-directory-p my-lispdir))
     (make-directory my-lispdir :parents))
 (if (file-directory-p my-lispdir)
@@ -128,18 +141,42 @@
       (url-copy-file src dest)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ENVIRONMENT
+;; CUSTOM KEYBINDINGS
 
-;; for clipboard
-;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
+;; Activate windmove to switch to another window by M-<U|D|L|R>
+(windmove-default-keybindings 'meta)
+;; ... or define global shortcuts:
+;; (global-set-key (kbd "C-c <left>")  'windmove-left)
+;; (global-set-key (kbd "C-c <right>") 'windmove-right)
+;; (global-set-key (kbd "C-c <up>")    'windmove-up)
+;; (global-set-key (kbd "C-c <down>")  'windmove-down)
 
-;;(set-face-attribute 'default nil :height 75)
-(setq ring-bell-function 'ignore) ; disable beeping
 
-;; for frame-cmds.el
-(setq frame-title-format '("" "%f"))
+(defun ts/insert-line-before (times)
+  "Insert a newline(s) above the line containing the cursor."
+  (interactive "p") ; called from M-x
+  (save-excursion ; store position
+    (move-beginning-of-line 1)
+    (newline times))) ; insert new line
+(global-set-key (kbd "C-S-o") 'ts/insert-line-before)
 
+
+;; [F5] to trigger revert-buffer without confirmation
+(defun revert-buffer-no-confirm (&optional force-reverting)
+  "Interactive call to 'revert-buffer'.
+
+  Ignoring the auto-save file and not requesting for confirmation.
+  When the current buffer is modified, the command refuses to
+  revert it, unless you specify the optional argument: 
+  FORCE-REVERTING to true."
+  (interactive "P")
+  (if (or force-reverting (not (buffer-modified-p)))
+      (revert-buffer :ignore-auto :noconfirm)
+    (error "The buffer has been modified")))
+(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+
+
+;; PACKAGES
 
 ;; Dired -- ignore some files
 (require 'dired-x)
@@ -147,84 +184,20 @@
 (setq dired-omit-files "^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Theme
-(use-package professional-theme
+;; Based on the number of characters used for search, ace-isearch uses
+;; different mode.
+(use-package ace-isearch
   :ensure t
   :config
-  (load-theme 'professional t))
+  (global-ace-isearch-mode 1))
 
 
-(use-package popup
+(use-package ace-jump-mode
   :ensure t)
-
-
-(use-package flycheck
-  :ensure t
-  :init
-  (global-flycheck-mode))
-
-
-(use-package flyckeck-popup-tip
-  :requires (flycheck-mode popup)
-  :config
-  (with-eval-after-load 'flycheck
-    (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)))
-
-
-(use-package flyspell
-  :hook ((text-mode) . flyspell-mode))
-
-
-(use-package flyspell-prog
-  :hook ((prog-mode) . flyspell-prog-mode))
-
-
-(use-package magit
-  :ensure t)
-
-
-(use-package highlight-indent-guides
-  :ensure t
-  :hook ((python-mode web-mode emacs-lisp-mode) . highlight-indent-guides-mode)
-  :config
-  ;; (setq highlight-indent-guides-auto-enabled nil)
-  ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
-  (setq highlight-indent-guides-method 'character
-        highlight-indent-guides-responsive 'top
-        highlight-indent-guides-delay 0
-        highlight-indent-guides-auto-enabled nil)
-  (set-face-background 'highlight-indent-guides-character-face "light yellow")
-  (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
-  (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
-  (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
-
-
-(use-package auto-complete
-  :ensure t
-  :config
-  ;; (setq ac-show-menu-immediately-on-auto-complete t)
-  (setq ac-max-width 0.35)
-  (ac-config-default))
-
-
-(use-package neotree
-  :ensure t
-  :init
-  (setq neo-hidden-regexp-list '("^\\."
-                                 "\\.cs\\.meta$"
-                                 "\\.pyc$"
-                                 "~$"
-                                 "^#.*#$"
-                                 "\\.elc$"
-                                 "^__pycache__$"))
-  :config
-  (global-set-key [f8] 'neotree-toggle)
-  (setq neo-smart-open t)
-  (neotree-toggle))
 
 
 (use-package ansible
+  :after (yaml-mode)
   :ensure t
   :init
   (defun find-vault-password-file (name)
@@ -249,6 +222,58 @@
    (concat my-lispdir "any-ini-mode.el")))
 
 
+(use-package auto-complete
+  :ensure t
+  :config
+  ;; (setq ac-show-menu-immediately-on-auto-complete t)
+  (setq ac-max-width 0.35)
+  (ac-config-default))
+
+
+;; if using multiple virtual env, this might become useful:
+;;
+;;   http://stackoverflow.com/questions/21246218/how-can-i-make-emacs-jedi-use-project-specific-virtualenvs
+;; (setq jedi:server-args (list (or (buffer-file-name) default-directory)))
+;; (push "--sys-path" jedi:server-args)
+;; (message "for jedi:server-args %s" jedi:server-args)
+
+;; black -- The opinionated Python code formatter
+;;
+;; Need `pip install black` to actually use it.
+;;
+;; To activate blacken-mode per project basis, place
+;;
+;;   ((python-mode . ((eval . (blacken-mode 1)))))
+;;
+;; in .dir-locals.el.
+(use-package blacken
+  :after python
+  :if (not (version< emacs-version "25.2"))
+  :ensure t)
+
+
+(use-package cython-mode
+  :after python
+  :ensure t)
+
+
+(use-package dockerfile-mode
+  :ensure t)
+
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+
+
+(use-package flyckeck-popup-tip
+  :after (flycheck-mode popup)
+  :config
+  (with-eval-after-load 'flycheck
+    (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)))
+
+
 ;; Need shellcheck: apt install shellcheck
 (use-package flymake-shellcheck
   :if (executable-find "shellcheck")
@@ -262,6 +287,123 @@
   (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
   (add-hook 'sh-mode-hook 'highlight-indent-guides-mode))
+
+
+(use-package flyspell
+  :hook ((text-mode) . flyspell-mode))
+
+
+(use-package flyspell-prog
+  :after (flyspell)
+  :hook ((prog-mode) . flyspell-prog-mode))
+
+
+(use-package helm-swoop
+  :ensure t)
+
+
+(use-package highlight-indent-guides
+  :ensure t
+  :hook ((python-mode web-mode emacs-lisp-mode) . highlight-indent-guides-mode)
+  :config
+  ;; (setq highlight-indent-guides-auto-enabled nil)
+  ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-responsive 'top
+        highlight-indent-guides-delay 0
+        highlight-indent-guides-auto-enabled nil)
+  (set-face-background 'highlight-indent-guides-character-face "light yellow")
+  (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
+  (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
+  (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
+
+
+;; jedi.el -- Autocompletion for python
+;;
+;; On first install, the following needs to be run within Emacs:
+;;
+;;   M-x jedi:install-server RET
+(use-package jedi
+  :after (epc popup)
+  :ensure t
+  :hook ((python-mode) . jedi:setup) 
+  :init
+  (add-to-list 'ac-sources 'ac-source-jedi-direct)
+  :config
+  (setq jedi:complete-on-dot t
+        jedi:tooltip-method '(popup)))
+
+
+(use-package json-mode
+  :ensure t
+  :mode "\\.json\\'" "\\.json.j2\\'"
+  :init
+  (setq js-indent-level 3))
+
+
+;; Allows browser preview with C-c C-c v
+(use-package markdown-mode
+  :ensure t)
+
+
+(use-package magit
+  :ensure t)
+
+
+(use-package neotree
+  :ensure t
+  :init
+  (setq neo-hidden-regexp-list '("^\\."
+                                 "\\.cs\\.meta$"
+                                 "\\.pyc$"
+                                 "~$"
+                                 "^#.*#$"
+                                 "\\.elc$"
+                                 "^__pycache__$"))
+  :config
+  (global-set-key [f8] 'neotree-toggle)
+  (setq neo-smart-open t)
+  (neotree-toggle))
+
+
+(use-package org
+  :ensure t
+  :init
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+  :config
+  (setq org-support-shift-select t))
+
+
+(use-package plantuml-mode
+  :if (not (version< emacs-version "25.0"))
+  :ensure t
+  :init
+  (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
+
+;; For Flycheck: pip install flake8
+(use-package python
+  :ensure t
+  :config
+  (when (executable-find "ipython")
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i"))
+
+  ;; Remove trailing whitespace on save
+  (defun remove-whitespaces ()
+    (add-hook 'local-write-file-hooks
+              '(lambda () (save-excursion (delete-trailing-whitespace)))))
+  (defun my-python-mode-hook ()
+    (remove-whitespaces))
+  (add-hook 'python-mode-hook 'my-python-mode-hook))
+
+
+(use-package sql-upcase
+  :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
+   (concat my-lispdir "sql-upcase.el"))
+  :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -310,172 +452,6 @@
   (flycheck-add-mode 'css-csslint 'web-mode))
 
 
-(use-package plantuml-mode
-  :if (not (version< emacs-version "25.0"))
-  :ensure t
-  :init
-  (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
-
-
-(use-package dockerfile-mode
-  :ensure t)
-
-
-(use-package json-mode
-  :ensure t
-  :mode "\\.json\\'" "\\.json.j2\\'"
-  :init
-  (setq js-indent-level 3))
-
-
-;; Allows browser preview with C-c C-c v
-(use-package markdown-mode
-  :ensure t)
-
-
 (use-package yaml-mode
   :ensure t
   :mode "\\.ya?ml\\'"  "\\.ya?ml.j2\\'")
-
-
-;; For Flycheck: pip install flake8
-(use-package python
-  :ensure t
-  :config
-  (when (executable-find "ipython")
-    (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "-i"))
-
-  ;; Remove trailing whitespace on save
-  (defun remove-whitespaces ()
-    (add-hook 'local-write-file-hooks
-              '(lambda () (save-excursion (delete-trailing-whitespace)))))
-  (defun my-python-mode-hook ()
-    (remove-whitespaces))
-  (add-hook 'python-mode-hook 'my-python-mode-hook))
-
-(use-package cython-mode
-  :requires python
-  :ensure t)
-
-;; jedi.el -- Autocompletion for python
-;;
-;; On first install, the following needs to be run within Emacs:
-;;
-;;   M-x jedi:install-server RET
-(use-package epc
-  :ensure t)
-
-(use-package jedi
-  :requires (epc popup)
-  :ensure t
-  :hook ((python-mode) . jedi:setup) 
-  :init
-  (add-to-list 'ac-sources 'ac-source-jedi-direct)
-  :config
-  (setq jedi:complete-on-dot t
-        jedi:tooltip-method '(popup)))
-
-;; if using multiple virtual env, this might become useful:
-;;
-;;   http://stackoverflow.com/questions/21246218/how-can-i-make-emacs-jedi-use-project-specific-virtualenvs
-;; (setq jedi:server-args (list (or (buffer-file-name) default-directory)))
-;; (push "--sys-path" jedi:server-args)
-;; (message "for jedi:server-args %s" jedi:server-args)
-
-;; black -- The opinionated Python code formatter
-;;
-;; Need `pip install black` to actually use it.
-;;
-;; To activate blacken-mode per project basis, place
-;;
-;;   ((python-mode . ((eval . (blacken-mode 1)))))
-;;
-;; in .dir-locals.el.
-(use-package blacken
-  :requires python
-  :if (not (version< emacs-version "25.2"))
-  :ensure t)
-
-
-;; ace-isearch -- Enhanced isearch
-;;
-;; Based on the number of characters used for search, ace-isearch uses
-;; different mode.
-(use-package ace-jump-mode
-  :ensure t)
-
-(use-package helm-swoop
-  :ensure t)
-
-(use-package ace-isearch
-  :ensure t
-  :config
-  (global-ace-isearch-mode 1))
-
-
-(use-package sql-upcase
-  :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
-   (concat my-lispdir "sql-upcase.el"))
-  :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CUSTOM FUNCTIONS
-
-(defun ts/insert-line-before (times)
-  "Insert a newline(s) above the line containing the cursor."
-  (interactive "p") ; called from M-x
-  (save-excursion ; store position
-    (move-beginning-of-line 1)
-    (newline times))) ; insert new line
-(global-set-key (kbd "C-S-o")
-                'ts/insert-line-before)
-
-
-;; Assign [F5] to trigger revert-buffer without confirmation
-(defun revert-buffer-no-confirm (&optional force-reverting)
-  "Interactive call to 'revert-buffer'.
-
-  Ignoring the auto-save file and not requesting for confirmation.
-  When the current buffer is modified, the command refuses to
-  revert it, unless you specify the optional argument: 
-  FORCE-REVERTING to true."
-  (interactive "P")
-  (if (or force-reverting (not (buffer-modified-p)))
-      (revert-buffer :ignore-auto :noconfirm)
-    (error "The buffer has been modified")))
-(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org
-
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;; (unless (package-installed-p 'org)
-;;   (package-refresh-contents) (package-install 'org))
-
-;; (setq org-support-shift-select t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SCALA
-
-;; (unless (package-installed-p 'scala-mode)
-;;   (package-refresh-contents) (package-install 'scala-mode))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; C
-;; (setq c-mode-hook
-;;       (function (lambda ()
-;;                   (setq indent-tabs-mode nil)
-;;                   (setq c-indent-level 4))))
-
-
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
