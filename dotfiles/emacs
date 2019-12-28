@@ -35,7 +35,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (blacken blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -140,16 +140,18 @@
   (load-theme 'professional t))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flyspell
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
-
-
 (use-package flycheck
   :ensure t
   :init
   (global-flycheck-mode))
+
+
+(use-package flyspell
+  :hook ((text-mode) . flyspell-mode))
+
+
+(use-package flyspell-prog
+  :hook ((prog-mode) . flyspell-prog-mode))
 
 
 (use-package magit
@@ -158,11 +160,12 @@
 
 (use-package highlight-indent-guides
   :ensure t
+  :hook ((python-mode web-mode emacs-lisp-mode) . highlight-indent-guides-mode)
   :config
-  (setq highlight-indent-guides-method 'character)
   ;; (setq highlight-indent-guides-auto-enabled nil)
   ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
-  (setq highlight-indent-guides-responsive 'top
+  (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-responsive 'top
         highlight-indent-guides-delay 0
         highlight-indent-guides-auto-enabled nil)
   (set-face-background 'highlight-indent-guides-character-face "light yellow")
@@ -213,18 +216,18 @@
 
 
 ;; Need shellcheck: apt install shellcheck
-(when (executable-find "shellcheck")
-  (use-package flymake-shellcheck
-    :commands flymake-shellcheck-load
-    :init
-    (setq sh-basic-offset 2
-          sh-indentation 2)
-    (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
-    (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
-    (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
-    (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
-    (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
-    (add-hook 'sh-mode-hook 'highlight-indent-guides-mode)))
+(use-package flymake-shellcheck
+  :if (executable-find "shellcheck")
+  :commands flymake-shellcheck-load
+  :init
+  (setq sh-basic-offset 2
+        sh-indentation 2)
+  (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
+  (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
+  (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
+  (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
+  (add-hook 'sh-mode-hook 'highlight-indent-guides-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -240,11 +243,11 @@
   :ensure t
   :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'"
   :init
-  (setq web-mode-code-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-script-padding 2)
-  (setq web-mode-style-padding 2)
+  (setq web-mode-code-indent-offset 2
+        web-mode-css-indent-offset 2
+        web-mode-markup-indent-offset 2
+        web-mode-script-padding 2
+        web-mode-style-padding 2)
   :config
   (defun my-web-mode-hook ()
     (cond ((string= web-mode-content-type "html")
@@ -257,12 +260,11 @@
                (string= web-mode-content-type "jsx"))
            (when (executable-find "eslint")
              (flycheck-select-checker 'javascript-eslint))
-           (web-mode-set-content-type "jsx")))
-    (highlight-indent-guides-mode))
+           (web-mode-set-content-type "jsx"))))
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 
   (require 'flycheck)
-
+  
   ;; Disable checkers not in use
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers '(json-jsonlist)))
@@ -274,13 +276,10 @@
   (flycheck-add-mode 'css-csslint 'web-mode))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PlantUML
-
-(if (version< emacs-version "25.0")
-    (message "is before 25.0")
-  (unless (package-installed-p 'plantuml-mode)
-    (package-refresh-contents) (package-install 'plantuml-mode))
+(use-package plantuml-mode
+  :if (not (version< emacs-version "25.0"))
+  :ensure t
+  :init
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
 
 
@@ -316,7 +315,6 @@
 ;; SQL
 (require 'sql)
 
-
 ;; Autocompletion
 (if (file-exists-p "~/.emacs.d/lisp/sql-upcase.el")
     (progn (require 'sql-upcase)
@@ -325,65 +323,31 @@
              (add-hook 'sql-interactive-mode-hook 'sql-upcase-mode))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; PYTHON
+;; For Flycheck: pip install flake8
+(use-package python
+  :ensure t
+  :config
+  (when (executable-find "ipython")
+    (setq python-shell-interpreter "ipython"
+          python-shell-interpreter-args "-i"))
 
-;;(setq python-shell-interpreter "python3")
+  ;; Remove trailing whitespace on save
+  (defun remove-whitespaces ()
+    (add-hook 'local-write-file-hooks
+              '(lambda () (save-excursion (delete-trailing-whitespace)))))
+  (defun my-python-mode-hook ()
+    (remove-whitespaces))
+  (add-hook 'python-mode-hook 'my-python-mode-hook))
 
-;; python-mode
-(unless (package-installed-p 'python)
-  (package-refresh-contents) (package-install 'python))
-(require 'python)
-;; (load-library "python")
-;; (autoload 'python-mode "python-mode" "Python Mode." t)
-;; (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
-;; (add-to-list 'interpreter-mode-alist '("python" . python-mode))
-;; (setq interpreter-mode-alist
-;;       (cons '("python" . python-mode)
-;;             interpreter-mode-alist)
-;;       python-mode-hook
-;;       '(lambda () (progn
-;;                     (set-variable 'py-indent-offset 4)
-;;                     (set-variable 'indent-tabs-mode nil))))
-
-;; cython-mode
-(unless (package-installed-p 'cython-mode)
-  (package-refresh-contents) (package-install 'cython-mode))
-(require 'cython-mode)
-
-;; Use ipython if available
-(when (executable-find "ipython")
-  (setq python-shell-interpreter "ipython"
-        python-shell-interpreter-args "-i"))
-
-;; Remove trailing whitespace on save
-(add-hook 'python-mode-hook
-          (lambda ()
-            (add-hook 'local-write-file-hooks
-                      '(lambda ()
-                         (save-excursion
-                           (delete-trailing-whitespace))))))
-
-;; highlight-indent-guides-mode
-(add-hook 'python-mode-hook 'highlight-indent-guides-mode)
-
-;; flycheck -- Python code checking
-;;
-;; Need `pip install flake8`
-;;
-(add-hook 'python-mode-hook 'flycheck-mode)
-
-;; Spell checking
-(add-hook 'python-mode-hook
-          (lambda ()
-            (flyspell-prog-mode)))
+(use-package cython-mode
+  :requires python
+  :ensure t)
 
 ;; jedi.el -- Autocompletion for python
 ;;
 ;; On first install, the following needs to be run within Emacs:
 ;;
 ;;   M-x jedi:install-server RET
-
 (use-package epc
   :ensure t)
 
@@ -391,13 +355,14 @@
   :ensure t)
 
 (use-package jedi
+  :requires (epc popup)
   :ensure t
+  :hook ((python-mode) . jedi:setup) 
   :init
-  (add-hook 'python-mode-hook #'jedi:setup)
   (add-to-list 'ac-sources 'ac-source-jedi-direct)
   :config
-  (setq jedi:complete-on-dot t)
-  (setq jedi:tooltip-method '(popup)))
+  (setq jedi:complete-on-dot t
+        jedi:tooltip-method '(popup)))
 
 ;; if using multiple virtual env, this might become useful:
 ;;
@@ -415,10 +380,10 @@
 ;;   ((python-mode . ((eval . (blacken-mode 1)))))
 ;;
 ;; in .dir-locals.el.
-(if (version< emacs-version "25.2")
-    (message "is before 25.2")
-  (use-package blacken
-    :ensure t))
+(use-package blacken
+  :requires python
+  :if (not (version< emacs-version "25.2"))
+  :ensure t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
