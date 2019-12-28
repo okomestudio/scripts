@@ -35,7 +35,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck blacken plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (blacken blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -133,30 +133,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flyspell
-
-(dolist (hook '(text-mode-hook))
-  (add-hook hook (lambda () (flyspell-mode 1))))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; flycheck
-
-(use-package flycheck
-             :ensure t
-             :init (global-flycheck-mode))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Magit for Git
-
-(use-package magit
-  :ensure t)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Theme
-
 (use-package professional-theme
   :ensure t
   :config
@@ -164,7 +141,20 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; highlight-indent-guides
+;; flyspell
+(dolist (hook '(text-mode-hook))
+  (add-hook hook (lambda () (flyspell-mode 1))))
+
+
+(use-package flycheck
+  :ensure t
+  :init
+  (global-flycheck-mode))
+
+
+(use-package magit
+  :ensure t)
+
 
 (use-package highlight-indent-guides
   :ensure t
@@ -178,12 +168,9 @@
   (set-face-background 'highlight-indent-guides-character-face "light yellow")
   (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
   (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
-  (set-face-foreground 'highlight-indent-guides-top-character-face "gray")
-  )
+  (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; auto-complete
 (use-package auto-complete
   :ensure t
   :config
@@ -208,46 +195,36 @@
   (neotree-toggle))
 
 
-;; ansible-mode
-(unless (package-installed-p 'ansible)
-  (package-refresh-contents) (package-install 'ansible))
-(defun find-vault-password (name)
-  (setq dir (locate-dominating-file default-directory name))
-  (if dir
-      (concat dir name)
-    "~/vault_pass"))
-(defun setup-ansible-mode ()
-  (interactive)
-  (setq ansible::vault-password-file (find-vault-password "vault-password"))
-  (ansible 1))
-(add-hook 'yaml-mode-hook 'setup-ansible-mode)
-
-(add-hook 'ansible-hook 'ansible::auto-decrypt-encrypt)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Shell/BASH
-
-(defun setup-sh-mode ()
-  (interactive)
-  (setq sh-basic-offset 2
-        sh-indentation 2))
-(add-hook 'sh-mode-hook 'setup-sh-mode)
-(add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
-(add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
-(add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
-(add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
-
-(add-hook 'sh-mode-hook 'highlight-indent-guides-mode)
+(use-package ansible
+  :ensure t
+  :init
+  (defun find-vault-password-file (name)
+    (setq dir (locate-dominating-file default-directory name))
+    (if dir (concat dir name) "~/vault_pass"))
+  (defun my-ansible-mode-hook ()
+    (if (file-exists-p (locate-dominating-file
+                        default-directory "ansible.cfg"))
+        (progn
+          (setq ansible-vault-password-file
+                (find-vault-password-file "vault-password"))
+          (ansible 1))))
+  (add-hook 'yaml-mode-hook 'my-ansible-mode-hook)
+  (add-hook 'ansible-hook 'ansible-auto-decrypt-encrypt))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; C
-
-(setq c-mode-hook
-      (function (lambda ()
-                  (setq indent-tabs-mode nil)
-                  (setq c-indent-level 4))))
+;; Need shellcheck: apt install shellcheck
+(when (executable-find "shellcheck")
+  (use-package flymake-shellcheck
+    :commands flymake-shellcheck-load
+    :init
+    (setq sh-basic-offset 2
+          sh-indentation 2)
+    (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
+    (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
+    (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
+    (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
+    (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
+    (add-hook 'sh-mode-hook 'highlight-indent-guides-mode)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -259,7 +236,6 @@
 ;;   $ sudo apt install tidy
 ;;   $ sudo npm install -g csslint
 ;;
-
 (use-package web-mode
   :ensure t
   :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'"
@@ -315,57 +291,25 @@
            (add-to-list 'auto-mode-alist '(".*\\.service$" . any-ini-mode))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Markdown
-;;
-;; - Allows browser preview with C-c C-c v
-;;
-
-(unless (package-installed-p 'markdown-mode)
-  (package-refresh-contents) (package-install 'markdown-mode))
+(use-package dockerfile-mode
+  :ensure t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Dockerfile
-
-(unless (package-installed-p 'dockerfile-mode)
-  (package-refresh-contents) (package-install 'dockerfile-mode))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; JSON
-
-(unless (package-installed-p 'json-mode)
-  (package-refresh-contents) (package-install 'json-mode))
-(add-to-list 'auto-mode-alist '("\\.json.j2\\'" . json-mode))
-(add-hook 'json-mode-hook
-          (lambda ()
-            (make-local-variable 'js-indent-level)
-            (setq js-indent-level 2)))
+(use-package json-mode
+  :ensure t
+  :mode "\\.json\\'" "\\.json.j2\\'"
+  :init
+  (setq js-indent-level 3))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; YAML
-
-(unless (package-installed-p 'yaml-mode)
-  (package-refresh-contents) (package-install 'yaml-mode))
-(add-to-list 'auto-mode-alist '("\\.yml.j2\\'" . yaml-mode))
+;; Allows browser preview with C-c C-c v
+(use-package markdown-mode
+  :ensure t)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org
-
-;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-;; (unless (package-installed-p 'org)
-;;   (package-refresh-contents) (package-install 'org))
-
-;; (setq org-support-shift-select t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; SCALA
-
-;; (unless (package-installed-p 'scala-mode)
-;;   (package-refresh-contents) (package-install 'scala-mode))
+(use-package yaml-mode
+  :ensure t
+  :mode "\\.ya?ml\\'"  "\\.ya?ml.j2\\'")
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -471,11 +415,10 @@
 ;;   ((python-mode . ((eval . (blacken-mode 1)))))
 ;;
 ;; in .dir-locals.el.
-
 (if (version< emacs-version "25.2")
     (message "is before 25.2")
-  (unless (package-installed-p 'blacken-mode)
-    (package-refresh-contents) (package-install 'blacken)))
+  (use-package blacken
+    :ensure t))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -533,3 +476,26 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org
+
+;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+;; (unless (package-installed-p 'org)
+;;   (package-refresh-contents) (package-install 'org))
+
+;; (setq org-support-shift-select t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; SCALA
+
+;; (unless (package-installed-p 'scala-mode)
+;;   (package-refresh-contents) (package-install 'scala-mode))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; C
+;; (setq c-mode-hook
+;;       (function (lambda ()
+;;                   (setq indent-tabs-mode nil)
+;;                   (setq c-indent-level 4))))
