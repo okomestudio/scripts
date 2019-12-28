@@ -161,7 +161,13 @@
   :ensure t
   :config
   (setq highlight-indent-guides-method 'character)
-  (setq highlight-indent-guides-auto-character-face-perc 25))
+  (setq highlight-indent-guides-responsive 'top
+        highlight-indent-guides-delay 0
+        highlight-indent-guides-auto-enabled nil)
+  (set-face-background 'highlight-indent-guides-character-face "light yellow")
+  (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
+  (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
+  (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
