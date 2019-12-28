@@ -256,55 +256,51 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; JavaScript/HTML/CSS
-
-(unless (package-installed-p 'web-mode)
-  (package-refresh-contents) (package-install 'web-mode))
-
-(add-to-list 'auto-mode-alist '("\\.css\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.js\\'" . web-mode))
-
-(setq web-mode-markup-indent-offset 2)
-(setq web-mode-css-indent-offset 2)
-(setq web-mode-code-indent-offset 2)
-
-(setq web-mode-style-padding 2)
-(setq web-mode-script-padding 2)
-
-;; Flycheck configuration
-(require 'flycheck)
-
-;; Disable checkers not in use
-(setq-default flycheck-disabled-checkers
-              (append flycheck-disabled-checkers '(json-jsonlist)))
-(setq-default flycheck-disabled-checkers
-              (append flycheck-disabled-checkers '(javascript-jshint)))
-
+;; web-mode for JavaScript, HTML, and CSS
+;;
 ;; For linters, install the following:
 ;;
 ;;   $ sudo npm install -g eslint babel-eslint eslint-plugin-react
 ;;   $ sudo apt install tidy
 ;;   $ sudo npm install -g csslint
 ;;
-(flycheck-add-mode 'javascript-eslint 'web-mode)
-(flycheck-add-mode 'html-tidy 'web-mode)
-(flycheck-add-mode 'css-csslint 'web-mode)
 
-(add-hook 'web-mode-hook
-          (lambda ()
-            (cond ((string= web-mode-content-type "html")
-                   (when (executable-find "tidy")
-                     (flycheck-select-checker 'html-tidy)))
-                  ((string= web-mode-content-type "css")
-                   (when (executable-find "csslint")
-                     (flycheck-select-checker 'css-css-lint)))
-                  ((or (string= web-mode-content-type "javascript")
-                       (string= web-mode-content-type "jsx"))
-                   (when (executable-find "eslint")
-                     (flycheck-select-checker 'javascript-eslint))
-                   (web-mode-set-content-type "jsx")))
-            (highlight-indent-guides-mode)))
+(use-package web-mode
+  :ensure t
+  :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'"
+  :init
+  (setq web-mode-code-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-script-padding 2)
+  (setq web-mode-style-padding 2)
+  :config
+  (defun my-web-mode-hook ()
+    (cond ((string= web-mode-content-type "html")
+           (when (executable-find "tidy")
+             (flycheck-select-checker 'html-tidy)))
+          ((string= web-mode-content-type "css")
+           (when (executable-find "csslint")
+             (flycheck-select-checker 'css-css-lint)))
+          ((or (string= web-mode-content-type "javascript")
+               (string= web-mode-content-type "jsx"))
+           (when (executable-find "eslint")
+             (flycheck-select-checker 'javascript-eslint))
+           (web-mode-set-content-type "jsx")))
+    (highlight-indent-guides-mode))
+  (add-hook 'web-mode-hook 'my-web-mode-hook)
+
+  (require 'flycheck)
+
+  ;; Disable checkers not in use
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers '(json-jsonlist)))
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers '(javascript-jshint)))
+
+  (flycheck-add-mode 'javascript-eslint 'web-mode)
+  (flycheck-add-mode 'html-tidy 'web-mode)
+  (flycheck-add-mode 'css-csslint 'web-mode))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
