@@ -102,15 +102,30 @@
 
 (package-initialize)
 
-
-;; custom emacs lisp files
-(if (file-directory-p "~/.emacs.d/lisp/")
-    (add-to-list 'load-path "~/.emacs.d/lisp/"))
-
-
-;; use-package
 (unless (package-installed-p 'use-package)
   (package-refresh-contents) (package-install 'use-package))
+
+(use-package url
+  :ensure t)
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Utility variables and functions
+
+;; Custom emacs lisp directory for .el files
+(defconst my-lispdir "~/.emacs.d/lisp/")
+(if (not (file-directory-p my-lispdir))
+    (make-directory my-lispdir :parents))
+(if (file-directory-p my-lispdir)
+    (add-to-list 'load-path my-lispdir))
+
+
+(defun ensure-downloaded-file (src dest)
+  "Download a file from a URL and save to the disk.
+
+  SRC is the source URL, DEST is the destination file path."
+  (if (not (file-exists-p dest))
+      (url-copy-file src dest)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -226,6 +241,14 @@
   (add-hook 'ansible-hook 'ansible-auto-decrypt-encrypt))
 
 
+(use-package any-ini-mode
+  :mode ".*\\.ini$" ".*\\.conf$" ".*\\.service$"
+  :init
+  (ensure-downloaded-file
+   "https://www.emacswiki.org/emacs/download/any-ini-mode.el"
+   (concat my-lispdir "any-ini-mode.el")))
+
+
 ;; Need shellcheck: apt install shellcheck
 (use-package flymake-shellcheck
   :if (executable-find "shellcheck")
@@ -292,13 +315,6 @@
   :ensure t
   :init
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; any-ini-mode
-(if (file-exists-p "~/.emacs.d/lisp/any-ini-mode.el")
-    (progn (require 'any-ini-mode)
-           (add-to-list 'auto-mode-alist '(".*\\.service$" . any-ini-mode))))
 
 
 (use-package dockerfile-mode
