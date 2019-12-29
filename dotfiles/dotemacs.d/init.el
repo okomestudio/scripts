@@ -309,6 +309,7 @@
   ;; (setq highlight-indent-guides-auto-enabled nil)
   ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
   (setq highlight-indent-guides-method 'character
+        highlight-indent-guides-character ?\┆
         highlight-indent-guides-responsive 'top
         highlight-indent-guides-delay 0
         highlight-indent-guides-auto-enabled nil)
