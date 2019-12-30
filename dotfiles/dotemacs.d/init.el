@@ -339,7 +339,7 @@
   :ensure t
   :mode "\\.json\\'" "\\.json.j2\\'"
   :init
-  (setq js-indent-level 3))
+  (setq js-indent-level 2))
 
 
 ;; Allows browser preview with C-c C-c v
