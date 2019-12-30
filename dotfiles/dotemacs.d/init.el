@@ -425,6 +425,10 @@
         web-mode-markup-indent-offset 2
         web-mode-script-padding 2
         web-mode-style-padding 2)
+  (add-to-list web-mode-ac-sources-alist
+               '(("css", (ac-sources-css-property))
+                 ("html", (ac-source-words-in-buffer
+                           ac-source-abbrev))))
   :config
   (defun my-web-mode-hook ()
     (cond ((string= web-mode-content-type "html")
