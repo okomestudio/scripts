@@ -31,7 +31,7 @@ function bashrc() {
 # Activate virtual environment, if any:
 if [ -f .python-version ]; then
   pyenv activate
-  echo "pyenv activated the $(pyenv version-name) environment"
+  echo "pyenv activated the \$(pyenv version-name) environment"
 fi
 EOF
   set -e
