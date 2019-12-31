@@ -13,18 +13,18 @@ This is a template for bash script.
   optarg2  Optional argument description
 
 USAGE
-  exit ${1:-1}
+  exit "${1:-1}"
 }
 
 
 function error() {
   >&2 echo "ERROR: $1"
-  exit ${2:-1}
+  exit "${2:-1}"
 }
 
 
 function main() {
-  echo "$@"        
+  echo "$@"
 }
 
 
@@ -41,6 +41,6 @@ while getopts "h" opt; do
       ;;
   esac
 done
-shift $(($OPTIND - 1))
+shift $((OPTIND - 1))
 
 main "$@"
