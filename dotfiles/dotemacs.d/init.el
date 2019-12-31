@@ -141,6 +141,14 @@
       (url-copy-file src dest)))
 
 
+(defun remove-trailing-whitespaces-on-save ()
+  "Remove trailing whitespaces on save.
+
+  Use this function with a mode hook."
+  (add-hook 'local-write-file-hooks
+            '(lambda () (save-excursion (delete-trailing-whitespace)))))
+
+
 ;; CUSTOM KEYBINDINGS
 
 ;; Activate windmove to switch to another window by M-<U|D|L|R>
@@ -394,15 +402,7 @@
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "-i"))
-
-  ;; Remove trailing whitespace on save
-  (defun remove-whitespaces ()
-    (add-hook 'local-write-file-hooks
-              '(lambda () (save-excursion (delete-trailing-whitespace)))))
-  (defun my-python-mode-hook ()
-    (remove-whitespaces))
-  (add-hook 'python-mode-hook 'my-python-mode-hook))
+          python-shell-interpreter-args "-i")))
 
 
 (use-package sql-upcase
@@ -468,6 +468,9 @@
   :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
 
+;; Global prog-mode hook
+(add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
+
+
 (provide 'init)
 ;;; init.el ends here
-
