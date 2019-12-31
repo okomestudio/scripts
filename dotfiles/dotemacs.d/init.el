@@ -465,7 +465,7 @@
 
 (use-package yaml-mode
   :ensure t
-  :mode "\\.ya?ml\\'"  "\\.ya?ml.j2\\'")
+  :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
 
 (provide 'init)
