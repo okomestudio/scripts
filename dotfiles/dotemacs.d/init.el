@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode auto-complete use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode jedi flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -68,14 +68,14 @@
 (when window-system
   (setq monn (length (display-monitor-attributes-list)))
   (if (> (/ (display-pixel-width) monn) 2550)
-      (create-fontset-from-ascii-font 
+      (create-fontset-from-ascii-font
        "Hack:weight=normal:slant=normal:size=18" nil "hackandjp")
-    (create-fontset-from-ascii-font 
+    (create-fontset-from-ascii-font
      "Hack:weight=normal:slant=normal:size=14" nil "hackandjp"))
   (set-fontset-font "fontset-hackandjp"
 		                'unicode
 		                (font-spec :family "Noto Sans Mono CJK JP")
-		                nil 
+		                nil
 		                'append)
   (add-to-list 'default-frame-alist '(font . "fontset-hackandjp")))
 
@@ -175,7 +175,7 @@
 
   Ignoring the auto-save file and not requesting for confirmation.
   When the current buffer is modified, the command refuses to
-  revert it, unless you specify the optional argument: 
+  revert it, unless you specify the optional argument:
   FORCE-REVERTING to true."
   (interactive "P")
   (if (or force-reverting (not (buffer-modified-p)))
@@ -230,14 +230,6 @@
    (concat my-lispdir "any-ini-mode.el")))
 
 
-(use-package auto-complete
-  :ensure t
-  :config
-  ;; (setq ac-show-menu-immediately-on-auto-complete t)
-  (setq ac-max-width 0.35)
-  (ac-config-default))
-
-
 ;; if using multiple virtual env, this might become useful:
 ;;
 ;;   http://stackoverflow.com/questions/21246218/how-can-i-make-emacs-jedi-use-project-specific-virtualenvs
@@ -257,6 +249,24 @@
 (use-package blacken
   :after python
   :if (not (version< emacs-version "25.2"))
+  :ensure t)
+
+
+(use-package company
+  :ensure t
+  :init
+  (global-company-mode)
+  (setq company-minimum-prefix-length 2)
+  (setq company-selection-wrap-around t))
+
+
+(use-package company-jedi
+  :after (company)
+  :ensure t)
+
+
+(use-package company-tern
+  :after (company)
   :ensure t)
 
 
@@ -332,15 +342,15 @@
 ;; On first install, the following needs to be run within Emacs:
 ;;
 ;;   M-x jedi:install-server RET
-(use-package jedi
-  :after (epc popup)
+(use-package jedi-core
+  :after (company-jedi)
   :ensure t
-  :hook ((python-mode) . jedi:setup) 
+  :hook ((python-mode) . jedi:setup)
   :init
-  (add-to-list 'ac-sources 'ac-source-jedi-direct)
+  (add-to-list 'company-backends 'company-jedi)
   :config
   (setq jedi:complete-on-dot t
-        jedi:tooltip-method '(popup)))
+        jedi:use-shortcuts t))
 
 
 (use-package json-mode
@@ -421,6 +431,7 @@
 ;;   $ sudo npm install -g eslint babel-eslint eslint-plugin-react
 ;;   $ sudo apt install tidy
 ;;   $ sudo npm install -g csslint
+;;   $ sudo npm install -g tern
 ;;
 (use-package web-mode
   :ensure t
@@ -431,10 +442,11 @@
         web-mode-markup-indent-offset 2
         web-mode-script-padding 2
         web-mode-style-padding 2)
-  (add-to-list web-mode-ac-sources-alist
-               '(("css", (ac-sources-css-property))
-                 ("html", (ac-source-words-in-buffer
-                           ac-source-abbrev))))
+
+  (add-to-list 'company-backends '(company-css
+                                   company-web-html
+                                   company-tern
+                                   company-files))
   :config
   (defun my-web-mode-hook ()
     (cond ((string= web-mode-content-type "html")
@@ -447,11 +459,12 @@
                (string= web-mode-content-type "jsx"))
            (when (executable-find "eslint")
              (flycheck-select-checker 'javascript-eslint))
-           (web-mode-set-content-type "jsx"))))
+           (web-mode-set-content-type "jsx")
+           (tern-mode))))
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 
   (require 'flycheck)
-  
+
   ;; Disable checkers not in use
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers '(json-jsonlist)))
