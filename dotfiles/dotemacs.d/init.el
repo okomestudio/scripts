@@ -412,7 +412,8 @@
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "-i")))
+          python-shell-interpreter-args "-i"))
+  (add-hook 'python-mode-hook 'flyspell-prog-mode))
 
 
 (use-package sql-upcase
