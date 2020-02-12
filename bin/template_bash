@@ -30,11 +30,8 @@ function main() {
 
 while getopts "h" opt; do
   case $opt in
-    h)
-      usage 0
-      ;;
-    \?)
-      usage
+    h|\?)
+      if [ "$opt" = "h" ]; then usage 0; else usage; fi
       ;;
     :)
       error "Option -$OPTARG requires an argument"
