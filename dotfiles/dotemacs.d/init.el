@@ -490,6 +490,7 @@
 
 ;; Global prog-mode hook
 (add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
+(add-hook 'yaml-mode-hook 'remove-trailing-whitespaces-on-save)
 
 
 (provide 'init)
