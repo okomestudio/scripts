@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -404,6 +404,12 @@
   :ensure t
   :init
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
+
+(use-package py-isort
+  :ensure t
+  :init
+  (add-hook 'before-save-hook 'py-isort-before-save))
 
 
 ;; For Flycheck: pip install flake8
