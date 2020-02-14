@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -322,7 +322,7 @@
 
 (use-package highlight-indent-guides
   :ensure t
-  :hook ((python-mode web-mode emacs-lisp-mode) . highlight-indent-guides-mode)
+  :hook ((python-mode emacs-lisp-mode) . highlight-indent-guides-mode)
   :config
   ;; (setq highlight-indent-guides-auto-enabled nil)
   ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
@@ -406,6 +406,15 @@
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
 
 
+;; JavaScript code formatter
+;;
+;; $ sudo npm install -g prettier
+(use-package prettier-js
+  :ensure t
+  :config
+  (setq prettier-js-args '("--print-width" "88")))
+
+
 (use-package py-isort
   :ensure t
   :init
@@ -442,10 +451,14 @@
 ;;
 (use-package web-mode
   :ensure t
+  :after (prettier-js)
   :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'"
   :init
   (setq web-mode-code-indent-offset 2
         web-mode-css-indent-offset 2
+        web-mode-enable-auto-quoting t
+        web-mode-enable-current-column-highlight t
+        web-mode-enable-current-element-highlight t
         web-mode-markup-indent-offset 2
         web-mode-script-padding 2
         web-mode-style-padding 2)
@@ -467,6 +480,7 @@
            (when (executable-find "eslint")
              (flycheck-select-checker 'javascript-eslint))
            (web-mode-set-content-type "jsx")
+           (prettier-js-mode)
            (tern-mode))))
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 
