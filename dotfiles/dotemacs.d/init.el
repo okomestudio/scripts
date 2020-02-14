@@ -488,6 +488,15 @@
   :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
 
+(use-package yascroll
+  :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/emacsorphanage/yascroll/master/yascroll.el"
+   (concat my-lispdir "yascroll.el"))
+  (require 'yascroll)
+  (global-yascroll-bar-mode 1))
+
+
 ;; Global prog-mode hook
 (add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
 (add-hook 'yaml-mode-hook 'remove-trailing-whitespaces-on-save)
