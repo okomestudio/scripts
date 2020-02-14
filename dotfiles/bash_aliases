@@ -24,6 +24,7 @@ alias l='ls -CF'
 alias la='ls -A'
 alias ll='ls -alh'
 
+alias em='emacs -nw'
 alias open='xdg-open'
 
 
