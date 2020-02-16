@@ -84,7 +84,7 @@
 ;;   http.elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y
 ;;
 ;; This bug should be fixed on and after Emacs version 26.3.
-(setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
+;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
 
 ;; PACKAGE CONFIGURATION
