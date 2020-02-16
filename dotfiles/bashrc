@@ -183,31 +183,30 @@ export PATH
 
 ##############################################################################
 # bash-it customization
-BASH_IT=~/github.com/Bash-it/bash-it
+export BASH_IT=~/github.com/Bash-it/bash-it
 if [ ! -d $BASH_IT ]; then
   return
 fi
 
-POWERLINE_PROMPT_CHAR="$"
-POWERLINE_PYTHON_VENV_CHAR="$(printf %b '\u200b')"
+export BASH_IT_CUSTOM=~/github.com/okomestudio/environment/bash-it
 
-POWERLINE_CWD_COLOR=255
-POWERLINE_HOST_COLOR=195
-POWERLINE_PYTHON_VENV_COLOR=192
-POWERLINE_SCM_CLEAN_COLOR=195
-POWERLINE_SCM_DIRTY_COLOR=225
-POWERLINE_USER_INFO_COLOR=255
+export POWERLINE_PROMPT_CHAR="$"
+export POWERLINE_PYTHON_VENV_CHAR="$(printf %b '\u200b')"
 
-POWERLINE_LEFT_PROMPT="cwd scm python_venv"
-POWERLINE_RIGHT_PROMPT="in_vim battery hostname user_info"
+export POWERLINE_CWD_COLOR=255
+export POWERLINE_HOST_COLOR=195
+export POWERLINE_PYTHON_VENV_COLOR=192
+export POWERLINE_SCM_CLEAN_COLOR=195
+export POWERLINE_SCM_DIRTY_COLOR=225
+export POWERLINE_USER_INFO_COLOR=255
 
-BASH_IT_CUSTOM=~/github.com/okomestudio/environment/bash-it
+export POWERLINE_LEFT_PROMPT="cwd scm python_venv"
+export POWERLINE_RIGHT_PROMPT="in_vim battery hostname user_info"
+
+export SCM_GIT_IGNORE_UNTRACKED=true
 
 ##############################################################################
 # BEGIN: bash-it template
-
-# Path to the bash it configuration
-export BASH_IT=$BASH_IT
 
 # Lock and Load a custom theme file.
 # Leave empty to disable theming.
