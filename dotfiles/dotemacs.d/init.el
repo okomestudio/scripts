@@ -442,7 +442,9 @@
      "sqlformat --indent_columns -"
      (current-buffer)
      t t))
-  (add-hook 'before-save-hook 'sqlparse-region))
+  (when (executable-find "sqlformat")
+    (add-hook 'sql-mode-hook
+              (lambda () (add-hook 'before-save-hook 'sqlparse-region nil 'local)))))
 
 
 (use-package sql-upcase
