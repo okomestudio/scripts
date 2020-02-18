@@ -431,6 +431,20 @@
   (add-hook 'python-mode-hook 'flyspell-prog-mode))
 
 
+(use-package sql
+  :ensure t
+  :config
+  (defun sqlparse-region ()
+    (interactive)
+    (shell-command-on-region
+     (point-min)
+     (point-max)
+     "sqlformat --indent_columns -"
+     (current-buffer)
+     t t))
+  (add-hook 'before-save-hook 'sqlparse-region))
+
+
 (use-package sql-upcase
   :init
   (ensure-downloaded-file
