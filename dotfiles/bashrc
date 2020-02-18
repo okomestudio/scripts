@@ -188,7 +188,9 @@ if [ ! -d $BASH_IT ]; then
   return
 fi
 
-export BASH_IT_CUSTOM=~/github.com/okomestudio/environment/bash-it
+if [ -d ~/github.com/okomestudio/environment/bash-it ]; then
+  export BASH_IT_CUSTOM=~/github.com/okomestudio/environment/bash-it
+fi
 
 export POWERLINE_PROMPT_CHAR="$"
 export POWERLINE_PYTHON_VENV_CHAR="$(printf %b '\u200b')"
