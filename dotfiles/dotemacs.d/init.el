@@ -437,6 +437,7 @@
 (use-package sql
   :ensure t
   :config
+  (sql-set-product 'postgres)
   (defun sqlparse-region ()
     (interactive)
     (shell-command-on-region
