@@ -442,7 +442,7 @@
     (shell-command-on-region
      (point-min)
      (point-max)
-     "pg_format -s 2"
+     "pg_format -f 2 -g -s 2 -U 2"
      (current-buffer)
      t t))
   (when (executable-find "pg_format")
