@@ -439,10 +439,10 @@
     (shell-command-on-region
      (point-min)
      (point-max)
-     "sqlformat --indent_columns -"
+     "pg_format -s 2"
      (current-buffer)
      t t))
-  (when (executable-find "sqlformat")
+  (when (executable-find "pg_format")
     (add-hook 'sql-mode-hook
               (lambda () (add-hook 'before-save-hook 'sqlparse-region nil 'local)))))
 
