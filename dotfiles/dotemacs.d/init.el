@@ -431,6 +431,9 @@
   (add-hook 'python-mode-hook 'flyspell-prog-mode))
 
 
+;; sql-mode
+;;
+;; For PostgreSQL formatting, need apt install pgformatter
 (use-package sql
   :ensure t
   :config
