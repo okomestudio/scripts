@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -151,13 +151,16 @@
 
 ;; CUSTOM KEYBINDINGS
 
-;; Activate windmove to switch to another window by M-<U|D|L|R>
-(windmove-default-keybindings 'meta)
-;; ... or define global shortcuts:
-;; (global-set-key (kbd "C-c <left>")  'windmove-left)
-;; (global-set-key (kbd "C-c <right>") 'windmove-right)
-;; (global-set-key (kbd "C-c <up>")    'windmove-up)
-;; (global-set-key (kbd "C-c <down>")  'windmove-down)
+(use-package frame-cmds
+  :init
+  (ensure-downloaded-file
+   "https://www.emacswiki.org/emacs/download/frame-fns.el"
+   (concat my-lispdir "frame-fns.el"))
+  (ensure-downloaded-file
+   "https://www.emacswiki.org/emacs/download/frame-cmds.el"
+   (concat my-lispdir "frame-cmds.el"))
+  (define-key (current-global-map) (kbd "C-x o") (lambda () (interactive) (other-window-or-frame 1)))
+  (define-key (current-global-map) (kbd "C-x p") (lambda () (interactive) (other-window-or-frame -1))))
 
 
 (defun ts/insert-line-before (times)
