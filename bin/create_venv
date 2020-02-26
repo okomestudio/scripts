@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} [version] virtualenv_name
+
+Create a virtual environment by pyenv.
+
+  version          Version to install
+  virtualenv_name  Name of virtual environment to be created
+
+USAGE
+  exit "${1:-1}"
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit "${2:-1}"
+}
+
+
+function main() {
+  local version=${@: -2:1}
+  local venv_name=${@: -1:1}
+  local vers;
+  vers=$(pyenv install -l | tr '\n' ' ')
+
+  if [[ " $vers " == *" $version "* ]]; then
+    pyenv virtualenv --system-site-packages "${@:1:$# - 2}" "$version" "$venv_name"
+  else
+    pyenv virtualenv --system-site-packages "${@:1:$# - 1}" "$venv_name"
+  fi
+
+  read -p 'Set up as the local virtualenv? [Y/n]: ' resp
+  resp=${resp:-y}
+  if [[ $resp == "Y" ]] || [[ $resp == "y" ]]; then
+    pyenv local "$venv_name"
+  fi
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h|\?)
+      if [ "$opt" = "h" ]; then usage 0; else usage; fi
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+main "$@"
