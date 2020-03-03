@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (sqlformatD sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -434,24 +434,20 @@
   (add-hook 'python-mode-hook 'flyspell-prog-mode))
 
 
-;; sql-mode
-;;
-;; For PostgreSQL formatting, need apt install pgformatter
 (use-package sql
   :ensure t
   :config
-  (sql-set-product 'postgres)
-  (defun sqlparse-region ()
-    (interactive)
-    (shell-command-on-region
-     (point-min)
-     (point-max)
-     "pg_format -f 2 -g -s 2 -U 2"
-     (current-buffer)
-     t t))
-  (when (executable-find "pg_format")
-    (add-hook 'sql-mode-hook
-              (lambda () (add-hook 'before-save-hook 'sqlparse-region nil 'local)))))
+  (sql-set-product 'postgres))
+
+
+;; For PostgreSQL formatting, need apt install pgformatter
+(use-package sqlformat
+  :ensure t
+  :hook ((sql-mode) . sqlformat-on-save-mode)
+  :init
+  (require 'sqlformat)
+  (setq sqlformat-command 'pgformatter)
+  (setq sqlformat-args '("-f2" "-g" "-s2" "-U2")))
 
 
 (use-package sql-upcase
