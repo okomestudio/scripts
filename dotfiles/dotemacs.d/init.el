@@ -366,6 +366,7 @@
 ;; Allows browser preview with C-c C-c v
 (use-package markdown-mode
   :ensure t
+  :hook ((markdown-mode) . remove-trailing-whitespaces-on-save)
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
