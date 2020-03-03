@@ -519,6 +519,7 @@
 
 (use-package yaml-mode
   :ensure t
+  :hook ((yaml-mode) . remove-trailing-whitespaces-on-save)
   :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
 
@@ -533,7 +534,6 @@
 
 ;; Global prog-mode hook
 (add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
-(add-hook 'yaml-mode-hook 'remove-trailing-whitespaces-on-save)
 
 
 (provide 'init)
