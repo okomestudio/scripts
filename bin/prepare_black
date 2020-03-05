@@ -41,6 +41,8 @@ function flake8() {
   read -r -d '' content <<EOF
 [flake8]
 max-line-length = 88
+extend-ignore =
+    E203,
 EOF
   set -e
   echo "$content"
@@ -58,7 +60,7 @@ function ensure() {
 
 function install_pip_packages() {
   pip install black
-  pip install flake8
+  pip install flake8-black
 }
 
 
