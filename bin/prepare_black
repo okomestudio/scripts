@@ -69,6 +69,15 @@ function main() {
   [[ ! -d $path ]] && error "$path is not a directory"
   ensure "${path%/}/.flake8" "$(flake8)"
   ensure "${path%/}/.dir-locals.el" "$(dirlocals)"
+
+  if [[ -z $VIRTUAL_ENV ]]; then
+    read -p 'Not in a virtual environment. Still install black? [y/N]: ' resp
+    local resp=${resp:-n}
+    if [[ $resp == "N" ]] || [[ $resp == "n" ]]; then
+      >&2 echo "Installation aborted!"
+      exit 0
+    fi
+  fi
   install_pip_packages
 }
 
