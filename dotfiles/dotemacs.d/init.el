@@ -472,7 +472,7 @@
 (use-package web-mode
   :ensure t
   :after (prettier-js)
-  :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'"
+  :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'" "\\.j2\\'"
   :init
   (setq web-mode-code-indent-offset 2
         web-mode-css-indent-offset 2
