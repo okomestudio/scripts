@@ -130,9 +130,9 @@ export LC_COLLATE=C
 
 # Misc
 export BROWSER=google-chrome
-export EDITOR="emacsclient -t"
+export EDITOR="emacs -nw"
 export ALTERNATE_EDITOR="nano"
-export VISUAL="emacsclient -c -a emacs"
+#export VISUAL="emacs"
 export PAGER=less
 
 ##############################################################################
