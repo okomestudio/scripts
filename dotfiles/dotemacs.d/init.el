@@ -215,13 +215,13 @@
   :config
   (defun my-find-vault-password-file (name)
     (setq dir (locate-dominating-file default-directory name))
-    (if dir (concat dir name) "~/vault_pass"))
+    (if dir (concat dir name) "~/.vault-password"))
 
   (defun my-ansible-mode-hook ()
     (if (locate-dominating-file default-directory "ansible.cfg")
         (progn
           (setq ansible-vault-password-file
-                (my-find-vault-password-file "vault-password"))
+                (my-find-vault-password-file ".vault-password"))
           (ansible 1)))))
 
 
