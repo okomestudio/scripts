@@ -323,6 +323,7 @@
 
 
 (use-package highlight-indent-guides
+  :disabled t
   :ensure t
   :hook ((emacs-lisp-mode python-mode sh-mode) . highlight-indent-guides-mode)
   :config
