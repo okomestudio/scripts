@@ -306,8 +306,7 @@
   (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
   (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load)
-  (add-hook 'sh-mode-hook 'highlight-indent-guides-mode))
+  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 
 (use-package flyspell
@@ -325,7 +324,7 @@
 
 (use-package highlight-indent-guides
   :ensure t
-  :hook ((python-mode emacs-lisp-mode) . highlight-indent-guides-mode)
+  :hook ((emacs-lisp-mode python-mode sh-mode) . highlight-indent-guides-mode)
   :config
   ;; (setq highlight-indent-guides-auto-enabled nil)
   ;; (set-face-foreground 'highlight-indent-guides-character-face "dimgray")
