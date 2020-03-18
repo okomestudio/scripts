@@ -177,7 +177,7 @@ fi
 
 ##############################################################################
 # emacs
-[[ -d ~/.local/emacs ]] && addpath ~/.local/emacs/bin
+addpath ~/.local/emacs/bin
 
 export PATH
 
