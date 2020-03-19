@@ -20,5 +20,5 @@ device_id=$(get_device_id "Synaptics TM3289-002")
 if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
   # Disable TrackPad.
-  ${setp} --type=int "Device Enabled" 0
+  ${setp} --type=int "Device Enabled" 1
 fi
