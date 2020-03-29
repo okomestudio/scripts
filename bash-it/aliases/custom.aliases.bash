@@ -30,6 +30,12 @@ alias ll='ls -alh'
 alias open='xdg-open'
 
 
+# markdown viewer on shell
+function mdviewer() {
+  pandoc "$1" | lynx -stdin;
+}
+
+
 # cd: Override to source local .bashrc if exists.
 function cd() {
   command cd "$@" || return
