@@ -7,9 +7,9 @@ function usage() {
   cat <<USAGE >&2
 Usage: ${0##*/} [path]
 
-Prepare the directory with a local .bashrc configuration file.
+Prepare the directory with a local configuration file named .bash_local.
 
-  path  Directory to prepare
+  path  Directory to prepare (default: current directory)
 
 USAGE
   exit "${1:-1}"
@@ -18,11 +18,11 @@ USAGE
 
 function error() {
   >&2 echo "ERROR: $1"
-  exit ${2:-1}
+  exit "${2:-1}"
 }
 
 
-function bashrc() {
+function bash_local() {
   set +e
   read -r -d '' content <<EOF
 # Declare, define, and export variables, if any:
@@ -51,7 +51,7 @@ function ensure() {
 function main() {
   local path=${1:-.}
   [[ ! -d $path ]] && error "$path is not a directory"
-  ensure "${path%/}/.bashrc" "$(bashrc)"
+  ensure "${path%/}/.bash_local" "$(bash_local)"
 }
 
 
