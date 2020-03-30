@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+# Add autocomplete to install/script
+for scriptname in ./install/script install/script; do
+  complete -W \
+           "$(find bin/ -type f -printf '%f ')" \
+           $scriptname
+done
+
+
+# Add autocomplete to uninstall/script
+
+# TODO: The code below appears to interfere with some other bash
+# functions. Investigate further.
+
+# function _read_local_bin() {
+#   IFS=$'\n' tmp=( $(compgen -W "$(\ls ~/.local/bin)" -- "${COMP_WORDS[$COMP_CWORD]}" ))
+#   COMPREPLY=( "${tmp[@]// /\ }" )
+# }
+
+# for scriptname in ./uninstall/script uninstall/script; do
+#   complete -F _read_local_bin \
+#            $scriptname
+# done
