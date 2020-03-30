@@ -36,16 +36,17 @@ function mdviewer() {
 }
 
 
-# cd: Override to source local .bashrc if exists.
+# cd: Override to source local .bash_local if exists.
 function cd() {
   command cd "$@" || return
-  local bashrc="$PWD/.bashrc"
-  if [[ $PWD != $HOME && -f $bashrc ]]; then
-    read -p 'Load directory-specific Bash config? [Y/n]: ' resp
+  local bash_local="$PWD/.bash_local"
+  if [[ -f $bash_local ]]; then
+    read -p 'Load directory-local Bash config? [Y/n]: ' resp
     resp=${resp:-y}
     if [[ $resp == "Y" ]] || [[ $resp == "y" ]]; then
-      source $bashrc
-      msg="Sourced $bashrc"
+      # shellckeck source=/dev/null
+      source $bash_local
+      local msg="Sourced $bash_local"
       [[ ! -z "$use_color" ]] && msg="\033[0;32m${msg}\033[0m"
       >&2 echo -e "$msg"
     fi
