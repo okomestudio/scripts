@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+
+set -e
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: ${0##*/} expire directory
+
+Remove files older than the given expiry time in seconds, relative to
+the current time.
+
+  expire     Expiry time in seconds
+  directory  Directory in which files are removed
+
+USAGE
+  exit "${1:-1}"
+}
+
+
+function error() {
+  >&2 echo "ERROR: $1"
+  exit "${2:-1}"
+}
+
+
+function get_last_modified() {
+  local filename=$1
+  lm=$(stat "$filename" | grep 'Modify:')
+  lm=${lm#"Modify: "}
+  lm=$(date --date="$lm" +'%s')
+  echo "$lm"
+}
+
+
+function main() {
+  local expire=$1
+  local path=${2%/}
+  local now
+  local cutoff
+
+  [ ! -d "$path" ] && error "Path needs to be a directory"
+
+  now=$(date +%s)
+  cutoff=$((now - expire))
+
+  for filename in "$path"/* ; do
+    local last_modified
+    last_modified=$(get_last_modified "$filename")
+
+    if [ "$cutoff" -gt "$last_modified" ]; then
+      rm "$filename"
+    fi
+  done
+}
+
+
+while getopts "h" opt; do
+  case $opt in
+    h|\?)
+      if [ "$opt" = "h" ]; then usage 0; else usage; fi
+      ;;
+  esac
+done
+shift $((OPTIND - 1))
+
+main "$@"
