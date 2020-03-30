@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (sqlformatD sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (sh-mode sh flymake-mode sqlformatD sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -297,16 +297,17 @@
 
 ;; Need shellcheck: apt install shellcheck
 (use-package flymake-shellcheck
+  :disabled t
   :if (executable-find "shellcheck")
   :commands flymake-shellcheck-load
+  :hook ((sh-mode) . flymake-shellcheck-load)
   :init
   (setq sh-basic-offset 2
         sh-indentation 2)
   (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
-  (add-to-list 'interpreter-mode-alist '("bats" . sh-mode))
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  (add-to-list 'interpreter-mode-alist '("bats" . sh-mode)))
 
 
 (use-package flyspell
@@ -535,6 +536,11 @@
 
 ;; Global prog-mode hook
 (add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
+
+
+;; Miscellanous settings
+(setq sh-basic-offset 2
+      sh-indentation 2)
 
 
 (provide 'init)
