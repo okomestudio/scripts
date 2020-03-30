@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# Personal script uninstaller
+#
+
+readonly scriptname=$1
+readonly userbin=~/.local/bin
+
+if [[ -f $userbin/$scriptname ]]; then
+  rm $userbin/$scriptname
+else
+  >&2 echo "ERROR: $scriptname does not exit"
+  exit 1
+fi
