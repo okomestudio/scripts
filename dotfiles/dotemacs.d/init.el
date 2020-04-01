@@ -394,7 +394,7 @@
                                  "~$"
                                  "^#.*#$"
                                  "\\.elc$"
-                                 "^__pycache__$"))
+                                 "/?__pycache__$"))
   :config
   (global-set-key [f8] 'neotree-toggle)
   (setq neo-smart-open t)
