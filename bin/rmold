@@ -2,10 +2,12 @@
 
 set -e
 
+readonly scriptname="${0##*/}"
+
 
 function usage() {
   cat <<USAGE >&2
-Usage: ${0##*/} EXPIRE FILE
+Usage: $scriptname EXPIRE FILE
 
 Remove files whose last modified time is older than the expiry time,
 relative to the current time.
@@ -21,7 +23,8 @@ USAGE
 
 
 function error() {
-  >&2 echo "ERROR: $1"
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
   exit "${2:-1}"
 }
 
@@ -39,8 +42,8 @@ function main() {
   local expire=$1
   declare -a path=("${@:2}")
 
-  [[ ! "$expire" =~ ^[0-9]+$ ]] && error "First argument must be a positive integer"
-  [ ${#path[@]} -eq 0 ] && error "Missing path"
+  [[ ! "$expire" =~ ^[0-9]+$ ]] && error "first argument must be a positive integer"
+  [ ${#path[@]} -eq 0 ] && error "missing path"
 
   local now
   local cutoff
@@ -67,9 +70,9 @@ function main() {
   if [ ${#badfiles[@]} -gt 0 ]; then
     for i in "${badfiles[@]}"; do
       if [ -d "$i" ]; then
-        >&2 echo "rmold: cannot remove $i: Is a directory"
+        >&2 echo "$scriptname: cannot remove $i: Is a directory"
       else
-        >&2 echo "rmold: cannot remove $i: Not a regular file"
+        >&2 echo "$scriptname: cannot remove $i: Not a regular file"
       fi
     done
     exit 1
