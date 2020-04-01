@@ -2,10 +2,12 @@
 
 set -e
 
+readonly scriptname="${0##*/}"
+
 
 function usage() {
   cat <<USAGE >&2
-Usage: ${0##*/} arg1 [optarg2 ...]
+Usage: $scriptname arg1 [optarg2 ...]
 
 This is a template for bash script.
 
@@ -18,7 +20,8 @@ USAGE
 
 
 function error() {
-  >&2 echo "ERROR: $1"
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
   exit "${2:-1}"
 }
 
