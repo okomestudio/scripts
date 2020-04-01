@@ -1,0 +1,41 @@
+#!/usr/bin/env bats
+
+set -e
+
+
+function setup() {
+  testdir=$(mktemp -d /tmp/test-rmold-XXXXX)
+}
+
+function teardown() {
+  rm -rf "$testdir"
+}
+
+@test "Missing both EXPIRE and PATH" {
+  run bin/rmold
+  [ "$status" -eq 1 ]
+}
+
+@test "EXPIRE is not an integer" {
+  run bin/rmold sfe $testdir/*
+  [ "$status" -eq 1 ]
+}
+
+@test "Missing path" {
+  run bin/rmold 2
+  [ "$status" -eq 1 ]
+}
+
+@test "EXPIRE is a positive integer" {
+  run bin/rmold 10 $testdir/*
+  [ "$status" -eq 0 ]
+}
+
+@test "Remove only expired files" {
+  touch $testdir/expire
+  sleep 2
+  touch $testdir/remain
+  run bin/rmold 1 $testdir/*
+  [ ! -e $testdir/expire ]
+  [ -e $testdir/remain ]
+}

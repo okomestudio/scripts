@@ -5,13 +5,15 @@ set -e
 
 function usage() {
   cat <<USAGE >&2
-Usage: ${0##*/} expire directory
+Usage: ${0##*/} EXPIRE FILE
 
-Remove files older than the given expiry time in seconds, relative to
-the current time.
+Remove files whose last modified time is older than the expiry time,
+relative to the current time.
 
-  expire     Expiry time in seconds
-  directory  Directory in which files are removed
+  EXPIRE  Expiry time in seconds
+  FILE    File(s) to be removed if expired
+
+Version: 20.3.0
 
 USAGE
   exit "${1:-1}"
@@ -35,33 +37,54 @@ function get_last_modified() {
 
 function main() {
   local expire=$1
-  local path=${2%/}
+  declare -a path=("${@:2}")
+
+  [[ ! "$expire" =~ ^[0-9]+$ ]] && error "First argument must be a positive integer"
+  [ ${#path[@]} -eq 0 ] && error "Missing path"
+
   local now
   local cutoff
-
-  [ ! -d "$path" ] && error "Path needs to be a directory"
-
   now=$(date +%s)
   cutoff=$((now - expire))
 
-  for filename in "$path"/* ; do
-    local last_modified
-    last_modified=$(get_last_modified "$filename")
+  declare -a badfiles
 
-    if [ "$cutoff" -gt "$last_modified" ]; then
-      rm "$filename"
+  for filename in "${path[@]}" ; do
+    if [ -f "$filename" ]; then
+      local last_modified
+      last_modified=$(get_last_modified "$filename")
+      if [ "$cutoff" -gt "$last_modified" ]; then
+        rm "$filename"
+      fi
+    else
+      if [ ! -e "$filename" ]; then
+        break
+      fi
+      badfiles+=("$filename")
     fi
   done
+
+  if [ ${#badfiles[@]} -gt 0 ]; then
+    for i in "${badfiles[@]}"; do
+      if [ -d "$i" ]; then
+        >&2 echo "rmold: cannot remove $i: Is a directory"
+      else
+        >&2 echo "rmold: cannot remove $i: Not a regular file"
+      fi
+    done
+    exit 1
+  fi
 }
 
 
-while getopts "h" opt; do
-  case $opt in
-    h|\?)
-      if [ "$opt" = "h" ]; then usage 0; else usage; fi
-      ;;
-  esac
-done
-shift $((OPTIND - 1))
-
-main "$@"
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+  while getopts "h" opt; do
+    case $opt in
+      h|\?)
+        if [ "$opt" = "h" ]; then usage 0; else usage; fi
+        ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+  main "$@"
+fi
