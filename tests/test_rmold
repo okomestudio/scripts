@@ -4,7 +4,7 @@ set -e
 
 
 function setup() {
-  testdir=$(mktemp -d /tmp/test-rmold-XXXXX)
+  testdir=$(mktemp -d "$BATS_TMPDIR/test-rmold-XXXXX")
 }
 
 function teardown() {
@@ -26,9 +26,29 @@ function teardown() {
   [ "$status" -eq 1 ]
 }
 
-@test "EXPIRE is a positive integer" {
-  run bin/rmold 10 $testdir/*
+@test "Path is directory" {
+  run bin/rmold 2 $testdir
+  [ "$status" -eq 1 ]
+}
+
+@test "Directory has no content" {
+  run bin/rmold 1 $testdir/*
   [ "$status" -eq 0 ]
+}
+
+@test "Path is a file to expire" {
+  touch $testdir/expire
+  sleep 2
+  run bin/rmold 1 $testdir/expire
+  [ "$status" -eq 0 ]
+  [ ! -e $testdir/expire ]
+}
+
+@test "Path is a file not to expire" {
+  touch $testdir/remain
+  run bin/rmold 1 $testdir/remain
+  [ "$status" -eq 0 ]
+  [ -e $testdir/remain ]
 }
 
 @test "Remove only expired files" {
@@ -36,6 +56,17 @@ function teardown() {
   sleep 2
   touch $testdir/remain
   run bin/rmold 1 $testdir/*
+  [ "$status" -eq 0 ]
+  [ ! -e $testdir/expire ]
+  [ -e $testdir/remain ]
+}
+
+@test "Remove files but skip directories" {
+  mkdir $testdir/remain
+  touch $testdir/expire
+  sleep 2
+  run bin/rmold 1 $testdir/*
+  [ "$status" -eq 1 ]
   [ ! -e $testdir/expire ]
   [ -e $testdir/remain ]
 }
