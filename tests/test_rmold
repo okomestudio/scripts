@@ -61,6 +61,16 @@ function teardown() {
   [ -e $testdir/remain ]
 }
 
+@test "Remove files only with specific extension" {
+  touch $testdir/expire.log
+  touch $testdir/remain.txt
+  sleep 2
+  run bin/rmold 1 $testdir/*.log
+  [ "$status" -eq 0 ]
+  [ ! -e $testdir/expire.log ]
+  [ -e $testdir/remain.txt ]
+}
+
 @test "Remove files but skip directories" {
   mkdir $testdir/remain
   touch $testdir/expire
