@@ -37,7 +37,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (sh-mode sh flymake-mode sqlformatD sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (bats-mode sh-mode sh flymake-mode sqlformatD sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -231,6 +231,10 @@
   (ensure-downloaded-file
    "https://www.emacswiki.org/emacs/download/any-ini-mode.el"
    (concat my-lispdir "any-ini-mode.el")))
+
+
+(use-package bats-mode
+  :ensure t)
 
 
 ;; if using multiple virtual env, this might become useful:
