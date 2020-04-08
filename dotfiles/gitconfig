@@ -1,2 +1,6 @@
 [core]
   excludesFile = ~/.gitignore
+
+[user]
+  name = Taro Sato
+  email = okomestudio@gmail.com
