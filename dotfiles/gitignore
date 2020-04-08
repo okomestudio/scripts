@@ -1,0 +1,9 @@
+# Bash
+.bash_local
+
+# Emacs
+.dir-locals.el
+\#*#
+
+# Misc.
+tmp
