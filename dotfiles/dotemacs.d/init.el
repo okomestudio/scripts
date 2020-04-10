@@ -277,7 +277,9 @@
 
 (use-package company-jedi
   :after (company)
-  :ensure t)
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-jedi))
 
 
 (use-package company-tern
@@ -362,8 +364,6 @@
   :after (company-jedi)
   :ensure t
   :hook ((python-mode) . jedi:setup)
-  :init
-  (add-to-list 'company-backends 'company-jedi)
   :config
   (setq jedi:complete-on-dot t
         jedi:use-shortcuts t))
