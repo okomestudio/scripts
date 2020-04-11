@@ -399,6 +399,7 @@
   (setq neo-hidden-regexp-list '("^\\."
                                  "\\.cs\\.meta$"
                                  "\\.pyc$"
+                                 "\\.egg-info$"
                                  "~$"
                                  "^#.*#$"
                                  "\\.elc$"
