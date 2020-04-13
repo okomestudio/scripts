@@ -90,6 +90,9 @@ case $1 in
   .bash_environment|*/.bash_environment)
     pygmentize -f 256 -O bg=light -l bash $1
     ;;
+  *.html.j2|*.htm.j2)
+    pygmentize -f 256 -O bg=light -l html $1
+    ;;
   *)
     prog=$(parse_shebang $1)
     if [ ! -z $prog ]; then
@@ -120,7 +123,7 @@ case $1 in
         esac
       fi
     fi
-    
+
     ;;
 esac
 
