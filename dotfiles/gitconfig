@@ -4,3 +4,6 @@
 [user]
   name = Taro Sato
   email = okomestudio@gmail.com
+
+[rebase]
+  autosquash = true
