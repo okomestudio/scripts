@@ -151,6 +151,7 @@
 
 ;; CUSTOM KEYBINDINGS
 
+;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
 (use-package frame-cmds
   :init
   (ensure-downloaded-file
