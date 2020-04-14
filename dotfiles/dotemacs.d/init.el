@@ -26,8 +26,6 @@
  '(fringe-mode 0 nil (fringe))
  '(global-font-lock-mode t nil (font-lock))
  '(global-whitespace-mode nil)
- '(ido-enable-flex-matching t)
- '(ido-mode (quote both) nil (ido))
  '(indent-tabs-mode nil)
  '(inhibit-startup-screen t)
  '(load-home-init-file t t)
@@ -37,7 +35,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -186,6 +184,24 @@
       (revert-buffer :ignore-auto :noconfirm)
     (error "The buffer has been modified")))
 (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+
+
+;; Ido ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(setq ido-enable-flex-matching t)
+(setq ido-everywhere t)
+(ido-mode 1)
+
+;; Python files and directories
+(add-to-list 'ido-ignore-files "\\.egg-info/$")
+(add-to-list 'ido-ignore-files "^\\.eggs/$")
+(add-to-list 'ido-ignore-files "^\\.pytest_cache/$")
+(add-to-list 'ido-ignore-files "^__pycache__/$")
+(add-to-list 'ido-ignore-files "^build/$")
+(add-to-list 'ido-ignore-files "^dist/$")
+
+;; Note that ido-ignore-directories does not appear to affect C-x C-f
+;; (add-to-list 'ido-ignore-directories "src")
 
 
 ;; PACKAGES
