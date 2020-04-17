@@ -573,6 +573,7 @@
 
 ;; Global prog-mode hook
 (add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
+(add-hook 'rst-mode-hook 'remove-trailing-whitespaces-on-save)
 
 
 ;; Miscellanous settings
