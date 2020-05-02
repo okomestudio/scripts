@@ -62,6 +62,14 @@
 (setq frame-title-format '("" "%f"))  ;; for frame-cmds.el
 (setq ring-bell-function 'ignore)  ;; Disable beeping
 
+(setq-default indent-tabs-mode nil)
+(savehist-mode 1)
+
+;; Use UTF-8 when possible
+(prefer-coding-system 'utf-8)
+(when (display-graphic-p)
+  (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
+
 ;; Fonts
 (when window-system
   (setq monn (length (display-monitor-attributes-list)))
