@@ -115,7 +115,6 @@
 
 ;; Theme
 (use-package professional-theme
-  :ensure t
   :config
   (load-theme 'professional t))
 
@@ -161,6 +160,7 @@
 
 ;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
 (use-package frame-cmds
+  :ensure nil
   :init
   (ensure-downloaded-file
    "https://www.emacswiki.org/emacs/download/frame-fns.el"
@@ -225,18 +225,15 @@
 ;; Based on the number of characters used for search, ace-isearch uses
 ;; different mode.
 (use-package ace-isearch
-  :ensure t
   :config
   (global-ace-isearch-mode 1))
 
 
-(use-package ace-jump-mode
-  :ensure t)
+(use-package ace-jump-mode)
 
 
 (use-package ansible
   :after (yaml-mode)
-  :ensure t
   :hook (((yaml-mode) . my-ansible-mode-hook)
          ((ansible) . ansible-auto-decrypt-encrypt))
   :config
@@ -253,6 +250,7 @@
 
 
 (use-package any-ini-mode
+  :ensure nil
   :mode ".*\\.ini$" ".*\\.conf$" ".*\\.service$"
   :init
   (ensure-downloaded-file
@@ -261,15 +259,13 @@
 
 
 (use-package auto-package-update
-  :ensure t
   :config
   (setq auto-package-update-delete-old-versions t
         auto-package-update-interval 7)
   (auto-package-update-maybe))
 
 
-(use-package bats-mode
-  :ensure t)
+(use-package bats-mode)
 
 
 ;; if using multiple virtual env, this might become useful:
@@ -290,12 +286,10 @@
 ;; in .dir-locals.el.
 (use-package blacken
   :after python
-  :if (not (version< emacs-version "25.2"))
-  :ensure t)
+  :if (not (version< emacs-version "25.2")))
 
 
 (use-package company
-  :ensure t
   :init
   (global-company-mode)
   (setq company-minimum-prefix-length 2)
@@ -304,23 +298,21 @@
 
 (use-package company-jedi
   :after (company)
-  :ensure t
   :config
   (add-to-list 'company-backends 'company-jedi))
 
 
 (use-package company-tern
   :after (company)
-  :ensure t)
+  :disabled t
+  :ensure nil)
 
 
 (use-package cython-mode
-  :after python
-  :ensure t)
+  :after python)
 
 
-(use-package dockerfile-mode
-  :ensure t)
+(use-package dockerfile-mode)
 
 
 (use-package files
@@ -333,13 +325,13 @@
 
 
 (use-package flycheck
-  :ensure t
   :init
   (global-flycheck-mode))
 
 
 (use-package flyckeck-popup-tip
   :after (flycheck-mode popup)
+  :ensure nil
   :config
   (with-eval-after-load 'flycheck
     (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)))
@@ -366,16 +358,15 @@
 
 (use-package flyspell-prog
   :after (flyspell)
+  :ensure nil
   :hook ((prog-mode) . flyspell-prog-mode))
 
 
-(use-package helm-swoop
-  :ensure t)
+(use-package helm-swoop)
 
 
 (use-package highlight-indent-guides
   :disabled t
-  :ensure t
   :hook ((emacs-lisp-mode python-mode sh-mode) . highlight-indent-guides-mode)
   :config
   ;; (setq highlight-indent-guides-auto-enabled nil)
@@ -398,7 +389,6 @@
 ;;   M-x jedi:install-server RET
 (use-package jedi-core
   :after (company-jedi)
-  :ensure t
   :hook ((python-mode) . jedi:setup)
   :config
   (setq jedi:complete-on-dot t
@@ -406,7 +396,6 @@
 
 
 (use-package json-mode
-  :ensure t
   :mode "\\.json\\'" "\\.json.j2\\'"
   :init
   (setq js-indent-level 2))
@@ -414,7 +403,6 @@
 
 ;; Allows browser preview with C-c C-c v
 (use-package markdown-mode
-  :ensure t
   :hook ((markdown-mode) . remove-trailing-whitespaces-on-save)
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
@@ -425,12 +413,10 @@
   (setq markdown-command "pandoc"))
 
 
-(use-package magit
-  :ensure t)
+(use-package magit)
 
 
 (use-package neotree
-  :ensure t
   :init
   (setq neo-hidden-regexp-list '("^\\."
                                  "\\.cs\\.meta$"
@@ -449,7 +435,6 @@
 
 
 (use-package org
-  :ensure t
   :init
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
   :config
@@ -458,7 +443,6 @@
 
 (use-package plantuml-mode
   :if (not (version< emacs-version "25.0"))
-  :ensure t
   :init
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
 
@@ -467,20 +451,17 @@
 ;;
 ;; $ sudo npm install -g prettier
 (use-package prettier-js
-  :ensure t
   :config
   (setq prettier-js-args '("--print-width" "88")))
 
 
 (use-package py-isort
-  :ensure t
   :init
   (add-hook 'before-save-hook 'py-isort-before-save))
 
 
 ;; For Flycheck: pip install flake8
 (use-package python
-  :ensure t
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
@@ -490,20 +471,17 @@
 
 (use-package pyvenv
   :disabled t
-  :ensure t
   :config
   (pyvenv-mode 1))
 
 
 (use-package sql
-  :ensure t
   :config
   (sql-set-product 'postgres))
 
 
 ;; For PostgreSQL formatting, need apt install pgformatter
 (use-package sqlformat
-  :ensure t
   :hook ((sql-mode) . sqlformat-on-save-mode)
   :init
   (require 'sqlformat)
@@ -512,6 +490,7 @@
 
 
 (use-package sql-upcase
+  :ensure nil
   :init
   (ensure-downloaded-file
    "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
@@ -530,7 +509,6 @@
 ;;   $ sudo npm install -g tern
 ;;
 (use-package web-mode
-  :ensure t
   :after (prettier-js)
   :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'" "\\.j2\\'"
   :init
@@ -578,7 +556,6 @@
 
 
 (use-package yaml-mode
-  :ensure t
   :hook ((yaml-mode) . remove-trailing-whitespaces-on-save)
   :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
