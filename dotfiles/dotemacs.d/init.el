@@ -115,7 +115,9 @@
 
 (use-package startup
   :no-require t
-  :ensure nil)
+  :ensure nil
+  :custom
+  (inhibit-splash-screen t))
 
 ;; Theme
 (use-package professional-theme
