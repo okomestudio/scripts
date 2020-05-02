@@ -43,7 +43,6 @@
  '(size-indication-mode t)
  '(tab-always-indent t)
  '(tab-width 2)
- '(tool-bar-mode nil)
  '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
 
 (custom-set-faces
@@ -64,6 +63,13 @@
 
 (setq-default indent-tabs-mode nil)
 (savehist-mode 1)
+
+;; (tooltip-mode -1)
+;; (menu-bar-mode -1)
+;; (fset 'menu-bar-open nil)
+(when window-system
+  (scroll-bar-mode -1)
+  (tool-bar-mode -1))
 
 ;; Use UTF-8 when possible
 (prefer-coding-system 'utf-8)
