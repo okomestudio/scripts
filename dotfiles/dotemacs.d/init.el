@@ -35,7 +35,7 @@
  '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
+    (files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
  '(scroll-bar-mode t)
  '(scroll-bar-width 6 t)
  '(select-enable-clipboard t)
@@ -313,6 +313,15 @@
 
 (use-package dockerfile-mode
   :ensure t)
+
+
+(use-package files
+  :ensure nil
+  :custom
+  (backup-by-copying t)
+  (create-lockfiles nil)
+  (backup-directory-alist '(("." . "~/.cache/emacs-backups")))
+  (auto-save-file-name-transforms '((".*" "~/.cache/emacs-backups/" t))))
 
 
 (use-package flycheck
