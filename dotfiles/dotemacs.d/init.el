@@ -165,15 +165,15 @@
 ;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
 (use-package frame-cmds
   :ensure nil
+  :bind (("C-x o" . (lambda () (interactive) (other-window-or-frame 1)))
+         ("C-x p" . (lambda () (interactive) (other-window-or-frame -1))))
   :init
   (ensure-downloaded-file
    "https://www.emacswiki.org/emacs/download/frame-fns.el"
    (concat my-lispdir "frame-fns.el"))
   (ensure-downloaded-file
    "https://www.emacswiki.org/emacs/download/frame-cmds.el"
-   (concat my-lispdir "frame-cmds.el"))
-  (define-key (current-global-map) (kbd "C-x o") (lambda () (interactive) (other-window-or-frame 1)))
-  (define-key (current-global-map) (kbd "C-x p") (lambda () (interactive) (other-window-or-frame -1))))
+   (concat my-lispdir "frame-cmds.el")))
 
 
 (defun ts/insert-line-before (times)
@@ -478,6 +478,10 @@
   :config
   (pyvenv-mode 1))
 
+
+(use-package simple
+  :ensure nil
+  :hook (before-save . delete-trailing-whitespace))
 
 (use-package sql
   :config
