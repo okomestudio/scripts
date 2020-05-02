@@ -176,28 +176,37 @@
    (concat my-lispdir "frame-cmds.el")))
 
 
-(defun ts/insert-line-before (times)
-  "Insert a newline(s) above the line containing the cursor."
-  (interactive "p") ; called from M-x
-  (save-excursion ; store position
-    (move-beginning-of-line 1)
-    (newline times))) ; insert new line
-(global-set-key (kbd "C-S-o") 'ts/insert-line-before)
+(use-package simple
+  :ensure nil
+  :bind (("C-o" . 'ts/newline-below)
+         ("C-S-o" . 'ts/newline-above)
+         ("<f5>" . 'ts/revert-buffer-no-confirm))
+  :hook (before-save . delete-trailing-whitespace)
+  :init
+  ;; [F5] to trigger revert-buffer without confirmation
+  (defun ts/revert-buffer-no-confirm (&optional force-reverting)
+    "Interactive call to 'revert-buffer'.
 
+    Ignoring the auto-save file and not requesting for confirmation.
+    When the current buffer is modified, the command refuses to
+    revert it, unless you specify the optional argument:
+    FORCE-REVERTING to true."
+    (interactive "P")
+    (if (or force-reverting (not (buffer-modified-p)))
+        (revert-buffer :ignore-auto :noconfirm)
+      (error "The buffer has been modified")))
 
-;; [F5] to trigger revert-buffer without confirmation
-(defun revert-buffer-no-confirm (&optional force-reverting)
-  "Interactive call to 'revert-buffer'.
+  (defun ts/newline-above ()
+    (interactive)
+    (back-to-indentation)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
 
-  Ignoring the auto-save file and not requesting for confirmation.
-  When the current buffer is modified, the command refuses to
-  revert it, unless you specify the optional argument:
-  FORCE-REVERTING to true."
-  (interactive "P")
-  (if (or force-reverting (not (buffer-modified-p)))
-      (revert-buffer :ignore-auto :noconfirm)
-    (error "The buffer has been modified")))
-(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+  (defun ts/newline-below ()
+    (interactive)
+    (end-of-line)
+    (newline-and-indent)))
 
 
 ;; Ido ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -478,10 +487,6 @@
   :config
   (pyvenv-mode 1))
 
-
-(use-package simple
-  :ensure nil
-  :hook (before-save . delete-trailing-whitespace))
 
 (use-package sql
   :config
