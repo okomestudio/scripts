@@ -345,6 +345,11 @@
 (use-package dockerfile-mode)
 
 
+(use-package elisp-mode
+  :ensure nil
+  :hook (emacs-lisp-mode . eldoc-mode))
+
+
 (use-package files
   :ensure nil
   :custom
