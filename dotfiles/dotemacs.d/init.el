@@ -621,8 +621,9 @@
   (ensure-downloaded-file
    "https://raw.githubusercontent.com/emacsorphanage/yascroll/master/yascroll.el"
    (concat my-lispdir "yascroll.el"))
-  (require 'yascroll)
-  (global-yascroll-bar-mode 1))
+  (when (not window-system)
+    (require 'yascroll)
+    (global-yascroll-bar-mode 1)))
 
 
 (provide 'init)
