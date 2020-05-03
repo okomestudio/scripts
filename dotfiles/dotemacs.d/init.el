@@ -134,6 +134,9 @@
   :custom
   (inhibit-splash-screen t))
 
+(use-package use-package-ensure-system-package
+  :ensure t)
+
 ;; Theme
 (use-package professional-theme
   :config
@@ -307,14 +310,13 @@
 
 ;; black -- The opinionated Python code formatter
 ;;
-;; Need `pip install black` to actually use it.
-;;
 ;; To activate blacken-mode per project basis, place
 ;;
 ;;   ((python-mode . ((eval . (blacken-mode 1)))))
 ;;
 ;; in .dir-locals.el.
 (use-package blacken
+  :ensure-system-package (black . "pip install black")
   :after python
   :if (not (version< emacs-version "25.2")))
 
@@ -372,9 +374,9 @@
     (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)))
 
 
-;; Need shellcheck: apt install shellcheck
 (use-package flymake-shellcheck
   :disabled t
+  :ensure-system-package (shellcheck . "sudo apt install shellcheck")
   :if (executable-find "shellcheck")
   :commands flymake-shellcheck-load
   :hook ((sh-mode) . flymake-shellcheck-load)
@@ -488,9 +490,8 @@
 
 
 ;; JavaScript code formatter
-;;
-;; $ sudo npm install -g prettier
 (use-package prettier-js
+  :ensure-system-package (prettier . "sudo npm install -g prettier")
   :config
   (setq prettier-js-args '("--print-width" "88")))
 
@@ -508,6 +509,7 @@
 
 ;; For Flycheck: pip install flake8
 (use-package python
+  :ensure-system-package (flake8 . "pip install flake8")
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
@@ -531,8 +533,8 @@
   (sql-set-product 'postgres))
 
 
-;; For PostgreSQL formatting, need apt install pgformatter
 (use-package sqlformat
+  :ensure-system-package (pg_format . "sudo apt install pgformatter")
   :hook ((sql-mode) . sqlformat-on-save-mode)
   :init
   (require 'sqlformat)
@@ -565,6 +567,10 @@
 ;;   $ sudo npm install -g tern
 ;;
 (use-package web-mode
+  :ensure-system-package ((csslint . "sudo npm install -g csslint")
+                          (eslint . "sudo npm install -g eslint babel-eslint eslint-plugin-react")
+                          (tern . "sudo npm install -g tern")
+                          (tidy . "sudo apt install tidy"))
   :after (prettier-js)
   :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'" "\\.j2\\'"
   :init
