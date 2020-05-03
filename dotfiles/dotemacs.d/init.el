@@ -486,6 +486,12 @@
   (setq prettier-js-args '("--print-width" "88")))
 
 
+(use-package prog-mode
+  :ensure nil
+  :hook ((prog-mode . remove-trailing-whitespaces-on-save)
+         (prog-mode . show-paren-mode)))
+
+
 (use-package py-isort
   :init
   (add-hook 'before-save-hook 'py-isort-before-save))
@@ -606,7 +612,6 @@
 
 
 ;; Global prog-mode hook
-(add-hook 'prog-mode-hook 'remove-trailing-whitespaces-on-save)
 (add-hook 'rst-mode-hook 'remove-trailing-whitespaces-on-save)
 
 
