@@ -62,7 +62,7 @@
 
 ;;(set-face-attribute 'default nil :height 75)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-(setq frame-title-format '("" "%f"))  ;; for frame-cmds.el
+(setq-default frame-title-format '("" "%f - Emacs"))  ;; for frame-cmds.el
 (setq ring-bell-function 'ignore)  ;; Disable beeping
 
 (setq-default indent-tabs-mode nil)
