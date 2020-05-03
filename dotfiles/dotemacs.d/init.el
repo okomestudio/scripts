@@ -529,6 +529,11 @@
   :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
 
 
+(use-package uniquify
+  :ensure nil
+  :custom (uniquify-buffer-name-style 'forward))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; web-mode for JavaScript, HTML, and CSS
 ;;
