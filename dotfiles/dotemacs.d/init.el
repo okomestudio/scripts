@@ -1,9 +1,8 @@
-;; -*- mode: emacs-lisp -*-
 ;;; emacs --- Emacs configuration
 ;;
 ;;; Commentary:
 ;;
-;; This should be placed at ~/.emacs.d/init.dl.
+;; This should be placed at ~/.emacs.d/init.el.
 ;;
 ;;
 ;;; Code:
@@ -16,30 +15,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(c-basic-offset 2)
- '(case-fold-search t)
- '(current-language-environment "UTF-8")
- '(default-input-method "rfc1345")
- '(fringe-mode 0 nil (fringe))
- '(global-font-lock-mode t nil (font-lock))
- '(global-whitespace-mode nil)
- '(inhibit-startup-screen t)
  '(load-home-init-file t t)
- '(make-backup-files nil)
- '(mouse-wheel-mode t nil (mwheel))
- '(mouse-wheel-progressive-speed nil)
- '(mouse-wheel-scroll-amount (quote (3 ((shift) . 1) ((control)))))
  '(package-selected-packages
    (quote
-    (minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch)))
- '(scroll-bar-mode t)
- '(scroll-bar-width 6 t)
- '(select-enable-clipboard t)
- '(show-paren-mode t nil (paren))
- '(size-indication-mode t)
- '(tab-always-indent t)
- '(tab-width 2)
- '(uniquify-buffer-name-style (quote post-forward) nil (uniquify)))
+    (minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -48,28 +27,79 @@
  ;; If there is more than one, they won't work right.
  )
 
+;; '(global-font-lock-mode t nil (font-lock))
+;; '(make-backup-files nil)
+;; '(default-input-method "rfc1345")
+;; '(current-language-environment "UTF-8")
+;; '(global-whitespace-mode nil)
 
+;; END CUSTOM CONFIGS BY EMACS; DO NOT MODIFY
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CUSTOM CONFIGS BY TS; CAN MODIFY
+
+;; UTILITY VARIABLES AND FUNCTIONS
+
+;; Custom emacs lisp directory for .el files
+(defconst my-lispdir "~/.emacs.d/lisp/")
+(if (not (file-directory-p my-lispdir))
+    (make-directory my-lispdir :parents))
+(if (file-directory-p my-lispdir)
+    (add-to-list 'load-path my-lispdir))
+
+
+;; Cache directory
+(defconst my-cachedir "~/.cache/emacs-backups")
+(if (not (file-directory-p my-cachedir))
+    (make-directory my-cachedir :parents))
+
+
+(defun ensure-downloaded-file (src dest)
+  "Download a file from a URL and save to the disk.
+
+  SRC is the source URL, DEST is the destination file path."
+  (if (not (file-exists-p dest))
+      (url-copy-file src dest)))
+
+
+(defun remove-trailing-whitespaces-on-save ()
+  "Remove trailing whitespaces on save.
+
+  Use this function with a mode hook."
+  (add-hook 'local-write-file-hooks
+            '(lambda () (save-excursion (delete-trailing-whitespace)))))
+
 
 (defun ts/font-installed-p (font-name)
   "Check if font with FONT-NAME is available."
   (find-font (font-spec :name font-name)))
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; CONFIGS
+
 ;;(set-face-attribute 'default nil :height 75)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 (setq-default frame-title-format '("" "%f - Emacs"))  ;; for frame-cmds.el
+(setq-default scroll-bar-width 6)
+(fringe-mode 0)
 (setq ring-bell-function 'ignore)  ;; Disable beeping
 
+(setq mouse-wheel-progressive-speed t)
+(setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
+
 (setq-default indent-tabs-mode nil)
+(setq tab-always-indent t)
+(setq tab-width 2)
+(setq case-fold-search t)
+(setq size-indication-mode t)
 (savehist-mode 1)
 
 ;; (tooltip-mode -1)
 ;; (menu-bar-mode -1)
 ;; (fset 'menu-bar-open nil)
 (when window-system
-  (scroll-bar-mode -1)
-  (tool-bar-mode -1))
+  (scroll-bar-mode t)
+  (tool-bar-mode -1)
+  (setq select-enable-clipboard t))
 
 ;; Use UTF-8 when possible
 (prefer-coding-system 'utf-8)
@@ -123,7 +153,8 @@
   :no-require t
   :ensure nil
   :custom
-  (inhibit-splash-screen t))
+  (inhibit-splash-screen t)
+  (inhibit-startup-screen t))
 
 (use-package use-package-ensure-system-package
   :ensure t)
@@ -142,37 +173,6 @@
 
 (use-package url
   :ensure t)
-
-
-;; UTILITY VARIABLES AND FUNCTIONS
-
-;; Custom emacs lisp directory for .el files
-(defconst my-lispdir "~/.emacs.d/lisp/")
-(if (not (file-directory-p my-lispdir))
-    (make-directory my-lispdir :parents))
-(if (file-directory-p my-lispdir)
-    (add-to-list 'load-path my-lispdir))
-
-;; Cache directory
-(defconst my-cachedir "~/.cache/emacs-backups")
-(if (not (file-directory-p my-cachedir))
-    (make-directory my-cachedir :parents))
-
-
-(defun ensure-downloaded-file (src dest)
-  "Download a file from a URL and save to the disk.
-
-  SRC is the source URL, DEST is the destination file path."
-  (if (not (file-exists-p dest))
-      (url-copy-file src dest)))
-
-
-(defun remove-trailing-whitespaces-on-save ()
-  "Remove trailing whitespaces on save.
-
-  Use this function with a mode hook."
-  (add-hook 'local-write-file-hooks
-            '(lambda () (save-excursion (delete-trailing-whitespace)))))
 
 
 ;; CUSTOM KEYBINDINGS
@@ -239,9 +239,8 @@
 (use-package ace-isearch
   :config
   (global-ace-isearch-mode 1)
-  :custom
-  '(ace-isearch-input-length 20)
-  '(ace-isearch-jump-delay 0.4))
+  (setq ace-isearch-input-length 20
+        ace-isearch-jump-delay 0.4))
 
 
 (use-package ace-jump-mode)
@@ -566,6 +565,7 @@
 (use-package uniquify
   :ensure nil
   :custom (uniquify-buffer-name-style 'forward))
+;; '(uniquify-buffer-name-style (quote post-forward) nil (uniquify))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
