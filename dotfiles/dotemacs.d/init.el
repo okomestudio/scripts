@@ -512,6 +512,11 @@
   (pyvenv-mode 1))
 
 
+(use-package rst-mode
+  :ensure nil
+  :hook ((rst-mode . remove-trailing-whitespaces-on-save)))
+
+
 (use-package sql
   :config
   (sql-set-product 'postgres))
@@ -609,10 +614,6 @@
    (concat my-lispdir "yascroll.el"))
   (require 'yascroll)
   (global-yascroll-bar-mode 1))
-
-
-;; Global prog-mode hook
-(add-hook 'rst-mode-hook 'remove-trailing-whitespaces-on-save)
 
 
 ;; Miscellanous settings
