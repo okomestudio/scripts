@@ -69,6 +69,10 @@
 (setq-default indent-tabs-mode nil)
 (savehist-mode 1)
 
+;; Miscellanous settings
+(setq sh-basic-offset 2
+      sh-indentation 2)
+
 ;; (tooltip-mode -1)
 ;; (menu-bar-mode -1)
 ;; (fset 'menu-bar-open nil)
@@ -614,11 +618,6 @@
    (concat my-lispdir "yascroll.el"))
   (require 'yascroll)
   (global-yascroll-bar-mode 1))
-
-
-;; Miscellanous settings
-(setq sh-basic-offset 2
-      sh-indentation 2)
 
 
 (provide 'init)
