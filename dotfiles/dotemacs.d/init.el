@@ -16,18 +16,13 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ace-isearch-input-length 20)
- '(ace-isearch-jump-delay 0.6)
  '(c-basic-offset 2)
  '(case-fold-search t)
- '(column-number-mode t)
  '(current-language-environment "UTF-8")
  '(default-input-method "rfc1345")
  '(fringe-mode 0 nil (fringe))
  '(global-font-lock-mode t nil (font-lock))
  '(global-whitespace-mode nil)
- '(indent-tabs-mode nil)
- '(inhibit-splash-screen t)
  '(inhibit-startup-screen t)
  '(load-home-init-file t t)
  '(make-backup-files nil)
@@ -157,11 +152,15 @@
 
 ;; Custom emacs lisp directory for .el files
 (defconst my-lispdir "~/.emacs.d/lisp/")
-
 (if (not (file-directory-p my-lispdir))
     (make-directory my-lispdir :parents))
 (if (file-directory-p my-lispdir)
     (add-to-list 'load-path my-lispdir))
+
+;; Cache directory
+(defconst my-cachedir "~/.cache/emacs-backups")
+(if (not (file-directory-p my-cachedir))
+    (make-directory my-cachedir :parents))
 
 
 (defun ensure-downloaded-file (src dest)
@@ -226,22 +225,26 @@
   (defun ts/newline-below ()
     (interactive)
     (end-of-line)
-    (newline-and-indent)))
+    (newline-and-indent))
+
+  (column-number-mode t))
 
 
 ;; PACKAGES
 
 ;; Dired -- ignore some files
-(require 'dired-x)
-(setq-default dired-omit-files-p t)
-(setq dired-omit-files "^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
+;; (require 'dired-x)
+;; (setq-default dired-omit-files-p t)
+;; (setq dired-omit-files "^\\.$\\|^\\.\\.$\\|\\.pyc$\\|\\.pyo$\\|\#$")
 
 
 ;; Based on the number of characters used for search, ace-isearch uses
 ;; different mode.
 (use-package ace-isearch
   :config
-  (global-ace-isearch-mode 1))
+  (global-ace-isearch-mode 1)
+  (ace-isearch-input-length 20)
+  (ace-isearch-jump-delay 0.4))
 
 
 (use-package ace-jump-mode)
@@ -339,8 +342,8 @@
   :custom
   (backup-by-copying t)
   (create-lockfiles nil)
-  (backup-directory-alist '(("." . "~/.cache/emacs-backups")))
-  (auto-save-file-name-transforms '((".*" "~/.cache/emacs-backups/" t))))
+  (backup-directory-alist '(("." . ,my-cachedir)))
+  (auto-save-file-name-transforms `((".*" ,my-cachedir t))))
 
 
 (use-package flycheck
