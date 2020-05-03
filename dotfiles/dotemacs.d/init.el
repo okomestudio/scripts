@@ -64,10 +64,6 @@
 (setq-default indent-tabs-mode nil)
 (savehist-mode 1)
 
-;; Miscellanous settings
-(setq sh-basic-offset 2
-      sh-indentation 2)
-
 ;; (tooltip-mode -1)
 ;; (menu-bar-mode -1)
 ;; (fset 'menu-bar-open nil)
@@ -529,6 +525,13 @@
 (use-package rst-mode
   :ensure nil
   :hook ((rst-mode . remove-trailing-whitespaces-on-save)))
+
+
+(use-package sh-script
+  :ensure nil
+  :config
+  (setq sh-basic-offset 2
+        sh-indentation 2))
 
 
 (use-package sql
