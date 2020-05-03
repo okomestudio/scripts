@@ -303,6 +303,12 @@
   :if (not (version< emacs-version "25.2")))
 
 
+(use-package cc-mode
+  :ensure nil
+  :config
+  (setq c-basic-offset 2))
+
+
 (use-package company
   :init
   (global-company-mode)
