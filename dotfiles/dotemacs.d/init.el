@@ -56,6 +56,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CUSTOM CONFIGS BY TS; CAN MODIFY
 
+(defun ts/font-installed-p (font-name)
+  "Check if font with FONT-NAME is available."
+  (find-font (font-spec :name font-name)))
+
 ;;(set-face-attribute 'default nil :height 75)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 (setq frame-title-format '("" "%f"))  ;; for frame-cmds.el
@@ -83,7 +87,7 @@
       (create-fontset-from-ascii-font
        "Hack:weight=normal:slant=normal:size=18" nil "hackandjp")
     (create-fontset-from-ascii-font
-     "Hack:weight=normal:slant=normal:size=14" nil "hackandjp"))
+     "Hack:weight=normal:slant=normal:size=12" nil "hackandjp"))
   (set-fontset-font "fontset-hackandjp"
 		                'unicode
 		                (font-spec :family "Noto Sans Mono CJK JP")
