@@ -229,24 +229,6 @@
     (newline-and-indent)))
 
 
-;; Ido ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(setq ido-enable-flex-matching t)
-;(setq ido-everywhere t)
-(ido-mode 1)
-
-;; Python files and directories
-(add-to-list 'ido-ignore-files "\\.egg-info/$")
-(add-to-list 'ido-ignore-files "^\\.eggs/$")
-(add-to-list 'ido-ignore-files "^\\.pytest_cache/$")
-(add-to-list 'ido-ignore-files "^__pycache__/$")
-(add-to-list 'ido-ignore-files "^build/$")
-(add-to-list 'ido-ignore-files "^dist/$")
-
-;; Note that ido-ignore-directories does not appear to affect C-x C-f
-;; (add-to-list 'ido-ignore-directories "src")
-
-
 ;; PACKAGES
 
 ;; Dired -- ignore some files
@@ -417,6 +399,23 @@
   (set-face-foreground 'highlight-indent-guides-character-face "light yellow")
   (set-face-background 'highlight-indent-guides-top-character-face "light yellow")
   (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
+
+
+(use-package ido
+  :ensure nil
+  :config
+  (setq ido-enable-flex-matching t)
+  ;; (setq ido-everywhere t)
+  (ido-mode 1)
+  (add-to-list 'ido-ignore-files "\\.egg-info/$")
+  (add-to-list 'ido-ignore-files "^\\.eggs/$")
+  (add-to-list 'ido-ignore-files "^\\.pytest_cache/$")
+  (add-to-list 'ido-ignore-files "^__pycache__/$")
+  (add-to-list 'ido-ignore-files "^build/$")
+  (add-to-list 'ido-ignore-files "^dist/$")
+  ;; Note that ido-ignore-directories does not appear to affect C-x C-f
+  ;; (add-to-list 'ido-ignore-directories "src")
+  )
 
 
 ;; jedi.el -- Autocompletion for python
