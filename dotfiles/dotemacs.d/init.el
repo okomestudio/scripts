@@ -462,24 +462,6 @@
   :init (minions-mode 1))
 
 
-(use-package neotree
-  :init
-  (setq neo-hidden-regexp-list '("^\\."
-                                 "\\.cs\\.meta$"
-                                 "\\.pyc$"
-                                 "\\.egg-info$"
-                                 "/?build$"
-                                 "/?dist$"
-                                 "~$"
-                                 "^#.*#$"
-                                 "\\.elc$"
-                                 "/?__pycache__$"))
-  :config
-  (global-set-key [f8] 'neotree-toggle)
-  (setq neo-smart-open t)
-  (neotree-toggle))
-
-
 (use-package org
   :init
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
@@ -560,6 +542,41 @@
    "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
    (concat my-lispdir "sql-upcase.el"))
   :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
+
+
+(use-package treemacs
+  :defer t
+  :bind (([f8] . treemacs)
+         ([f7] . treemacs-select-window))
+  :config
+  (progn
+    (setq treemacs-follow-after-init t
+          treemacs-no-png-images nil
+          treemacs-show-cursor t
+          treemacs-show-hidden-files nil
+          treemacs-width 28)
+    )
+  (treemacs-follow-mode t)
+  (treemacs-resize-icons 11)  ;; needs imagemagick support
+  (treemacs-display-current-project-exclusively)
+
+  (with-eval-after-load 'treemacs
+    (defun ts/treemacs-ignore-emacs (filename absolute-path)
+      (or (string-match-p "\\.elc$" filename)
+          (string-match-p "^#.*#$" filename)
+          (string-match-p "~$" filename)))
+    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-emacs)
+    (defun ts/treemacs-ignore-python (filename absolute-path)
+      (or (string-match-p "/?__pycache__$" filename)
+          (string-match-p "/?build$" filename)
+          (string-match-p "/?dist$" filename)
+          (string-match-p "\\.egg-info$" filename)
+          (string-match-p "\\.pyc$" filename)))
+    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-python)))
+
+
+(use-package treemacs-magit
+  :after treemacs magit)
 
 
 (use-package uniquify
