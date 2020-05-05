@@ -344,8 +344,8 @@
   :custom
   (backup-by-copying t)
   (create-lockfiles nil)
-  (backup-directory-alist '(("." . ,my-cachedir)))
-  (auto-save-file-name-transforms `((".*" ,my-cachedir t))))
+  (backup-directory-alist '(("." . "~/.cache/emacs-backups")))
+  (auto-save-file-name-transforms `((".*" "~/.cache/emacs-backups" t))))
 
 
 (use-package flycheck
