@@ -155,14 +155,22 @@ unset color_prompt
 export PYTHONIOENCODING=utf-8
 
 # pyenv
+export PYENV_ROOT="$HOME/.pyenv"
 addpath ~/.pyenv/bin
 
 if command -v pyenv 1>/dev/null 2>&1; then
-  # Uncomment for prompt changing which has been deprecated
-  export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+  export PYENV_VIRTUALENV_DISABLE_PROMPT=1  # avoid pyenv to modify prompt
+  export PYENV_VIRTUALENV_VERBOSE_ACTIVATE=1
 
-  eval "$(pyenv init - --no-rehash bash)"
-  eval "$(pyenv virtualenv-init - --no-rehash bash)"
+  # With --no-rehash, venv auto-activation does not work
+  #eval "$(pyenv init - --no-rehash bash)"
+  #eval "$(pyenv virtualenv-init - --no-rehash bash)"
+
+  eval "$(pyenv init - bash)"
+  eval "$(pyenv virtualenv-init - bash)"
+
+  # shellcheck source=~/.pyenv/completions/pyenv.bash
+  . "$PYENV_ROOT/completions/pyenv.bash"
 fi
 
 ##############################################################################
