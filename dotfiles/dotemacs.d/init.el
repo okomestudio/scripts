@@ -552,7 +552,8 @@
          ([f7] . treemacs-select-window))
   :config
   (progn
-    (setq treemacs-follow-after-init t
+    (setq treemacs-file-event-delay 1000
+          treemacs-follow-after-init t
           treemacs-no-png-images nil
           treemacs-show-cursor t
           treemacs-show-hidden-files nil
