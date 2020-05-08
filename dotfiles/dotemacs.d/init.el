@@ -431,6 +431,7 @@
 ;;
 ;;   M-x jedi:install-server RET
 (use-package jedi-core
+  :disabled t
   :after (company-jedi)
   :hook ((python-mode) . jedi:setup)
   :config
