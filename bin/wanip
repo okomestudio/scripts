@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+#
+# Save WAN IP address to a file.
+#
+# $ wanip [path]
+#
+# If the path is ommited, it defaults to ~/.wanip
+#
+# When the IP changes, the script creates a file with .old extension
+# and keep the old IP address.
+#
+# The script depends on the dig command from the dnsutils package
+#
+
+set -e
+
+readonly wanipfile=${1:-~/.wanip}
+readonly ip=$(dig @resolver1.opendns.com ANY myip.opendns.com +short)
+
+if [ -f "$wanipfile" ]; then
+  readonly content=$(cat "$wanipfile")
+  if [[ $content != "$ip" ]]; then
+    mv "$wanipfile" "$wanipfile.old"
+    echo "$ip" > "$wanipfile"
+  else
+    touch "$wanipfile"
+  fi
+else
+  echo "$ip" > "$wanipfile"
+fi
