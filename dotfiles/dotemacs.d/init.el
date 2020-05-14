@@ -637,6 +637,7 @@
              (flycheck-select-checker 'javascript-eslint))
            (web-mode-set-content-type "jsx")
            (prettier-js-mode)
+           (setq tern-command '("tern" "--no-port-file"))
            (tern-mode))))
   (add-hook 'web-mode-hook 'my-web-mode-hook)
 
