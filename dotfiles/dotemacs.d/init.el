@@ -109,18 +109,24 @@
   (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING)))
 
 ;; Fonts
-(when window-system
-  (setq monn (length (display-monitor-attributes-list)))
-  (if (> (/ (display-pixel-width) monn) 2550)
-      (create-fontset-from-ascii-font
-       "Hack:weight=normal:slant=normal:size=18" nil "hackandjp")
-    (create-fontset-from-ascii-font
-     "Hack:weight=normal:slant=normal:size=12" nil "hackandjp"))
+(defun ts-get-display-width ()
+  "Get the pixel with per display."
+  (when window-system
+    (let ((monn (length (display-monitor-attributes-list))))
+      (/ (display-pixel-width) monn))))
+
+(defvar ts-display-width (ts-get-display-width))
+(defvar ts-font-size (if (> ts-display-width 2550) 18 12))
+
+(when ts-font-size
+  (create-fontset-from-ascii-font
+   (format "Hack:weight=normal:slant=normal:size=%d" ts-font-size)
+   nil "hackandjp")
   (set-fontset-font "fontset-hackandjp"
-		                'unicode
-		                (font-spec :family "Noto Sans Mono CJK JP")
-		                nil
-		                'append)
+                    'unicode
+                    (font-spec :family "Noto Sans Mono CJK JP")
+                    nil
+                    'append)
   (add-to-list 'default-frame-alist '(font . "fontset-hackandjp")))
 
 ;; BUGFIX: For fixing a startup error message
