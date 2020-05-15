@@ -646,8 +646,9 @@
   ;; Disable checkers not in use
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers '(json-jsonlist)))
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers '(javascript-jshint)))
+  (setq-default
+   flycheck-disabled-checkers
+   (append flycheck-disabled-checkers '(javascript-jshint javascript-jscs)))
 
   (flycheck-add-mode 'javascript-eslint 'web-mode)
   (flycheck-add-mode 'html-tidy 'web-mode)
