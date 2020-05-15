@@ -612,7 +612,7 @@
   :init
   (setq web-mode-code-indent-offset 2
         web-mode-css-indent-offset 2
-        web-mode-enable-auto-quoting t
+        web-mode-enable-auto-quoting nil
         web-mode-enable-current-column-highlight t
         web-mode-enable-current-element-highlight t
         web-mode-markup-indent-offset 2
