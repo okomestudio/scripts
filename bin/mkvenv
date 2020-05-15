@@ -30,6 +30,7 @@ function main() {
 
   local version=${@: -2:1}
   local venv_name=${@: -1:1}
+
   local vers;
   vers=$(pyenv install -l | tr '\n' ' ')
 
