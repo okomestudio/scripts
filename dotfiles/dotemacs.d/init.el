@@ -170,9 +170,6 @@
 (use-package epc
   :ensure t)
 
-(use-package popup
-  :ensure t)
-
 (use-package url
   :ensure t)
 
@@ -355,12 +352,11 @@
   (global-flycheck-mode))
 
 
-(use-package flyckeck-popup-tip
-  :after (flycheck-mode popup)
-  :ensure nil
-  :config
+(use-package flycheck-pos-tip
+  :init
+  (setq flycheck-pos-tip-timeout 60)
   (with-eval-after-load 'flycheck
-    (add-hook 'flycheck-mode-hook 'flycheck-popup-tip-mode)))
+    (flycheck-pos-tip-mode)))
 
 
 (use-package flymake-shellcheck
@@ -476,6 +472,14 @@
   :if (not (version< emacs-version "25.0"))
   :init
   (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
+
+(use-package pos-tip
+  :init
+  (setq pos-tip-background-color "white")
+  (if ts-font-size
+      (setq pos-tip-internal-border-width
+            (truncate (* ts-font-size 1.5)))))
 
 
 ;; JavaScript code formatter
