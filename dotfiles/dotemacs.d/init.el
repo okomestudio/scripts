@@ -624,7 +624,12 @@
                           (tern . "sudo npm install -g tern")
                           (tidy . "sudo apt install tidy"))
   :after (prettier-js)
-  :mode "\\.css\\'" "\\.html?\\'" "\\.js\\'" "\\.j2\\'"
+  :mode (
+         "\\.css\\'"
+         "\\.html?\\'"
+         "\\.j2\\'"
+         "\\.jsx?\\'"
+         )
   :init
   (setq web-mode-code-indent-offset 2
         web-mode-css-indent-offset 2
