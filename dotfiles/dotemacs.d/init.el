@@ -492,7 +492,13 @@
 (use-package prettier-js
   :ensure-system-package (prettier . "sudo npm install -g prettier")
   :config
-  (setq prettier-js-args '("--print-width" "88")))
+  (setq prettier-js-args
+        '(
+          "--arrow-parens" "always"
+          "--print-width" "88"
+          "--single-quote"
+          "--trailing-comma" "all"
+          )))
 
 
 (use-package prog-mode
