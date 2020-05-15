@@ -321,7 +321,7 @@
 
 
 (use-package company-jedi
-  :after (company)
+  :after (company jedi-core)
   :config
   (add-to-list 'company-backends 'company-jedi))
 
@@ -433,12 +433,14 @@
 ;;
 ;;   M-x jedi:install-server RET
 (use-package jedi-core
-  :disabled t
-  :after (company-jedi)
-  :hook ((python-mode) . jedi:setup)
+  :bind (("C-c d" . 'jedi:show-doc))
   :config
   (setq jedi:complete-on-dot t
-        jedi:use-shortcuts t))
+        jedi:get-in-function-call-delay 500
+        jedi:tooltip-method nil  ; or '(pos-tip)
+        jedi:use-shortcuts t
+        )
+  :hook ((python-mode) . jedi:setup))
 
 
 (use-package json-mode
