@@ -1,30 +1,85 @@
 #!/usr/bin/env bash
-#
-# Save WAN IP address to a file.
-#
-# $ wanip [path]
-#
-# If the path is ommited, it defaults to ~/.wanip
-#
-# When the IP changes, the script creates a file with .old extension
-# and keep the old IP address.
-#
-# The script depends on the dig command from the dnsutils package
-#
 
 set -e
 
-readonly wanipfile=${1:-~/.wanip}
-readonly ip=$(dig @resolver1.opendns.com ANY myip.opendns.com +short)
+readonly scriptname="${0##*/}"
 
-if [ -f "$wanipfile" ]; then
-  readonly content=$(cat "$wanipfile")
-  if [[ $content != "$ip" ]]; then
-    mv "$wanipfile" "$wanipfile.old"
-    echo "$ip" > "$wanipfile"
-  else
-    touch "$wanipfile"
+
+function usage() {
+  cat <<USAGE >&2
+Usage: $scriptname [path]
+
+Save WAN IP address to a file.
+
+When the IP address changes, the script creates a file with .old
+extension and keep the old IP address there.
+
+  path  File that includes the current IP address (default:
+        ~/.wanip)
+
+The script depends on the dig command from the dnsutils package.
+
+USAGE
+  exit "${1:-1}"
+}
+
+
+function error() {
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
+  exit "${2:-1}"
+}
+
+
+function getip() {
+  local ip
+  local maxiter=10
+  for i in $(seq 1 $maxiter); do
+    if ip=$(dig @resolver1.opendns.com ANY myip.opendns.com +short) ; then
+      break
+    fi
+    >&2 echo "DNS query failed. Retrying... ($i/$maxiter)"
+    sleep $(( ( RANDOM % 4 )  + 1 ))s
+  done
+  if [ "$i" -lt "$maxiter" ]; then
+    echo "$ip"
+    return 0
   fi
-else
-  echo "$ip" > "$wanipfile"
+  return 1
+}
+
+
+function main() {
+  local wanipfile=${1:-~/.wanip}
+
+  local ip
+  if ! ip=$(getip) ; then
+    error "DNS query failed ($ip)"
+  fi
+
+  if [ -f "$wanipfile" ]; then
+    readonly content=$(cat "$wanipfile")
+    if [[ $content != "$ip" ]]; then
+      mv "$wanipfile" "$wanipfile.old"
+      echo "$ip" > "$wanipfile"
+    else
+      touch "$wanipfile"
+    fi
+  else
+    echo "$ip" > "$wanipfile"
+  fi
+}
+
+
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+  while getopts "h" opt; do
+    case $opt in
+      h|\?)
+        if [ "$opt" = "h" ]; then usage 0; else usage; fi
+        ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  main "$@"
 fi
