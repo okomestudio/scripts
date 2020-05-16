@@ -20,7 +20,7 @@
  '(load-home-init-file t t)
  '(package-selected-packages
    (quote
-    (flycheck-pos-tip flycheck-popup-tip restclient resclient treemacs-magit treemacs minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch))))
+    (jq-mode flycheck-pos-tip flycheck-popup-tip restclient resclient treemacs-magit treemacs minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -443,6 +443,10 @@
   :hook ((python-mode) . jedi:setup))
 
 
+(use-package jq-mode
+  :ensure-system-package (jq . "sudo apt install jq"))
+
+
 (use-package json-mode
   :mode "\\.json\\'" "\\.json.j2\\'"
   :init
@@ -530,7 +534,12 @@
   (pyvenv-mode 1))
 
 
-(use-package restclient)
+(use-package restclient
+  :after (jq-mode)
+  :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/pashky/restclient.el/master/restclient-jq.el"
+   (concat my-lispdir "restclient-jq.el")))
 
 
 (use-package rst-mode
