@@ -312,6 +312,12 @@
   (add-to-list 'company-backends 'company-jedi))
 
 
+(use-package company-restclient
+  :after (company restclient)
+  :config
+  (add-to-list 'company-backends 'company-restclient))
+
+
 (use-package company-tern
   :after (company dash dash-functional)
   :ensure nil
