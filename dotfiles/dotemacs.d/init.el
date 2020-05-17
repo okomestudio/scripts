@@ -314,22 +314,34 @@
 
 
 (use-package company
+  :custom
+  (company-minimum-prefix-length 2)
+  (company-selection-wrap-around t)
+  (company-show-numbers (quote (quote t)))
+  (company-tooltip-limit 10)
   :init
   (global-company-mode)
-  (setq company-minimum-prefix-length 2)
-  (setq company-selection-wrap-around t))
+  (add-to-list 'company-backends '(company-files)))
 
 
 (use-package company-jedi
-  :after (company jedi-core)
+  :disabled t
+  :after company
   :config
   (add-to-list 'company-backends 'company-jedi))
 
 
 (use-package company-tern
-  :after (company)
   :disabled t
-  :ensure nil)
+  :after company
+  :init
+  (add-to-list 'company-backends 'company-tern))
+
+
+(use-package company-web
+  :after company
+  :init
+  (add-to-list 'company-backends 'company-web-html))
 
 
 (use-package cython-mode
@@ -342,6 +354,25 @@
 (use-package elisp-mode
   :ensure nil
   :hook (emacs-lisp-mode . eldoc-mode))
+
+
+(use-package elpy
+  :config
+  (when (load "flycheck" t t)
+    (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
+  (defun ts/elpy-hooks ()
+    (hs-minor-mode))
+  :custom
+  (elpy-folding-fringe-indicator t)
+  (elpy-rpc-backend "jedi")
+  (elpy-rpc-virtualenv-path (or (getenv "VIRTUAL_ENV")
+                                "~/.pyenv/versions/3.8.2"
+                                "~/.emacs.d/elpy/rpc-venv"))
+  :defer t
+  :hook (elpy-mode . ts/elpy-hooks)
+  :init
+  (advice-add 'python-mode :before 'elpy-enable)
+  (setenv "WORKON_HOME" "~/.pyenv/versions/"))
 
 
 (use-package files
@@ -433,14 +464,13 @@
 ;;
 ;;   M-x jedi:install-server RET
 (use-package jedi-core
-  :bind (("C-c d" . 'jedi:show-doc))
+  :disabled t
   :config
-  (setq jedi:complete-on-dot t
+  (setq jedi:complete-on-dot nil
         jedi:get-in-function-call-delay 500
         jedi:tooltip-method nil  ; or '(pos-tip)
-        jedi:use-shortcuts t
-        )
-  :hook ((python-mode) . jedi:setup))
+        jedi:use-shortcuts t)
+  :hook ((elpy-mode) . jedi:setup))
 
 
 (use-package jq-mode
