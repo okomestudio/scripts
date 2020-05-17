@@ -20,7 +20,7 @@
  '(load-home-init-file t t)
  '(package-selected-packages
    (quote
-    (jq-mode flycheck-pos-tip flycheck-popup-tip restclient resclient treemacs-magit treemacs minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch))))
+    (dash-functional company-web pyenv-mode elpy jq-mode flycheck-pos-tip flycheck-popup-tip restclient resclient treemacs-magit treemacs minions files yascroll sql-upcase dired dired-x pyvenv pyenv auto-package-update bats-mode sh-mode sh flymake-mode sqlformat frame-cmds multiple-cursors prettier-js py-isort company-jedi company-tern company highlight-indent-guides popup flyckeck-popup-tip blacken flyspell-prog blacken-mode any-ini-mode professional-theme github-modern-theme magit web-mode use-package helm-swoop ace-jump-mode epc flycheck plantuml-mode yaml-mode scala-mode neotree markdown-mode json-mode flymake-cursor dockerfile-mode cython-mode ansible ace-isearch))))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -332,9 +332,12 @@
 
 
 (use-package company-tern
-  :disabled t
-  :after company
+  :after (company dash dash-functional)
+  :ensure nil
   :init
+  (ensure-downloaded-file
+   "https://gist.githubusercontent.com/okomestudio/de8c59960ce8f195ee0224de5db5a168/raw/1193992ffeeca8193ebf459b377c27f628ac3246/company-tern.el"
+   (concat my-lispdir "company-tern.el"))
   (add-to-list 'company-backends 'company-tern))
 
 
@@ -346,6 +349,12 @@
 
 (use-package cython-mode
   :after python)
+
+
+(use-package dash)
+
+
+(use-package dash-functional)
 
 
 (use-package dockerfile-mode)
@@ -558,10 +567,10 @@
   (add-hook 'python-mode-hook 'flyspell-prog-mode))
 
 
-(use-package pyvenv
+(use-package pyenv-mode
   :disabled t
   :config
-  (pyvenv-mode 1))
+  (pyenv-mode 1))
 
 
 (use-package restclient
@@ -605,6 +614,18 @@
    "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
    (concat my-lispdir "sql-upcase.el"))
   :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
+
+
+(use-package tern
+  :custom
+  (tern-command '("tern" "--no-port-file"))
+  :ensure nil
+  :ensure-system-package
+  ((tern . "sudo npm install -g tern"))
+  :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/ternjs/tern/master/emacs/tern.el"
+   (concat my-lispdir "tern.el")))
 
 
 (use-package treemacs
@@ -657,64 +678,60 @@
 ;;   $ sudo npm install -g eslint babel-eslint eslint-plugin-react
 ;;   $ sudo apt install tidy
 ;;   $ sudo npm install -g csslint
-;;   $ sudo npm install -g tern
 ;;
 (use-package web-mode
-  :ensure-system-package ((csslint . "sudo npm install -g csslint")
-                          (eslint . "sudo npm install -g eslint babel-eslint eslint-plugin-react")
-                          (tern . "sudo npm install -g tern")
-                          (tidy . "sudo apt install tidy"))
-  :after (prettier-js)
-  :mode (
-         "\\.css\\'"
+  :after (company-tern prettier-js)
+  :mode ("\\.css\\'"
          "\\.html?\\'"
          "\\.j2\\'"
-         "\\.jsx?\\'"
-         )
-  :init
-  (setq web-mode-code-indent-offset 2
-        web-mode-css-indent-offset 2
-        web-mode-enable-auto-quoting nil
-        web-mode-enable-current-column-highlight t
-        web-mode-enable-current-element-highlight t
-        web-mode-markup-indent-offset 2
-        web-mode-script-padding 2
-        web-mode-style-padding 2)
+         "\\.jsx?\\'")
 
-  (add-to-list 'company-backends '(company-css
-                                   company-web-html
-                                   company-tern
-                                   company-files))
   :config
-  (defun my-web-mode-hook ()
-    (cond ((string= web-mode-content-type "html")
-           (when (executable-find "tidy")
-             (flycheck-select-checker 'html-tidy)))
-          ((string= web-mode-content-type "css")
-           (when (executable-find "csslint")
-             (flycheck-select-checker 'css-css-lint)))
-          ((or (string= web-mode-content-type "javascript")
-               (string= web-mode-content-type "jsx"))
-           (when (executable-find "eslint")
-             (flycheck-select-checker 'javascript-eslint))
-           (web-mode-set-content-type "jsx")
-           (prettier-js-mode)
-           (setq tern-command '("tern" "--no-port-file"))
-           (tern-mode))))
-  (add-hook 'web-mode-hook 'my-web-mode-hook)
+  (defun ts/web-mode-hook ()
+    (require 'flycheck)
+    ;; Disable checkers not in use
+    (setq-default flycheck-disabled-checkers
+                  (append flycheck-disabled-checkers
+                          '(json-jsonlist
+                            javascript-jshint
+                            javascript-jscs)))
+    (let (checker)
+      (cond ((string= web-mode-content-type "html")
+             (when (executable-find "tidy")
+               (setq checker 'html-tidy)))
+            ((string= web-mode-content-type "css")
+             (when (executable-find "csslint")
+               (setq checker 'css-csslint)))
+            ((or (string= web-mode-content-type "javascript")
+                 (string= web-mode-content-type "jsx"))
+             (when (executable-find "eslint")
+               (setq checker 'javascript-eslint))
+             (web-mode-set-content-type "jsx")
+             (prettier-js-mode)
+             (tern-mode)))
 
-  (require 'flycheck)
+      (flycheck-add-mode checker 'web-mode)
+      (flycheck-select-checker checker)))
 
-  ;; Disable checkers not in use
-  (setq-default flycheck-disabled-checkers
-                (append flycheck-disabled-checkers '(json-jsonlist)))
-  (setq-default
-   flycheck-disabled-checkers
-   (append flycheck-disabled-checkers '(javascript-jshint javascript-jscs)))
+  :custom
+  (web-mode-code-indent-offset 2)
+  (web-mode-css-indent-offset 2)
+  (web-mode-enable-auto-quoting nil)
+  (web-mode-enable-current-column-highlight t)
+  (web-mode-enable-current-element-highlight t)
+  (web-mode-markup-indent-offset 2)
+  (web-mode-script-padding 2)
+  (web-mode-style-padding 2)
 
-  (flycheck-add-mode 'javascript-eslint 'web-mode)
-  (flycheck-add-mode 'html-tidy 'web-mode)
-  (flycheck-add-mode 'css-csslint 'web-mode))
+  :ensure-system-package
+  ((csslint . "sudo npm install -g csslint")
+   (eslint . "sudo npm install -g eslint babel-eslint eslint-plugin-react")
+   (tidy . "sudo apt install tidy"))
+
+  :hook (web-mode . ts/web-mode-hook)
+
+  :init
+  (add-to-list 'company-backends '(company-css)))
 
 
 (use-package yaml-mode
