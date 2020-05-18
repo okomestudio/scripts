@@ -347,9 +347,9 @@
 (use-package dockerfile-mode)
 
 
-(use-package elisp-mode
+(use-package emacs-lisp-mode
   :ensure nil
-  :hook (emacs-lisp-mode . eldoc-mode))
+  :hook ((emacs-lisp-mode . eldoc-mode)))
 
 
 (use-package elpy
@@ -408,13 +408,8 @@
 
 
 (use-package flyspell
-  :hook ((text-mode) . flyspell-mode))
-
-
-(use-package flyspell-prog
-  :after (flyspell)
-  :ensure nil
-  :hook ((prog-mode) . flyspell-prog-mode))
+  :hook ((prog-mode . flyspell-prog-mode)
+         (text-mode . flyspell-mode)))
 
 
 (use-package helm-swoop)
@@ -544,14 +539,12 @@
   (add-hook 'before-save-hook 'py-isort-before-save))
 
 
-;; For Flycheck: pip install flake8
 (use-package python
   :ensure-system-package (flake8 . "pip install flake8")
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "-i"))
-  (add-hook 'python-mode-hook 'flyspell-prog-mode))
+          python-shell-interpreter-args "-i")))
 
 
 (use-package pyenv-mode
