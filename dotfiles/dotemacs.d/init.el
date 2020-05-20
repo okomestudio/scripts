@@ -610,8 +610,9 @@
 
 (use-package treemacs
   :defer t
-  :bind (([f8] . treemacs)
-         ([f7] . treemacs-select-window))
+  :bind (([f7] . treemacs-select-window)
+         ([f8] . treemacs)
+         ([mouse-1] . treemacs-single-click-expand-action))
   :config
   (progn
     (setq treemacs-file-event-delay 1000
