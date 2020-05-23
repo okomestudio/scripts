@@ -566,11 +566,14 @@
   :hook ((rst-mode . remove-trailing-whitespaces-on-save)))
 
 
-(use-package sh-script
+(use-package sh-mode
+  :custom
+  ((sh-basic-offset 2)
+   (sh-indentation 2))
   :ensure nil
-  :config
-  (setq sh-basic-offset 2
-        sh-indentation 2))
+  :mode ("\\.sh\\'"
+         "bash_*"
+         "bashrc\\'"))
 
 
 (use-package sql
