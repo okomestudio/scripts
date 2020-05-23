@@ -409,6 +409,7 @@
 
 (use-package flyspell
   :hook ((prog-mode . flyspell-prog-mode)
+         (shell-script-mode . flyspell-prog-mode)
          (text-mode . flyspell-mode)))
 
 
