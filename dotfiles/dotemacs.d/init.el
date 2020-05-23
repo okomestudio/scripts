@@ -318,6 +318,12 @@
   (add-to-list 'company-backends 'company-restclient))
 
 
+(use-package company-shell
+  :after company
+  :config
+  (add-to-list 'company-backends '(company-shell company-shell-env)))
+
+
 (use-package company-tern
   :after (company dash dash-functional)
   :ensure nil
