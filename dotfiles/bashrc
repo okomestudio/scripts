@@ -163,11 +163,10 @@ if command -v pyenv 1>/dev/null 2>&1; then
   export PYENV_VIRTUALENV_VERBOSE_ACTIVATE=1
 
   # With --no-rehash, venv auto-activation does not work
-  #eval "$(pyenv init - --no-rehash bash)"
-  #eval "$(pyenv virtualenv-init - --no-rehash bash)"
-
-  eval "$(pyenv init - bash)"
-  eval "$(pyenv virtualenv-init - bash)"
+  eval "$(pyenv init - --no-rehash bash)"
+  eval "$(pyenv virtualenv-init - --no-rehash bash)"
+  #eval "$(pyenv init - bash)"
+  #eval "$(pyenv virtualenv-init - bash)"
 
   # shellcheck source=~/.pyenv/completions/pyenv.bash
   . "$PYENV_ROOT/completions/pyenv.bash"
