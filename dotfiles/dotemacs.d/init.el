@@ -232,6 +232,9 @@
 (use-package ace-jump-mode)
 
 
+(use-package add-node-modules-path)
+
+
 (use-package ansible
   :after (yaml-mode)
   :hook (((yaml-mode) . my-ansible-mode-hook)
@@ -671,7 +674,7 @@
 ;;   $ sudo npm install -g csslint
 ;;
 (use-package web-mode
-  :after (company-tern prettier-js)
+  :after (company-tern prettier-js add-node-modules-path)
   :mode ("\\.css\\'"
          "\\.html?\\'"
          "\\.j2\\'"
@@ -679,6 +682,7 @@
 
   :config
   (defun ts/web-mode-hook ()
+    (add-node-modules-path)
     (require 'flycheck)
     ;; Disable checkers not in use
     (setq-default flycheck-disabled-checkers
@@ -763,8 +767,8 @@
   (web-mode-style-padding 2)
 
   :ensure-system-package
-  ((csslint . "sudo npm install -g csslint")
-   (eslint . "sudo npm install -g eslint babel-eslint eslint-plugin-react")
+  (;(csslint . "npm install --save-dev csslint")
+   ;(eslint . "npm install --save-dev eslint babel-eslint eslint-plugin-react")
    (tidy . "sudo apt install tidy"))
 
   :hook (web-mode . ts/web-mode-hook)
