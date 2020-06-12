@@ -637,7 +637,7 @@
     )
   (treemacs-follow-mode t)
   (treemacs-resize-icons 11)  ;; needs imagemagick support
-  (treemacs-display-current-project-exclusively)
+  ;; (treemacs-display-current-project-exclusively)
 
   (with-eval-after-load 'treemacs
     (defun ts/treemacs-ignore-emacs (filename absolute-path)
