@@ -555,7 +555,8 @@
     (setq python-shell-interpreter "ipython"
           python-shell-interpreter-args "-i"))
   :custom
-  ((python-indent-offset 4))
+  ((python-indent-guess-indent-offset-verbose nil)
+   (python-indent-offset 4))
   :ensure-system-package
   (flake8 . "pip install flake8"))
 
