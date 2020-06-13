@@ -550,11 +550,14 @@
 
 
 (use-package python
-  :ensure-system-package (flake8 . "pip install flake8")
   :config
   (when (executable-find "ipython")
     (setq python-shell-interpreter "ipython"
-          python-shell-interpreter-args "-i")))
+          python-shell-interpreter-args "-i"))
+  :custom
+  ((python-indent-offset 4))
+  :ensure-system-package
+  (flake8 . "pip install flake8"))
 
 
 (use-package pyenv-mode
