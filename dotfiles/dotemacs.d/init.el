@@ -442,6 +442,9 @@
   (set-face-foreground 'highlight-indent-guides-top-character-face "gray"))
 
 
+(use-package htmlize)
+
+
 (use-package ido
   :ensure nil
   :config
