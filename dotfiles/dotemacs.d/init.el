@@ -508,10 +508,11 @@
 
 
 (use-package org
+  :custom
+  ((org-image-actual-width nil)
+   (org-support-shift-select t))
   :init
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
-  :config
-  (setq org-support-shift-select t))
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
 
 (use-package plantuml-mode
