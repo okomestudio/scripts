@@ -507,6 +507,16 @@
   :init (minions-mode 1))
 
 
+(use-package openwith
+  :custom
+  ((openwith-associations '(("\\.pdf\\'" "okular" (file)))))
+  :init
+  (ensure-downloaded-file
+   "https://www.metalevel.at/misc/openwith.el"
+   (concat my-lispdir "openwith.el"))
+  (openwith-mode t))
+
+
 (use-package org
   :bind
   (("C-c l" . 'org-store-link))
