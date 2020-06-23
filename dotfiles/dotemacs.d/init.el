@@ -508,6 +508,8 @@
 
 
 (use-package org
+  :bind
+  (("C-c l" . 'org-store-link))
   :custom
   ((org-image-actual-width nil)
    (org-support-shift-select t))
