@@ -521,8 +521,11 @@
   :bind
   (("C-c l" . 'org-store-link))
   :custom
-  ((org-image-actual-width nil)
+  ((fill-column 80)
+   (org-image-actual-width nil)
    (org-support-shift-select t))
+  :hook
+  ((org-mode . auto-fill-mode))
   :init
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
