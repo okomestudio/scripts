@@ -646,20 +646,21 @@
 
 (use-package treemacs
   :defer t
-  :bind (([f7] . treemacs-select-window)
-         ([f8] . treemacs)
-         ([mouse-1] . treemacs-single-click-expand-action))
+  :bind
+  (([f7] . treemacs-select-window)
+   ([f8] . treemacs)
+   ([mouse-1] . treemacs-single-click-expand-action))
   :config
   (progn
-    (setq treemacs-file-event-delay 1000
+    (setq treemacs-file-event-delay 500
           treemacs-follow-after-init t
           treemacs-no-png-images nil
           treemacs-show-cursor t
           treemacs-show-hidden-files nil
-          treemacs-width 28)
-    )
+          treemacs-width 30))
+
   (treemacs-follow-mode t)
-  (treemacs-resize-icons 11)  ;; needs imagemagick support
+  (treemacs-resize-icons 11)  ;; needs imagemagick support on Emacs build
   ;; (treemacs-display-current-project-exclusively)
 
   (with-eval-after-load 'treemacs
