@@ -1,5 +1,7 @@
 [core]
   excludesFile = ~/.gitignore
+  quotePath = false
+  precomposeUnicode = true
 
 [user]
   name = Taro Sato
