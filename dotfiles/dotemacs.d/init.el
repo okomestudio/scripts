@@ -7,6 +7,7 @@
 ;;
 ;;; Code:
 
+;; TODO: If custom.el does not exist, need to create.
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file)
 
