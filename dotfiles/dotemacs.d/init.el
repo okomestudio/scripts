@@ -521,6 +521,8 @@
 (use-package org
   :bind
   (("C-c l" . 'org-store-link))
+  :config
+  (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
   :custom
   ((fill-column 80)
    (org-image-actual-width nil)
