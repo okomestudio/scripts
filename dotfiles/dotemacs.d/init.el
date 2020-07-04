@@ -657,6 +657,7 @@
   (progn
     (setq treemacs-file-event-delay 500
           treemacs-follow-after-init t
+          treemacs-missing-project-action 'keep
           treemacs-no-png-images nil
           treemacs-show-cursor t
           treemacs-show-hidden-files nil
