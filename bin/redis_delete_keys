@@ -2,27 +2,30 @@
 
 set -e
 
+readonly scriptname="${0##*/}"
+
 function usage() {
   cat <<USAGE >&2
-Usage: redis_delete_keys somekeypattern*
+Usage: $scriptname keypattern
 
-Delete Redis keys that match a (wildcard) pattern.
+Bulk delete Redis keys that match the (wildcard) pattern.
 
-If the Redis service is not at 127.0.0.1:6379, use REDIS_HOST and
-REDIS_PORT environment variables to specify different host/port.
+If the Redis service is not at 127.0.0.1:6379, use REDIS_HOST and REDIS_PORT
+environment variables to specify different host and/or port.
 
 Requirements:
 
   redis-cli
 
 USAGE
-  exit ${1:-1}
+  exit "${1:-1}"
 }
 
 
 function error() {
-  >&2 echo "ERROR: $1"
-  exit ${2:-1}
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
+  exit "${2:-1}"
 }
 
 
@@ -31,49 +34,51 @@ function main() {
   [[ -z "$pattern" ]] && error "No pattern given"
 
   rediscmd="redis-cli -h $REDIS_HOST -p $REDIS_PORT"
-  
+
   to_be_deleted=()
-  for key in $($rediscmd keys '__*'); do
+  for key in $($rediscmd --raw keys '*'); do
     if [[ $key =~ $pattern ]]; then
-      to_be_deleted+=($key)
+      to_be_deleted+=("$key")
     fi
   done
   readonly to_be_deleted
 
-  [[ -z "${to_be_deleted[@]}" ]] && error "No keys selected with the pattern" 0
+  [[ "${#to_be_deleted[@]}" -eq 0 ]] && error "No keys selected with the pattern" 0
 
   # Preview the keys to be deleted
-  for key in ${to_be_deleted[@]}; do
+  for key in "${to_be_deleted[@]}"; do
     echo "$key"
   done
 
-  echo -n 'Delete these Redis keys? (y/N) '
-  read resp
+  read -p 'Delete these Redis keys? [y/N]: ' resp
+  resp=${resp:-n}
   [[ ! "$resp" = "y" ]] && error "Quit without delete" 0
 
-  echo -n 'REALLY delete these Redis keys? The operation is undoable! (y/N) '
-  read resp
+  read -p 'REALLY delete these Redis keys? The operation is undoable! (y/N) ' resp
+  resp=${resp:-n}
   [[ ! "$resp" = "y" ]] && error "Quit without delete" 0
 
-  $rediscmd del ${to_be_deleted[@]}
+  $rediscmd del "${to_be_deleted[@]}"
 }
 
 
-while getopts "h" opt; do
-  case $opt in
-    h)
-      usage 0
-      ;;
-    \?)
-      usage
-      ;;
-    :)
-      error "Option -$OPTARG requires an argument"
-      ;;
-  esac
-done
-shift $(($OPTIND - 1))
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+  while getopts "h" opt; do
+    case $opt in
+      h)
+        usage 0
+        ;;
+      \?)
+        usage
+        ;;
+      :)
+        error "Option -$OPTARG requires an argument"
+        ;;
+    esac
+  done
+  shift $(($OPTIND - 1))
 
-export REDIS_HOST=${REDIS_HOST:-127.0.0.1}
-export REDIS_PORT=${REDIS_PORT:-6379}
-main "$@"
+  export REDIS_HOST=${REDIS_HOST:-127.0.0.1}
+  export REDIS_PORT=${REDIS_PORT:-6379}
+  main "$@"
+fi
