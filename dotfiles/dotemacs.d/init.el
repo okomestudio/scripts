@@ -654,14 +654,18 @@
    ([f8] . treemacs)
    ([mouse-1] . treemacs-single-click-expand-action))
   :config
-  (progn
-    (setq treemacs-file-event-delay 500
-          treemacs-follow-after-init t
-          treemacs-missing-project-action 'keep
-          treemacs-no-png-images nil
-          treemacs-show-cursor t
-          treemacs-show-hidden-files nil
-          treemacs-width 30))
+  (when window-system
+    (setq treemacs-indentation 1
+          treemacs-is-never-other-window t
+          treemacs-space-between-root-nodes nil
+          treemacs-width 35))
+
+  (setq treemacs-file-event-delay 500
+        treemacs-follow-after-init t
+        treemacs-missing-project-action 'keep
+        treemacs-no-png-images nil
+        treemacs-show-cursor t
+        treemacs-show-hidden-files nil)
 
   (treemacs-follow-mode t)
   (treemacs-resize-icons 11)  ;; needs imagemagick support on Emacs build
