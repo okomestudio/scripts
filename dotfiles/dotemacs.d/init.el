@@ -521,14 +521,22 @@
 (use-package org
   :bind
   (("C-c l" . 'org-store-link))
+
   :config
   (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (python . t)))
+
   :custom
   ((fill-column 80)
    (org-image-actual-width nil)
    (org-support-shift-select t))
+
   :hook
   ((org-mode . auto-fill-mode))
+
   :init
   (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
 
