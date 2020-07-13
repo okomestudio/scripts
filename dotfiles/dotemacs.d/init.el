@@ -528,7 +528,8 @@
    'org-babel-load-languages
    '((emacs-lisp . t)
      (js . t)
-     (python . t)))
+     (python . t)
+     (shell . t)))
 
   :custom
   ((fill-column 80)
