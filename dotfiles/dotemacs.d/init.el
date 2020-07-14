@@ -544,9 +544,13 @@
 
 
 (use-package plantuml-mode
-  :if (not (version< emacs-version "25.0"))
-  :init
-  (setq plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+  :custom
+  ((plantuml-default-exec-mode 'jar)
+   (plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
+  :mode
+  ("\\.plantuml\\'" . plantuml-mode)
+  ("\\.puml\\'" . plantuml-mode))
 
 
 (use-package pos-tip
