@@ -124,7 +124,8 @@
 (defvar package-archives)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa" . "https://melpa.org/packages/")))
+        ("melpa" . "https://melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")))
 
 ;; For important compatibility libraries like cl-lib
 ;; (when (< emacs-major-version 24)
@@ -518,11 +519,11 @@
   (openwith-mode t))
 
 
-(use-package org
+(use-package org-plus-contrib
   :bind
   (("C-c l" . 'org-store-link))
 
-  :config
+  :init
   (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
   (org-babel-do-load-languages
    'org-babel-load-languages
@@ -537,10 +538,7 @@
    (org-support-shift-select t))
 
   :hook
-  ((org-mode . auto-fill-mode))
-
-  :init
-  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t))
+  ((org-mode . auto-fill-mode)))
 
 
 (use-package plantuml-mode
