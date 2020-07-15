@@ -2,3 +2,17 @@
 if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
+
+
+function backup() {
+  if [ -z "$1" ] ; then
+    echo "backup: missing file operand"
+    return 1
+  elif [ ! -e "$1" ]; then
+    echo "backup: cannot access '$1'"
+    return 1
+  fi
+  local newname;
+  newname=$1.$(date +%Y-%m-%d.%H%M.bk)
+  cp -p "$1" "$newname"
+}
