@@ -237,6 +237,12 @@
 (use-package add-node-modules-path)
 
 
+(use-package anki-editor
+  :custom
+  (anki-editor-use-math-jax t)
+  (request-log-level 'debug))
+
+
 (use-package ansible
   :after (yaml-mode)
   :hook (((yaml-mode) . my-ansible-mode-hook)
