@@ -240,7 +240,9 @@
 (use-package anki-editor
   :custom
   (anki-editor-use-math-jax t)
-  (request-log-level 'debug))
+  (request-log-level 'debug)
+  :ensure-system-package
+  (curl . "sudo apt install curl"))
 
 
 (use-package ansible
