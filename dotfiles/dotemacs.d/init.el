@@ -531,22 +531,23 @@
   :bind
   (("C-c l" . 'org-store-link))
 
-  :init
-  (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (js . t)
-     (python . t)
-     (shell . t)))
-
   :custom
   ((fill-column 80)
    (org-image-actual-width nil)
    (org-support-shift-select t))
 
   :hook
-  ((org-mode . auto-fill-mode)))
+  ((org-mode . auto-fill-mode))
+
+  :init
+  (plist-put org-format-latex-options :scale 1.5)
+  (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((emacs-lisp . t)
+     (js . t)
+     (python . t)
+     (shell . t))))
 
 
 (use-package plantuml-mode
