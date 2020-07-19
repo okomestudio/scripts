@@ -534,6 +534,7 @@
   :custom
   ((fill-column 80)
    (org-image-actual-width nil)
+   (org-preview-latex-image-directory ".ltximg/")
    (org-support-shift-select t))
 
   :hook
