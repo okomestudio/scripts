@@ -682,7 +682,8 @@
           treemacs-space-between-root-nodes nil
           treemacs-width 35))
 
-  (setq treemacs-file-event-delay 500
+  (setq treemacs-collapse-dirs 0
+        treemacs-file-event-delay 500
         treemacs-follow-after-init t
         treemacs-missing-project-action 'keep
         treemacs-no-png-images nil
