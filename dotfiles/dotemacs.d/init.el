@@ -533,6 +533,7 @@
 
   :custom
   ((fill-column 80)
+   (org-babel-python-command "~/.pyenv/versions/3.8.2/bin/python")
    (org-image-actual-width nil)
    (org-preview-latex-image-directory ".ltximg/")
    (org-support-shift-select t))
