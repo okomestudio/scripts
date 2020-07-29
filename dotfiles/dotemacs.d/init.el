@@ -594,6 +594,12 @@
   (add-hook 'before-save-hook 'py-isort-before-save))
 
 
+(use-package pyenv-mode
+  :disabled t
+  :config
+  (pyenv-mode 1))
+
+
 (use-package python
   :config
   (when (executable-find "ipython")
@@ -606,10 +612,7 @@
   (flake8 . "pip install flake8"))
 
 
-(use-package pyenv-mode
-  :disabled t
-  :config
-  (pyenv-mode 1))
+(use-package python-pytest)
 
 
 (use-package restclient
