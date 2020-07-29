@@ -296,9 +296,15 @@
 ;;
 ;; in .dir-locals.el.
 (use-package blacken
-  :ensure-system-package (black . "pip install black")
   :after python
-  :if (not (version< emacs-version "25.2")))
+  :bind (("C-M-b" . ts/blacken-buffer))
+  :ensure-system-package (black . "pip install black")
+  :if (not (version< emacs-version "25.2"))
+  :init
+  (defun ts/blacken-buffer ()
+    (interactive)
+    (blacken-buffer)
+    (py-isort-buffer)))
 
 
 (use-package cc-mode
@@ -590,7 +596,12 @@
 
 
 (use-package py-isort
+  :after python
+  :ensure nil                           ; Use patched version till PR #21 gets merged
   :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el"
+   (concat my-lispdir "py-isort.el"))
   (add-hook 'before-save-hook 'py-isort-before-save))
 
 
