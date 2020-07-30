@@ -75,6 +75,7 @@
 (setq tab-width 2)
 (setq case-fold-search t)
 (setq size-indication-mode t)
+(setq sentence-end-double-space nil)
 (savehist-mode 1)
 
 ;; (tooltip-mode -1)
