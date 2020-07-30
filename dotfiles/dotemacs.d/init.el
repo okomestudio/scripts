@@ -728,6 +728,10 @@
   :after treemacs magit)
 
 
+(use-package undo-tree
+  :init (global-undo-tree-mode))
+
+
 (use-package uniquify
   :ensure nil
   :custom (uniquify-buffer-name-style 'forward))
