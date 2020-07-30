@@ -64,18 +64,18 @@
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 (setq-default frame-title-format '("" "%f - Emacs"))  ;; for frame-cmds.el
 (setq-default scroll-bar-width 6)
+(setq-default indent-tabs-mode nil)
 (fringe-mode 0)
-(setq ring-bell-function 'ignore)  ;; Disable beeping
 
+(setq case-fold-search t)
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
-
-(setq-default indent-tabs-mode nil)
+(setq ring-bell-function 'ignore)  ;; Disable beeping
+(setq sentence-end-double-space nil)
+(setq size-indication-mode t)
 (setq tab-always-indent t)
 (setq tab-width 2)
-(setq case-fold-search t)
-(setq size-indication-mode t)
-(setq sentence-end-double-space nil)
+
 (savehist-mode 1)
 
 ;; (tooltip-mode -1)
