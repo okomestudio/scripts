@@ -543,7 +543,8 @@
    (org-babel-python-command "~/.pyenv/versions/3.8.2/bin/python")
    (org-image-actual-width nil)
    (org-preview-latex-image-directory ".ltximg/")
-   (org-support-shift-select t))
+   (org-support-shift-select t)
+   (org-todo-keywords '((sequence "TODO" "|" "DONE" "SKIP"))))
 
   :hook
   ((org-mode . auto-fill-mode))
