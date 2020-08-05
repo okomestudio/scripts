@@ -659,8 +659,15 @@
 
 
 (use-package sqlformat
-  :ensure-system-package (pg_format . "sudo apt install pgformatter")
-  :hook ((sql-mode) . sqlformat-on-save-mode)
+  :bind
+  (("C-M-b" . sqlformat))
+
+  :ensure-system-package
+  (pg_format . "sudo apt install pgformatter")
+
+  :hook
+  ((sql-mode) . sqlformat-on-save-mode)
+
   :init
   (require 'sqlformat)
   (setq sqlformat-command 'pgformatter)
