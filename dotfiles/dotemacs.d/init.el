@@ -662,6 +662,10 @@
   :bind
   (("C-M-b" . 'ts/sqlformat))
 
+  :custom
+  (sqlformat-command 'pgformatter)
+  (sqlformat-args '("-f2" "-g" "-s2" "-U2"))
+
   :ensure-system-package
   (pg_format . "sudo apt install pgformatter")
 
@@ -670,8 +674,6 @@
 
   :init
   (require 'sqlformat)
-  (setq sqlformat-command 'pgformatter)
-  (setq sqlformat-args '("-f2" "-g" "-s2" "-U2"))
 
   (defun ts/sqlformat ()
     (interactive)
