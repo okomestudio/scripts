@@ -660,18 +660,24 @@
 
 (use-package sqlformat
   :bind
-  (("C-M-b" . sqlformat))
+  (("C-M-b" . 'ts/sqlformat))
 
   :ensure-system-package
   (pg_format . "sudo apt install pgformatter")
 
   :hook
-  ((sql-mode) . sqlformat-on-save-mode)
+  ((sql-mode . sqlformat-on-save-mode))
 
   :init
   (require 'sqlformat)
   (setq sqlformat-command 'pgformatter)
-  (setq sqlformat-args '("-f2" "-g" "-s2" "-U2")))
+  (setq sqlformat-args '("-f2" "-g" "-s2" "-U2"))
+
+  (defun ts/sqlformat ()
+    (interactive)
+    (save-excursion
+      (sqlformat (point-min) (point-max))
+      (delete-trailing-whitespace))))
 
 
 (use-package sql-upcase
