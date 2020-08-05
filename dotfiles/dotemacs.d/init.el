@@ -542,6 +542,7 @@
   ((fill-column 80)
    (org-babel-python-command "~/.pyenv/shims/python")
    (org-image-actual-width nil)
+   (org-list-allow-alphabetical t)
    (org-preview-latex-image-directory ".ltximg/")
    (org-support-shift-select t)
    (org-todo-keywords '((sequence "TODO" "|" "DONE" "SKIP"))))
