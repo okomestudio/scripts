@@ -558,7 +558,8 @@
    '((emacs-lisp . t)
      (js . t)
      (python . t)
-     (shell . t))))
+     (shell . t)
+     (sql . t))))
 
 
 (use-package plantuml-mode
