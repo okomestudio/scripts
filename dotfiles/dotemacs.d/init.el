@@ -540,6 +540,7 @@
 
   :custom
   ((fill-column 80)
+   (org-agenda-files (append (directory-files-recursively default-directory "\\.org$")))
    (org-babel-python-command "~/.pyenv/shims/python")
    (org-image-actual-width nil)
    (org-list-allow-alphabetical t)
@@ -552,7 +553,6 @@
 
   :init
   (plist-put org-format-latex-options :scale 1.5)
-  (setq org-agenda-files (append (directory-files-recursively "./" "\\.org$")))
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((emacs-lisp . t)
