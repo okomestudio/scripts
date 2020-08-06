@@ -298,9 +298,16 @@
 ;; in .dir-locals.el.
 (use-package blacken
   :after python
-  :bind (("C-M-b" . ts/blacken-buffer))
-  :ensure-system-package (black . "pip install black")
+
+  :bind
+  (:map python-mode-map
+   ("C-M-b" . ts/blacken-buffer))
+
+  :ensure-system-package
+  (black . "pip install black")
+
   :if (not (version< emacs-version "25.2"))
+
   :init
   (defun ts/blacken-buffer ()
     (interactive)
