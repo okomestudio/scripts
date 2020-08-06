@@ -659,8 +659,11 @@
 
 
 (use-package sqlformat
+  :after (sql)
+
   :bind
-  (("C-M-b" . 'ts/sqlformat))
+  (:map sql-mode-map
+   ("C-M-b" . 'ts/sqlformat))
 
   :custom
   (sqlformat-command 'pgformatter)
