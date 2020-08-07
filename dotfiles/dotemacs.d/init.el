@@ -562,7 +562,8 @@
   (plist-put org-format-latex-options :scale 1.5)
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((emacs-lisp . t)
+   '((C . t)
+     (emacs-lisp . t)
      (js . t)
      (python . t)
      (shell . t)
