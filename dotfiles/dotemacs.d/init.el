@@ -651,6 +651,11 @@
   :hook ((rst-mode . remove-trailing-whitespaces-on-save)))
 
 
+(use-package scala-mode
+  :interpreter
+  ("scala" . scala-mode))
+
+
 (use-package sh-mode
   :custom
   ((sh-basic-offset 2)
