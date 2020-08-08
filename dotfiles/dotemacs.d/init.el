@@ -651,6 +651,11 @@
   :hook ((rst-mode . remove-trailing-whitespaces-on-save)))
 
 
+(use-package rust-mode
+  :custom
+  ((rust-format-on-save t)))
+
+
 (use-package scala-mode
   :interpreter
   ("scala" . scala-mode))
