@@ -515,6 +515,20 @@
   (setq js-indent-level 2))
 
 
+(use-package lsp-mode
+  :commands lsp
+  :hook
+  ((python-mode . lsp)))
+
+
+(use-package lsp-ui
+  :commands lsp-ui-mode)
+
+
+(use-package lsp-treemacs
+  :commands lsp-treemacs-errors-list)
+
+
 ;; Allows browser preview with C-c C-c v
 (use-package markdown-mode
   :hook ((markdown-mode) . remove-trailing-whitespaces-on-save)
