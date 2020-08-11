@@ -2,7 +2,7 @@
 ;;
 ;;; Commentary:
 ;;
-;; This should be placed at ~/.emacs.d/init.el.
+;; This file should be placed at ~/.config/emacs/init.el.
 ;;
 ;;
 ;;; Code:
