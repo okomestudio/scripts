@@ -161,9 +161,6 @@
 (use-package epc
   :ensure t)
 
-(use-package url
-  :ensure t)
-
 
 ;; CUSTOM KEYBINDINGS
 
