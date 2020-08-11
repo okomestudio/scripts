@@ -611,6 +611,13 @@
          (prog-mode . show-paren-mode)))
 
 
+(use-package projectile
+  :config
+  (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+  (projectile-mode +1))
+
+
 (use-package py-isort
   :after python
   :ensure nil                           ; Use patched version till PR #21 gets merged
@@ -771,6 +778,10 @@
 
 (use-package treemacs-magit
   :after treemacs magit)
+
+
+(use-package treemacs-projectile
+  :after treemacs projectile)
 
 
 (use-package undo-tree
