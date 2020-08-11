@@ -7,8 +7,9 @@
 ;;
 ;;; Code:
 
-;; TODO: If custom.el does not exist, need to create.
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(unless (file-exists-p custom-file)
+  (write-region "" nil custom-file))
 (load custom-file)
 
 ;; '(inhibit-splash-screen t)
