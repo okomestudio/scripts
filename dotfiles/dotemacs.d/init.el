@@ -24,7 +24,7 @@
 ;; UTILITY VARIABLES AND FUNCTIONS
 
 ;; Custom emacs lisp directory for .el files
-(defconst my-lispdir "~/.emacs.d/lisp/")
+(defconst my-lispdir (concat user-emacs-directory "lisp/"))
 (if (not (file-directory-p my-lispdir))
     (make-directory my-lispdir :parents))
 (if (file-directory-p my-lispdir)
@@ -395,7 +395,7 @@
   (elpy-rpc-backend "jedi")
   (elpy-rpc-virtualenv-path (or (getenv "VIRTUAL_ENV")
                                 "~/.pyenv/versions/3.8.2"
-                                "~/.emacs.d/elpy/rpc-venv"))
+                                (concat user-emacs-directory "elpy/rpc-venv")))
   :defer t
   :hook (elpy-mode . ts/elpy-hooks)
   :init
