@@ -388,6 +388,8 @@
 
 
 (use-package elpy
+  :disabled t
+
   :config
   (when (load "flycheck" t t)
     (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
