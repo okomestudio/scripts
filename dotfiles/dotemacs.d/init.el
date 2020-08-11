@@ -376,6 +376,9 @@
 (use-package dash-functional)
 
 
+(use-package direnv)
+
+
 (use-package dockerfile-mode)
 
 
@@ -634,7 +637,8 @@
   (flake8 . "pip install flake8"))
 
 
-(use-package python-pytest)
+(use-package python-pytest
+  :after (direnv))
 
 
 (use-package restclient
