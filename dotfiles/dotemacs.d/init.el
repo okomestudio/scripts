@@ -351,7 +351,7 @@
 
 
 (use-package company-tern
-  :after (company dash dash-functional)
+  :after (company dash dash-functional tern)
   :ensure nil
   :init
   (ensure-downloaded-file
