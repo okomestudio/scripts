@@ -381,7 +381,9 @@
 (use-package dash-functional)
 
 
-(use-package direnv)
+(use-package direnv
+  :config
+  (direnv-mode))
 
 
 (use-package dockerfile-mode)
@@ -673,7 +675,10 @@
 
 
 (use-package python-pytest
-  :after (direnv))
+  :after (direnv)
+  :bind
+  (:map python-mode-map
+   ("C-c t" . python-pytest-dispatch)))
 
 
 (use-package restclient
