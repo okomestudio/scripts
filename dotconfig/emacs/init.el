@@ -518,6 +518,9 @@
 (use-package lsp-mode
   :commands lsp
 
+  :custom
+  (lsp-pyls-configuration-sources ["flake8"])
+
   :ensure-system-package
   ((pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort"))
 
