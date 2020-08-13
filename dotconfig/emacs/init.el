@@ -517,6 +517,10 @@
 
 (use-package lsp-mode
   :commands lsp
+
+  :ensure-system-package
+  ((pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort"))
+
   :hook
   ((python-mode . lsp)))
 
