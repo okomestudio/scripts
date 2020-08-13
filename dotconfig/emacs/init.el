@@ -331,6 +331,11 @@
   (add-to-list 'company-backends '(company-files)))
 
 
+(use-package company-box
+  :after company
+  :hook (company-mode . company-box-mode))
+
+
 (use-package company-jedi
   :disabled t
   :after company
