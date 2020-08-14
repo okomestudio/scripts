@@ -533,6 +533,7 @@
 
   :ensure-system-package
   ((isort . "pip install isort[pyproject]==4.3.21") ; NOTE: https://github.com/PyCQA/pylint/pull/3725
+   (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
    (pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort")
    (bash-language-server . "sudo npm i -g bash-language-server"))
 
@@ -870,6 +871,7 @@
                (setq checker 'javascript-eslint))
              (web-mode-set-content-type "jsx")
              (prettier-js-mode)
+             (lsp)
              (tern-mode)))
 
       (flycheck-add-mode checker 'web-mode)
