@@ -669,9 +669,7 @@
           python-shell-interpreter-args "-i"))
   :custom
   ((python-indent-guess-indent-offset-verbose nil)
-   (python-indent-offset 4))
-  :ensure-system-package
-  (flake8 . "pip install flake8"))
+   (python-indent-offset 4)))
 
 
 (use-package python-pytest
