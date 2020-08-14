@@ -1,0 +1,19 @@
+#+title: Linux Environment
+
+* bin
+  Miscellaneous scripts.
+
+* devices
+  Device configuration files.
+
+* dotconfig
+  Files to be placed under $HOME/.config.
+
+* dotfiles
+  Files to be placed under $HOME as dotfiles.
+
+* install/uninstall
+  Installer/uninstaller scripts.
+
+* tests
+  Tests for scripts.
