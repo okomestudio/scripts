@@ -589,7 +589,9 @@
 
   :custom
   ((fill-column 80)
-   (org-agenda-files (append (directory-files-recursively default-directory "\\.org$")))
+   (org-agenda-files
+    (when (> (length (directory-files default-directory t "\\.org$")) 0)
+      (directory-files-recursively default-directory "\\.org$")))
    (org-babel-python-command "~/.pyenv/shims/python")
    (org-image-actual-width nil)
    (org-list-allow-alphabetical t)
