@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly scriptname="${0##*/}"
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: $scriptname [options] dockerfile
+
+Build a Docker image.
+
+  dockerfile  Dockerfile
+
+  -r  Force rebuild when an image exists
+  -s  Use ssh
+  -t  Tag the image
+
+USAGE
+  exit "${1:-1}"
+}
+
+
+function error() {
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
+  exit "${2:-1}"
+}
+
+
+function main() {
+  local dockerfile=$1
+  local tag=$2
+  local use_ssh=$3
+  local rebuild=$4
+  local args="${@:5}"
+
+  local localhost=${LOCALHOST:-172.17.0.1}
+
+  if [ -n "${rebuild:-}" ] || ! docker images | grep "$tag" > /dev/null ; then
+    if [ -n "$use_ssh" ]; then
+      export DOCKER_BUILDKIT=1
+      docker build --ssh default \
+             --build-arg LOCALHOST="$localhost" \
+             -f "$dockerfile" -t "$tag" .
+    else
+      docker build --build-arg LOCALHOST="$localhost" \
+             -f "$dockerfile" -t "$tag" .
+    fi
+  else
+    >&2 echo "The image $tag already exists."
+  fi
+}
+
+
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+  while getopts "hrst:" opt; do
+    case $opt in
+      r)
+        rebuild=t
+        ;;
+      s)
+        use_ssh=t
+        ;;
+      t)
+        tag=$OPTARG
+        ;;
+      h|\?)
+        if [ "$opt" = "h" ]; then usage 0; else usage; fi
+        ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  dockerfile=$1
+  if [ -z "$dockerfile" ]; then
+    error "Path to Dockerfile is required"
+  fi
+
+  tag=${tag:-$(echo "$dockerfile" | rev | cut -d'/' -f2-3 | rev)}
+  if [ -z "$tag" ]; then
+    error "Tag is required"
+  fi
+
+  main "$dockerfile" "$tag" "$use_ssh" "$rebuild" "${@:2}"
+fi
