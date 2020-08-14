@@ -383,7 +383,9 @@
 
 (use-package direnv
   :config
-  (direnv-mode))
+  (direnv-mode)
+  :ensure-system-package
+  ((direnv . "sudo apt install direnv")))
 
 
 (use-package dockerfile-mode)
