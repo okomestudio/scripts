@@ -68,6 +68,7 @@
 (setq-default indent-tabs-mode nil)
 (fringe-mode 0)
 
+(setq byte-compile-warnings '(cl-functions))
 (setq case-fold-search t)
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
