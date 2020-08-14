@@ -531,10 +531,12 @@
   (lsp-pyls-configuration-sources ["flake8"])
 
   :ensure-system-package
-  ((pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort"))
+  ((pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort")
+   (bash-language-server . "sudo npm i -g bash-language-server"))
 
   :hook
-  ((python-mode . lsp)))
+  ((sh-mode . lsp)
+   (python-mode . lsp)))
 
 
 (use-package lsp-ui
