@@ -525,13 +525,15 @@
 
 
 (use-package lsp-mode
+  :after (python sh)
   :commands lsp
 
   :custom
   (lsp-pyls-configuration-sources ["flake8"])
 
   :ensure-system-package
-  ((pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort")
+  ((isort . "pip install isort[pyproject]==4.3.21") ; NOTE: https://github.com/PyCQA/pylint/pull/3725
+   (pyls . "pip install python-language-server[flake8,mccabe,pydocstyle,pylint,rope,test] pyls-black pyls-isort")
    (bash-language-server . "sudo npm i -g bash-language-server"))
 
   :hook
