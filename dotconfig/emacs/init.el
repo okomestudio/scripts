@@ -526,7 +526,6 @@
 
 
 (use-package lsp-mode
-  :after (python sh)
   :commands lsp
 
   :custom
