@@ -36,19 +36,6 @@ EOF
 }
 
 
-function flake8() {
-  set +e
-  read -r -d '' content <<EOF
-[flake8]
-max-line-length = 88
-extend-ignore =
-    E203,
-EOF
-  set -e
-  echo "$content"
-}
-
-
 function ensure() {
   local path=$1
   local content=$2
@@ -60,14 +47,12 @@ function ensure() {
 
 function install_pip_packages() {
   pip install black
-  pip install flake8-black
 }
 
 
 function main() {
   local path=${1:-.}
   [[ ! -d $path ]] && error "$path is not a directory"
-  ensure "${path%/}/.flake8" "$(flake8)"
   ensure "${path%/}/.dir-locals.el" "$(dirlocals)"
 
   if [[ -z $VIRTUAL_ENV ]]; then
