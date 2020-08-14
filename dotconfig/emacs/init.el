@@ -536,10 +536,13 @@
 
 
 (use-package lsp-ui
+  :custom
+  ((lsp-ui-doc-use-webkit nil))
   :commands lsp-ui-mode)
 
 
 (use-package lsp-treemacs
+  :bind ([f7] . lsp-treemacs-symbols)
   :commands lsp-treemacs-errors-list)
 
 
@@ -768,8 +771,7 @@
 (use-package treemacs
   :defer t
   :bind
-  (([f7] . treemacs-select-window)
-   ([f8] . treemacs)
+  (([f8] . treemacs)
    ([mouse-1] . treemacs-single-click-expand-action))
   :config
   (when window-system
