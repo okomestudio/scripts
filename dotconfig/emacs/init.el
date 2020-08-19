@@ -607,6 +607,7 @@
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
+     (dot . t)
      (emacs-lisp . t)
      (js . t)
      (python . t)
