@@ -337,6 +337,14 @@
   :hook (company-mode . company-box-mode))
 
 
+(use-package company-graphviz-dot
+  :ensure nil
+  :init
+  (ensure-downloaded-file
+   "https://raw.githubusercontent.com/ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"
+   (concat my-lispdir "company-graphviz-dot.el")))
+
+
 (use-package company-jedi
   :disabled t
   :after company
@@ -458,6 +466,14 @@
   :hook ((prog-mode . flyspell-prog-mode)
          (shell-script-mode . flyspell-prog-mode)
          (text-mode . flyspell-mode)))
+
+
+(use-package graphviz-dot-mode
+  :custom
+  (graphviz-dot-indent-width 2)
+
+  :ensure-system-package
+  (dot . "sudo apt install graphviz"))
 
 
 (use-package helm-swoop)
