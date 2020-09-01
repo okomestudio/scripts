@@ -334,6 +334,7 @@
 
 (use-package company-box
   :after company
+  :ensure t
   :hook (company-mode . company-box-mode))
 
 
