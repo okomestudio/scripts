@@ -600,12 +600,16 @@
   (openwith-mode t))
 
 
+(use-package org-bullets)
+
+
 (use-package org-plus-contrib
   :bind
   (("C-c l" . 'org-store-link))
 
   :custom
   ((fill-column 80)
+   (org-adapt-indentation nil)
    (org-agenda-files
     (when (> (length (directory-files default-directory t "\\.org$")) 0)
       (directory-files-recursively default-directory "\\.org$")))
@@ -617,7 +621,8 @@
    (org-todo-keywords '((sequence "TODO" "|" "DONE" "SKIP"))))
 
   :hook
-  ((org-mode . auto-fill-mode))
+  ((org-mode . (lambda () (org-bullets-mode 1)))
+   (org-mode . auto-fill-mode))
 
   :init
   (plist-put org-format-latex-options :scale 1.5)
