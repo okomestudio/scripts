@@ -847,6 +847,10 @@
   :after treemacs projectile)
 
 
+(use-package typo
+  :hook ((text-mode . typo-mode)))
+
+
 (use-package undo-tree
   :init (global-undo-tree-mode))
 
