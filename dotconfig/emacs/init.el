@@ -622,7 +622,8 @@
 
   :hook
   ((org-mode . (lambda () (org-bullets-mode 1)))
-   (org-mode . auto-fill-mode))
+   (org-mode . auto-fill-mode)
+   (org-mode . org-indent-mode))
 
   :init
   (plist-put org-format-latex-options :scale 1.5)
