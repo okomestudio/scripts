@@ -627,6 +627,12 @@
 
   :init
   (plist-put org-format-latex-options :scale 1.5)
+
+  ;; Add a few characters usable for bounding emphasis markup
+  (setcar org-emphasis-regexp-components "-—[:space:]('\"{")
+  (setcar (nthcdr 1 org-emphasis-regexp-components) "-—[:space:].,:!?;'\")}\\[")
+  (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
