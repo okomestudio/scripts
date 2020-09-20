@@ -24,7 +24,8 @@
 ;; UTILITY VARIABLES AND FUNCTIONS
 
 ;; Custom emacs lisp directory for .el files
-(defconst my-lispdir (concat user-emacs-directory "lisp/"))
+(defconst my-lispdir
+  (expand-file-name (concat user-emacs-directory "lisp/")))
 (if (not (file-directory-p my-lispdir))
     (make-directory my-lispdir :parents))
 (if (file-directory-p my-lispdir)
@@ -32,7 +33,8 @@
 
 
 ;; Cache directory
-(defconst my-cachedir "~/.cache/emacs-backups")
+(defconst my-cachedir
+  (expand-file-name "~/.cache/emacs-backups"))
 (if (not (file-directory-p my-cachedir))
     (make-directory my-cachedir :parents))
 
@@ -43,6 +45,18 @@
   SRC is the source URL, DEST is the destination file path."
   (if (not (file-exists-p dest))
       (url-copy-file src dest)))
+
+
+(defun ensure-file-from-github (src dest)
+  "Ensure that a file hosted by GitHub gets downloaded and exists.
+
+SRC is the source path in GitHub, DEST is the local destination
+path for the downloaded file."
+  (ensure-downloaded-file
+   (concat "https://raw.githubusercontent.com/" src)
+   (if (string-prefix-p "/" dest)
+       dest
+     (concat my-lispdir dest))))
 
 
 (defun remove-trailing-whitespaces-on-save ()
@@ -348,8 +362,8 @@
 (use-package company-graphviz-dot
   :ensure nil
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"
+  (ensure-file-from-github
+   "ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"
    (concat my-lispdir "company-graphviz-dot.el")))
 
 
@@ -376,7 +390,7 @@
   :after (company dash dash-functional tern)
   :ensure nil
   :init
-  (ensure-downloaded-file
+  (ensure-file-from-github
    "https://gist.githubusercontent.com/okomestudio/de8c59960ce8f195ee0224de5db5a168/raw/1193992ffeeca8193ebf459b377c27f628ac3246/company-tern.el"
    (concat my-lispdir "company-tern.el"))
   (add-to-list 'company-backends 'company-tern))
@@ -699,8 +713,8 @@
   :after python
   :ensure nil                           ; Use patched version till PR #21 gets merged
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el"
+  (ensure-file-from-github
+   "okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el"
    (concat my-lispdir "py-isort.el"))
   (add-hook 'before-save-hook 'py-isort-before-save))
 
@@ -731,8 +745,8 @@
 (use-package restclient
   :after (jq-mode)
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/pashky/restclient.el/master/restclient-jq.el"
+  (ensure-file-from-github
+   "pashky/restclient.el/master/restclient-jq.el"
    (concat my-lispdir "restclient-jq.el")))
 
 
@@ -796,8 +810,8 @@
 (use-package sql-upcase
   :ensure nil
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/emacsmirror/emacswiki.org/master/sql-upcase.el"
+  (ensure-file-from-github
+   "emacsmirror/emacswiki.org/master/sql-upcase.el"
    (concat my-lispdir "sql-upcase.el"))
   :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
 
@@ -809,8 +823,8 @@
   :ensure-system-package
   ((tern . "sudo npm install -g tern"))
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/ternjs/tern/master/emacs/tern.el"
+  (ensure-file-from-github
+   "ternjs/tern/master/emacs/tern.el"
    (concat my-lispdir "tern.el")))
 
 
@@ -996,8 +1010,8 @@
 
 (use-package yascroll
   :init
-  (ensure-downloaded-file
-   "https://raw.githubusercontent.com/emacsorphanage/yascroll/master/yascroll.el"
+  (ensure-file-from-github
+   "emacsorphanage/yascroll/master/yascroll.el"
    (concat my-lispdir "yascroll.el"))
   (when (not window-system)
     (require 'yascroll)
