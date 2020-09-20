@@ -331,8 +331,9 @@
   :custom
   (company-minimum-prefix-length 2)
   (company-selection-wrap-around t)
-  (company-show-numbers (quote (quote t)))
-  (company-tooltip-limit 10)
+  (company-show-numbers 'left)
+  (company-tooltip-limit 20)
+
   :init
   (global-company-mode)
   (add-to-list 'company-backends '(company-files)))
