@@ -70,6 +70,7 @@
 
 (setq byte-compile-warnings '(cl-functions))
 (setq case-fold-search t)
+(setq column-number-mode t)
 (setq mouse-wheel-progressive-speed t)
 (setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
 (setq ring-bell-function 'ignore)  ;; Disable beeping
@@ -185,12 +186,16 @@
 
 (use-package simple
   :ensure nil
-  :bind (("C-o" . 'ts/newline-below)
-         ("C-S-o" . 'ts/newline-above)
-         ("<f5>" . 'ts/revert-buffer-no-confirm))
-  :hook (before-save . delete-trailing-whitespace)
+
+  :bind
+  (("<f5>" . 'ts/revert-buffer-no-confirm)
+   ("C-S-o" . 'ts/newline-above)
+   ("C-o" . 'ts/newline-below))
+
+  :hook
+  (before-save . delete-trailing-whitespace)
+
   :init
-  ;; [F5] to trigger revert-buffer without confirmation
   (defun ts/revert-buffer-no-confirm (&optional force-reverting)
     "Interactive call to 'revert-buffer'.
 
@@ -213,9 +218,7 @@
   (defun ts/newline-below ()
     (interactive)
     (end-of-line)
-    (newline-and-indent))
-
-  (column-number-mode t))
+    (newline-and-indent)))
 
 
 ;; PACKAGES
