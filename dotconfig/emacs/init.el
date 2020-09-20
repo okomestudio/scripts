@@ -39,26 +39,28 @@
     (make-directory my-cachedir :parents))
 
 
-(defun ensure-downloaded-file (src dest)
-  "Download a file from a URL and save to the disk.
+(defun ensure-file-from-url (src &optional dest)
+  "Ensure that file at URL gets downloaded and exists.
 
-  SRC is the source URL, DEST is the destination file path."
-  (if (not (file-exists-p dest))
-      (url-copy-file src dest)))
+SRC is the source URL, DEST is the local destination path for the
+downloaded file. If DEST is not given, the filename is inferred
+from the source path. If DEST is not an absolute path, the file
+will be created in the my-lipdir directory."
+  (let ((dest (if dest
+                 (if (string-prefix-p "/" dest) dest (concat my-lispdir dest))
+               (concat my-lispdir (file-name-nondirectory src)))))
+    (if (not (file-exists-p dest))
+        (url-copy-file src dest))))
 
 
 (defun ensure-file-from-github (src &optional dest)
   "Ensure that a file hosted by GitHub gets downloaded and exists.
 
 SRC is the source path in GitHub, DEST is the local destination
-path for the downloaded file. If DEST is not given, the filename
-is inferred from the source path. If DEST is not an absolute
-path, the file will be created in the my-lipdir directory."
-  (ensure-downloaded-file
-   (concat "https://raw.githubusercontent.com/" src)
-   (if dest
-       (if (string-prefix-p "/" dest) dest (concat my-lispdir dest))
-     (concat my-lispdir (file-name-nondirectory src)))))
+path for the downloaded file. See ensure-file-from-url for
+detail."
+  (ensure-file-from-url
+   (concat "https://raw.githubusercontent.com/" src) dest))
 
 
 (defun remove-trailing-whitespaces-on-save ()
@@ -192,12 +194,10 @@ path, the file will be created in the my-lipdir directory."
    ("C-x p" . (lambda () (interactive) (other-window-or-frame -1))))
 
   :init
-  (ensure-downloaded-file
-   "https://www.emacswiki.org/emacs/download/frame-fns.el"
-   (concat my-lispdir "frame-fns.el"))
-  (ensure-downloaded-file
-   "https://www.emacswiki.org/emacs/download/frame-cmds.el"
-   (concat my-lispdir "frame-cmds.el")))
+  (ensure-file-from-url
+   "https://www.emacswiki.org/emacs/download/frame-fns.el")
+  (ensure-file-from-url
+   "https://www.emacswiki.org/emacs/download/frame-cmds.el"))
 
 
 (use-package simple
@@ -289,9 +289,8 @@ path, the file will be created in the my-lipdir directory."
   :ensure nil
   :mode ".*\\.ini$" ".*\\.conf$" ".*\\.service$"
   :init
-  (ensure-downloaded-file
-   "https://www.emacswiki.org/emacs/download/any-ini-mode.el"
-   (concat my-lispdir "any-ini-mode.el")))
+  (ensure-file-from-url
+   "https://www.emacswiki.org/emacs/download/any-ini-mode.el"))
 
 
 (use-package auto-package-update
@@ -391,9 +390,10 @@ path, the file will be created in the my-lipdir directory."
   :after (company dash dash-functional tern)
   :ensure nil
   :init
-  (ensure-downloaded-file
-   "https://gist.githubusercontent.com/okomestudio/de8c59960ce8f195ee0224de5db5a168/raw/1193992ffeeca8193ebf459b377c27f628ac3246/company-tern.el"
-   (concat my-lispdir "company-tern.el"))
+  (ensure-file-from-url
+   (concat "https://gist.githubusercontent.com/"
+           "okomestudio/de8c59960ce8f195ee0224de5db5a168/"
+           "raw/1193992ffeeca8193ebf459b377c27f628ac3246/company-tern.el"))
   (add-to-list 'company-backends 'company-tern))
 
 
@@ -615,10 +615,9 @@ path, the file will be created in the my-lipdir directory."
 (use-package openwith
   :custom
   ((openwith-associations '(("\\.pdf\\'" "okular" (file)))))
+
   :init
-  (ensure-downloaded-file
-   "https://www.metalevel.at/misc/openwith.el"
-   (concat my-lispdir "openwith.el"))
+  (ensure-file-from-url "https://www.metalevel.at/misc/openwith.el")
   (openwith-mode t))
 
 
@@ -745,8 +744,7 @@ path, the file will be created in the my-lipdir directory."
 (use-package restclient
   :after (jq-mode)
   :init
-  (ensure-file-from-github
-   "pashky/restclient.el/master/restclient-jq.el"))
+  (ensure-file-from-github "pashky/restclient.el/master/restclient-jq.el"))
 
 
 (use-package rst-mode
@@ -814,14 +812,16 @@ path, the file will be created in the my-lipdir directory."
 
 
 (use-package tern
+  :ensure nil
+
   :custom
   (tern-command '("tern" "--no-port-file"))
-  :ensure nil
+
   :ensure-system-package
   ((tern . "sudo npm install -g tern"))
+
   :init
-  (ensure-file-from-github
-   "ternjs/tern/master/emacs/tern.el"))
+  (ensure-file-from-github "ternjs/tern/master/emacs/tern.el"))
 
 
 (use-package treemacs
@@ -1006,8 +1006,7 @@ path, the file will be created in the my-lipdir directory."
 
 (use-package yascroll
   :init
-  (ensure-file-from-github
-   "emacsorphanage/yascroll/master/yascroll.el")
+  (ensure-file-from-github "emacsorphanage/yascroll/master/yascroll.el")
   (when (not window-system)
     (require 'yascroll)
     (global-yascroll-bar-mode 1)))
