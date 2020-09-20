@@ -47,16 +47,18 @@
       (url-copy-file src dest)))
 
 
-(defun ensure-file-from-github (src dest)
+(defun ensure-file-from-github (src &optional dest)
   "Ensure that a file hosted by GitHub gets downloaded and exists.
 
 SRC is the source path in GitHub, DEST is the local destination
-path for the downloaded file."
+path for the downloaded file. If DEST is not given, the filename
+is inferred from the source path. If DEST is not an absolute
+path, the file will be created in the my-lipdir directory."
   (ensure-downloaded-file
    (concat "https://raw.githubusercontent.com/" src)
-   (if (string-prefix-p "/" dest)
-       dest
-     (concat my-lispdir dest))))
+   (if dest
+       (if (string-prefix-p "/" dest) dest (concat my-lispdir dest))
+     (concat my-lispdir (file-name-nondirectory src)))))
 
 
 (defun remove-trailing-whitespaces-on-save ()
@@ -363,8 +365,7 @@ path for the downloaded file."
   :ensure nil
   :init
   (ensure-file-from-github
-   "ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"
-   (concat my-lispdir "company-graphviz-dot.el")))
+   "ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"))
 
 
 (use-package company-jedi
@@ -390,7 +391,7 @@ path for the downloaded file."
   :after (company dash dash-functional tern)
   :ensure nil
   :init
-  (ensure-file-from-github
+  (ensure-downloaded-file
    "https://gist.githubusercontent.com/okomestudio/de8c59960ce8f195ee0224de5db5a168/raw/1193992ffeeca8193ebf459b377c27f628ac3246/company-tern.el"
    (concat my-lispdir "company-tern.el"))
   (add-to-list 'company-backends 'company-tern))
@@ -714,8 +715,7 @@ path for the downloaded file."
   :ensure nil                           ; Use patched version till PR #21 gets merged
   :init
   (ensure-file-from-github
-   "okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el"
-   (concat my-lispdir "py-isort.el"))
+   "okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el")
   (add-hook 'before-save-hook 'py-isort-before-save))
 
 
@@ -746,8 +746,7 @@ path for the downloaded file."
   :after (jq-mode)
   :init
   (ensure-file-from-github
-   "pashky/restclient.el/master/restclient-jq.el"
-   (concat my-lispdir "restclient-jq.el")))
+   "pashky/restclient.el/master/restclient-jq.el"))
 
 
 (use-package rst-mode
@@ -810,9 +809,7 @@ path for the downloaded file."
 (use-package sql-upcase
   :ensure nil
   :init
-  (ensure-file-from-github
-   "emacsmirror/emacswiki.org/master/sql-upcase.el"
-   (concat my-lispdir "sql-upcase.el"))
+  (ensure-file-from-github "emacsmirror/emacswiki.org/master/sql-upcase.el")
   :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
 
 
@@ -824,8 +821,7 @@ path for the downloaded file."
   ((tern . "sudo npm install -g tern"))
   :init
   (ensure-file-from-github
-   "ternjs/tern/master/emacs/tern.el"
-   (concat my-lispdir "tern.el")))
+   "ternjs/tern/master/emacs/tern.el"))
 
 
 (use-package treemacs
@@ -1011,8 +1007,7 @@ path for the downloaded file."
 (use-package yascroll
   :init
   (ensure-file-from-github
-   "emacsorphanage/yascroll/master/yascroll.el"
-   (concat my-lispdir "yascroll.el"))
+   "emacsorphanage/yascroll/master/yascroll.el")
   (when (not window-system)
     (require 'yascroll)
     (global-yascroll-bar-mode 1)))
