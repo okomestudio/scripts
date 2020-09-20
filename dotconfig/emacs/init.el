@@ -169,8 +169,11 @@
 ;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
 (use-package frame-cmds
   :ensure nil
-  :bind (("C-x o" . (lambda () (interactive) (other-window-or-frame 1)))
-         ("C-x p" . (lambda () (interactive) (other-window-or-frame -1))))
+
+  :bind
+  (("C-x o" . (lambda () (interactive) (other-window-or-frame 1)))
+   ("C-x p" . (lambda () (interactive) (other-window-or-frame -1))))
+
   :init
   (ensure-downloaded-file
    "https://www.emacswiki.org/emacs/download/frame-fns.el"
