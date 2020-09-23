@@ -638,6 +638,7 @@ detail."
    (org-image-actual-width nil)
    (org-list-allow-alphabetical t)
    (org-preview-latex-image-directory ".ltximg/")
+   (org-startup-folded t)
    (org-support-shift-select t)
    (org-todo-keywords '((sequence "TODO" "|" "DONE" "SKIP"))))
 
