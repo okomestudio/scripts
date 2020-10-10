@@ -1001,7 +1001,10 @@ detail."
 
 
 (use-package yaml-mode
-  :hook ((yaml-mode) . remove-trailing-whitespaces-on-save)
+  :hook
+  ((yaml-mode . (lambda () (typo-mode -1)))
+   (yaml-mode . remove-trailing-whitespaces-on-save))
+
   :mode "\\.ya?ml\\'" "\\.ya?ml.j2\\'")
 
 
