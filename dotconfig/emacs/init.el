@@ -23,6 +23,9 @@
 
 ;; UTILITY VARIABLES AND FUNCTIONS
 
+(defconst ts/path-plantuml (expand-file-name "/usr/local/share/plantuml/plantuml.jar")
+  "Path to PlantUML JAR")
+
 ;; Custom emacs lisp directory for .el files
 (defconst my-lispdir
   (expand-file-name (concat user-emacs-directory "lisp/")))
@@ -637,6 +640,7 @@ detail."
    (org-babel-python-command "~/.pyenv/shims/python")
    (org-image-actual-width nil)
    (org-list-allow-alphabetical t)
+   (org-plantuml-jar-path ts/path-plantuml)
    (org-preview-latex-image-directory ".ltximg/")
    (org-startup-folded t)
    (org-support-shift-select t)
@@ -655,12 +659,16 @@ detail."
   (setcar (nthcdr 1 org-emphasis-regexp-components) "-—[:space:].,:!?;'\")}\\[")
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
+  (add-to-list
+   'org-src-lang-modes '("plantuml" . plantuml))
+
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((C . t)
      (dot . t)
      (emacs-lisp . t)
      (js . t)
+     (plantuml . t)
      (python . t)
      (shell . t)
      (sql . t))))
@@ -669,7 +677,7 @@ detail."
 (use-package plantuml-mode
   :custom
   ((plantuml-default-exec-mode 'jar)
-   (plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+   (plantuml-jar-path ts/path-plantuml))
 
   :mode
   ("\\.plantuml\\'" . plantuml-mode)
