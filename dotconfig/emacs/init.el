@@ -615,6 +615,9 @@ detail."
   :init (minions-mode 1))
 
 
+(use-package ob-typescript)
+
+
 (use-package openwith
   :custom
   ((openwith-associations '(("\\.pdf\\'" "okular" (file)))))
@@ -671,7 +674,8 @@ detail."
      (plantuml . t)
      (python . t)
      (shell . t)
-     (sql . t))))
+     (sql . t)
+     (typescript . t))))
 
 
 (use-package plantuml-mode
@@ -878,6 +882,9 @@ detail."
 
 (use-package treemacs-projectile
   :after treemacs projectile)
+
+
+(use-package typescript-mode)
 
 
 (use-package typo
