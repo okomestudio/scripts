@@ -586,7 +586,10 @@ detail."
 
 (use-package lsp-ui
   :custom
-  ((lsp-ui-doc-use-webkit nil))
+  ((lsp-ui-doc-delay 0.5)
+   (lsp-ui-doc-position 'at-point)
+   (lsp-ui-doc-use-webkit nil))
+
   :commands lsp-ui-mode)
 
 
