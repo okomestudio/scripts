@@ -101,10 +101,10 @@ detail."
 (setq tab-always-indent t)
 (setq tab-width 2)
 
+(menu-bar-mode 1)
 (savehist-mode 1)
 
 ;; (tooltip-mode -1)
-;; (menu-bar-mode -1)
 ;; (fset 'menu-bar-open nil)
 (when window-system
   (scroll-bar-mode t)
