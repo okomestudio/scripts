@@ -101,6 +101,7 @@ detail."
 (setq tab-always-indent t)
 (setq tab-width 2)
 
+(fido-mode 1)                           ; using over ido
 (menu-bar-mode 1)
 (savehist-mode 1)
 
@@ -526,7 +527,12 @@ detail."
 (use-package htmlize)
 
 
+(use-package icomplete
+  :ensure nil)
+
+
 (use-package ido
+  :disabled t                           ; disabled to use fido
   :ensure nil
   :config
   (setq ido-enable-flex-matching t)
