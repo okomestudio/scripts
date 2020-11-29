@@ -89,6 +89,7 @@ detail."
 (setq-default indent-tabs-mode nil)
 (fringe-mode 0)
 
+(setq apropos-sort-by-scores t)
 (setq byte-compile-warnings '(cl-functions))
 (setq case-fold-search t)
 (setq column-number-mode t)
