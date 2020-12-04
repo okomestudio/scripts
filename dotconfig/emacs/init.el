@@ -104,6 +104,7 @@ detail."
 (fido-mode 1)                           ; using over ido
 (menu-bar-mode 1)
 (savehist-mode 1)
+(winner-mode 1)                         ; C-c <left> undoes, C-c <right> redoes
 
 ;; (tooltip-mode -1)
 ;; (fset 'menu-bar-open nil)
