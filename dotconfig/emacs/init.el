@@ -82,6 +82,8 @@ detail."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CONFIGS
 
+(global-set-key (kbd "M-o") 'other-window-or-frame)
+
 ;;(set-face-attribute 'default nil :height 75)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 (setq-default frame-title-format '("" "%f - Emacs"))  ;; for frame-cmds.el
