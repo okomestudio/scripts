@@ -8,13 +8,15 @@
 ############################################
 # Extract a device ID from xinput output
 # Arguments:
-#   device_name
+#   pattern1 [pattern2 ...]
 # Returns:
 #   device_id
 ############################################
 get_device_id() {
-  local device_name=$1
-  local s=$(xinput | grep "$device_name")
+  local s=$(xinput | grep "$1")
+  for pattern in "${@:1}"; do
+    s=$(echo "$s" | grep "$pattern")
+  done
   s="${s#*id=}"
   local device_id="${s%%[!0-9]*}"
   echo "$device_id"

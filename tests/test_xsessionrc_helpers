@@ -1,0 +1,16 @@
+#!/usr/bin/env bats
+
+set -e
+
+source dotfiles/dotlocal/include/xsessionrc_helpers.sh
+
+
+@test "single word argument" {
+  result="$(get_device_id 'Virtual core keyboard' | grep -E ^[0-9]+$)"
+  [ ! -z "$result" ]
+}
+
+@test "multiple word arguments" {
+  result="$(get_device_id 'master' 'Virtual core keyboard' | grep -E ^[0-9]+$)"
+  [ ! -z "$result" ]
+}
