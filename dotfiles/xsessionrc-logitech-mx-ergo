@@ -4,7 +4,7 @@
 
 source .local/include/xsessionrc_helpers.sh
 
-device_id=$(get_device_id "Logitech MX Ergo")
+device_id=$(get_device_id "pointer" "Logitech MX Ergo")
 if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
   ${setp} 'libinput Accel Speed' 0.5
