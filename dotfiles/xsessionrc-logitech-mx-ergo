@@ -8,5 +8,5 @@ device_id=$(get_device_id "pointer" "Logitech MX Ergo")
 if [[ -n "$device_id" ]]; then
   setp="xinput --set-prop $device_id"
   ${setp} 'libinput Accel Speed' 0.5
-  ${setp} 'Coordinate Transformation Matrix' 0.5 0 0 0 0.5 0 0 0 .3
+  ${setp} 'Coordinate Transformation Matrix' 0.5 0 0 0 0.5 0 0 0 .2
 fi
