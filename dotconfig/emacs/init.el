@@ -82,6 +82,7 @@ detail."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CONFIGS
 
+(global-set-key (kbd "M-i") 'imenu)
 (global-set-key (kbd "M-o") 'other-window-or-frame)
 
 ;;(set-face-attribute 'default nil :height 75)
