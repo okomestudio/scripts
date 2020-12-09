@@ -1029,6 +1029,9 @@ detail."
   (add-to-list 'company-backends '(company-css)))
 
 
+(use-package whole-line-or-region)
+
+
 (use-package yaml-mode
   :hook
   ((yaml-mode . (lambda () (typo-mode -1)))
