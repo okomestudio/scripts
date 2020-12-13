@@ -361,7 +361,22 @@ detail."
 
   :init
   (global-company-mode)
-  (add-to-list 'company-backends '(company-files)))
+  (add-to-list 'company-backends '(company-files))
+
+  ;; See https://emacs.stackexchange.com/a/24800/599 for tweaking the enter key
+  ;; behavior.
+  (dolist (key '("<return>" "RET"))
+    (define-key company-active-map (kbd key)
+      `(menu-item nil company-complete
+                  :filter ,(lambda (cmd)
+                             (when (company-explicit-action-p)
+                               cmd)))))
+  (define-key company-active-map (kbd "TAB") #'company-complete-selection)
+  (define-key company-active-map (kbd "SPC") nil)
+
+  ;; Company appears to override the above keymap based on company-auto-complete-chars.
+  ;; Turning it off ensures we have full control.
+  (setq company-auto-complete-chars nil))
 
 
 (use-package company-box
