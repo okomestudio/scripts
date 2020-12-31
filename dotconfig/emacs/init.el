@@ -84,6 +84,7 @@ detail."
 
 (global-set-key (kbd "M-i") 'imenu)
 (global-set-key (kbd "M-o") 'other-window-or-frame)
+(global-set-key [remap dabbrev-expand] 'hippie-expand)
 
 ;;(set-face-attribute 'default nil :height 75)
 ;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
