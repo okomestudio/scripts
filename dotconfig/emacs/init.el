@@ -153,6 +153,8 @@ detail."
 
 ;; PACKAGE CONFIGURATION
 
+(require 'package)
+
 (defvar package-archives)
 (setq package-archives
       '(("gnu" . "https://elpa.gnu.org/packages/")
@@ -164,13 +166,11 @@ detail."
 ;;   (add-to-list 'package-archives
 ;;                '("gnu" . "https://elpa.gnu.org/packages/")))
 
-(when (< emacs-major-version 27)
-  (package-initialize))
+(package-initialize)
 
-(eval-when-compile
-  (package-refresh-contents) (package-install 'use-package)
-  (require 'use-package))
-
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(require 'use-package)
 (setq use-package-always-ensure t)
 
 (use-package startup
