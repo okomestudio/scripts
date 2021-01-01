@@ -351,6 +351,9 @@ detail."
   (setq c-basic-offset 2))
 
 
+(use-package cfrs)
+
+
 (use-package company
   :custom
   (company-minimum-prefix-length 2)
@@ -867,10 +870,14 @@ detail."
 
 
 (use-package treemacs
+  :ensure t
   :defer t
+  :after cfrs
+
   :bind
   (([f8] . treemacs)
    ([mouse-1] . treemacs-single-click-expand-action))
+
   :config
   (when window-system
     (setq treemacs-indentation 1
