@@ -9,3 +9,6 @@
 
 [rebase]
   autosquash = true
+
+[includeIf "gitdir:~/github.com/sleepio/"]
+  path = ~/github.com/sleepio/.gitconfig
