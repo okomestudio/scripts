@@ -383,8 +383,16 @@ detail."
 
 (use-package company-box
   :after company
-  :ensure t
-  :hook (company-mode . company-box-mode))
+
+  :hook (company-mode . company-box-mode)
+
+  :custom
+  (company-box-backends-colors
+   '((company-capf . (:candidate
+                      (:foreground "black")
+
+                      :selected
+                      (:background "yellow" :foreground "black"))))))
 
 
 (use-package company-graphviz-dot
