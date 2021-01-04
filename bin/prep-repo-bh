@@ -1,0 +1,108 @@
+#!/usr/bin/env bash
+
+set -e
+
+readonly scriptname="${0##*/}"
+
+
+function usage() {
+  cat <<USAGE >&2
+Usage: $scriptname
+
+Prepare a Git repository for BH development.
+
+USAGE
+  exit "${1:-1}"
+}
+
+
+function error() {
+  >&2 echo "$scriptname: $1"
+  >&2 echo "Try '$scriptname -h' for more information."
+  exit "${2:-1}"
+}
+
+
+function flake8_config() {
+  set +e
+  read -r -d '' content <<EOF
+[flake8]
+max-line-length = 150
+max-complexity = 10
+EOF
+  set -e
+  echo "$content"
+}
+
+
+function isort_config() {
+  set +e
+  read -r -d '' content <<EOF
+[isort]
+combine_as_imports=False
+combine_star=True
+default_section=THIRDPARTY
+force_grid_wrap=True
+line_length=150
+include_trailing_comma=True
+indent="    "
+length_sort=False
+lines_between_types=0
+lines_after_imports=2
+multi_line_output=3
+order_by_type=True
+use_parentheses=True
+sections=FUTURE,STDLIB,THIRDPARTY,FIRSTPARTY,LOCALFOLDER
+EOF
+  set -e
+  echo "$content"
+}
+
+
+function dirlocals_file() {
+  set +e
+  read -r -d '' content <<EOF
+((python-mode . ((eval . (blacken-mode 1))
+                 (blacken-line-length . 150)
+                 (python-fill-docstring-style . pep-257-nn)
+                 (fill-column . 88))))
+EOF
+  set -e
+  echo "$content"
+}
+
+
+function ensure() {
+  local path=$1
+  local content=$2
+  [[ ! -f $path ]] \
+    && { echo "$content" > "$path" ; echo "${path} created"; } \
+    || echo "${path} already exists"
+}
+
+
+function main() {
+  local path=${1:-.}
+  [[ ! -d $path ]] && error "$path is not a directory"
+  ensure "${path%/}/.flake8" "$(flake8_config)"
+  ensure "${path%/}/.isort.cfg" "$(isort_config)"
+  ensure "${path%/}/.dir-locals.el" "$(dirlocals_file)"
+}
+
+
+if [ "$0" = "${BASH_SOURCE[0]}" ]; then
+  while getopts "ha:" opt; do
+    case $opt in
+      a)
+        optarg=$OPTARG
+        echo "$optarg"
+        ;;
+      h|\?)
+        if [ "$opt" = "h" ]; then usage 0; else usage; fi
+        ;;
+    esac
+  done
+  shift $((OPTIND - 1))
+
+  main "$@"
+fi
