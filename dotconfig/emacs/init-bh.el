@@ -333,6 +333,9 @@ detail."
   (:map python-mode-map
    ("C-M-b" . ts/blacken-buffer))
 
+  :custom
+  (blacken-line-length 150)
+
   :ensure-system-package
   (black . "pip install black")
 
@@ -383,8 +386,14 @@ detail."
 
 (use-package company-box
   :after company
-  :ensure t
-  :hook (company-mode . company-box-mode))
+
+  :hook
+  (company-mode . company-box-mode)
+
+  :custom
+  (company-box-backends-colors
+   '((company-capf . (:candidate (:foreground "black")
+                      :selected (:background "yellow" :foreground "black"))))))
 
 
 (use-package company-graphviz-dot
@@ -486,6 +495,9 @@ detail."
 
 
 (use-package flycheck
+  :custom
+  (flycheck-flake8-maximum-line-length 150)
+
   :init
   (global-flycheck-mode))
 
@@ -756,7 +768,12 @@ detail."
 
 (use-package py-isort
   :after python
+
   :ensure nil                           ; Use patched version till PR #21 gets merged
+
+  :custom
+  (py-isort-options '("--multi-line=6" "--line-width=150"))
+
   :init
   (ensure-file-from-github
    "okomestudio/py-isort.el/ts/provide-default-settings-path/py-isort.el")
