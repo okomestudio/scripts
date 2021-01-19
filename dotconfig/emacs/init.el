@@ -329,6 +329,8 @@ detail."
 (use-package blacken
   :after python
 
+  :disabled t                           ; temporarily disable
+
   :bind
   (:map python-mode-map
    ("C-M-b" . ts/blacken-buffer))
@@ -764,6 +766,7 @@ detail."
 
 (use-package py-isort
   :after python
+  :disabled t                      ; Only temporarily
   :ensure nil                           ; Use patched version till PR #21 gets merged
   :init
   (ensure-file-from-github
