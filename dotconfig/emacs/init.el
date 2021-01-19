@@ -891,10 +891,10 @@ detail."
 
   :config
   (when window-system
-    (setq treemacs-indentation 1
+    (setq treemacs-indentation 2
           treemacs-is-never-other-window t
           treemacs-space-between-root-nodes nil
-          treemacs-width 35))
+          treemacs-width 40))
 
   (setq treemacs-collapse-dirs 0
         treemacs-file-event-delay 500
