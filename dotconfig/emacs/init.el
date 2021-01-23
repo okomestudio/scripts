@@ -834,6 +834,8 @@ detail."
 
 
 (use-package sqlformat
+  :disabled t
+
   :after (sql)
 
   :bind
@@ -861,10 +863,15 @@ detail."
 
 
 (use-package sql-upcase
+  :disabled t
+
   :ensure nil
+
   :init
   (ensure-file-from-github "emacsmirror/emacswiki.org/master/sql-upcase.el")
-  :hook ((sql-mode sql-interactive-mode) . sql-upcase-mode))
+
+  :hook
+  ((sql-mode sql-interactive-mode) . sql-upcase-mode))
 
 
 (use-package tern
