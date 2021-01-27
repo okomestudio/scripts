@@ -460,6 +460,15 @@ detail."
 (use-package dockerfile-mode)
 
 
+(use-package edit-server
+  :if window-system
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'after-init-hook 'server-start t)
+  (add-hook 'after-init-hook 'edit-server-start t))
+
+
 (use-package emacs-lisp-mode
   :ensure nil
   :hook ((emacs-lisp-mode . eldoc-mode)))
