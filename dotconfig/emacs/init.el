@@ -84,6 +84,10 @@ detail."
 
 (global-set-key (kbd "M-i") 'imenu)
 (global-set-key (kbd "M-o") 'other-window-or-frame)
+(global-set-key (kbd "C-x C-y")
+                (lambda ()
+                  (interactive)
+                  (insert (shell-command-to-string "pbocr"))))
 (global-set-key [remap dabbrev-expand] 'hippie-expand)
 
 ;;(set-face-attribute 'default nil :height 75)
