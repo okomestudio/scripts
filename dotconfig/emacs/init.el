@@ -847,8 +847,6 @@ detail."
 
 
 (use-package sqlformat
-  :disabled t
-
   :after (sql)
 
   :bind
@@ -857,13 +855,14 @@ detail."
 
   :custom
   (sqlformat-command 'pgformatter)
-  (sqlformat-args '("-f2" "-g" "-s2" "-U2"))
+  (sqlformat-args '("-f2" "-g" "-s4" "-U2"
+                    "-M" "-p" "-- sqlfmt: off(?:.*)?-- sqlfmt: on"))
 
   :ensure-system-package
   (pg_format . "sudo apt install pgformatter")
 
-  :hook
-  ((sql-mode . sqlformat-on-save-mode))
+  ;:hook
+  ;((sql-mode . sqlformat-on-save-mode))
 
   :init
   (require 'sqlformat)
