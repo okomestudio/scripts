@@ -155,6 +155,11 @@ detail."
 ;; This bug should be fixed on and after Emacs version 26.3.
 ;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+(defun sort-lines-ci ()
+  (interactive)
+  (let ((sort-fold-case t))
+    (call-interactively 'sort-lines)))
+
 
 ;; PACKAGE CONFIGURATION
 
