@@ -860,7 +860,7 @@ detail."
   :custom
   (sqlformat-command 'pgformatter)
   (sqlformat-args '("-f2" "-g" "-s4" "-U2"
-                    "-M" "-p" "-- sqlfmt: off(?:.*)?-- sqlfmt: on"))
+                    "-M" "-p" "\n[ ]*-- sqlfmt: off\n(?:.*)?-- sqlfmt: on\n"))
 
   :ensure-system-package
   (pg_format . "sudo apt install pgformatter")
