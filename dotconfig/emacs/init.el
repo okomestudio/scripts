@@ -532,8 +532,8 @@ detail."
   :commands flymake-shellcheck-load
   :hook ((sh-mode) . flymake-shellcheck-load)
   :init
-  (setq sh-basic-offset 2
-        sh-indentation 2)
+  (setq sh-basic-offset 4
+        sh-indentation 4)
   (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
@@ -837,8 +837,8 @@ detail."
 
 (use-package sh-mode
   :custom
-  ((sh-basic-offset 2)
-   (sh-indentation 2))
+  ((sh-basic-offset 4)
+   (sh-indentation 4))
   :ensure nil
   :mode ("\\.sh\\'"
          "bash_*"
