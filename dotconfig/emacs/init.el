@@ -784,7 +784,6 @@ detail."
 
 (use-package py-isort
   :after python
-  :disabled t                      ; Only temporarily
   :ensure nil                           ; Use patched version till PR #21 gets merged
   :init
   (ensure-file-from-github
