@@ -505,6 +505,13 @@ detail."
   (setenv "WORKON_HOME" "~/.pyenv/versions/"))
 
 
+;; https://github.com/purcell/exec-path-from-shell
+(use-package exec-path-from-shell
+  :if (or (memq window-system '(mac ns x)) (daemonp))
+  :config
+  (exec-path-from-shell-initialize))
+
+
 (use-package files
   :ensure nil
   :custom
