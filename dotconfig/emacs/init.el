@@ -339,8 +339,6 @@ detail."
 (use-package blacken
   :after python
 
-  :disabled t                           ; temporarily disable
-
   :bind
   (:map python-mode-map
    ("C-M-b" . ts/blacken-buffer))
