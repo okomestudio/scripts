@@ -114,6 +114,7 @@ fi
 ##############################################################################
 # Setting PATH: Any path that needs to be set in non-login shell needs
 # to be in ~/.bashrc.  Others can go in ~/.bash_profile.
+PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
 
 addpath() {
   if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
