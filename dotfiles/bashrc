@@ -213,7 +213,7 @@ export POWERLINE_SCM_STAGED_COLOR=114
 export POWERLINE_SCM_UNSTAGED_COLOR=211
 export POWERLINE_USER_INFO_COLOR=255
 
-export POWERLINE_LEFT_PROMPT="cwd scm python_venv"
+export POWERLINE_LEFT_PROMPT="cwd scm python_venv aws_profile"
 export POWERLINE_RIGHT_PROMPT="in_vim battery hostname user_info"
 
 export SCM_GIT_IGNORE_UNTRACKED=true
