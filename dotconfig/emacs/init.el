@@ -1144,5 +1144,13 @@ detail."
     (global-yascroll-bar-mode 1)))
 
 
+(use-package yasnippet
+  :config
+  (yas-reload-all)
+
+  :hook
+  ((prog-mode . yas-minor-mode)))
+
+
 (provide 'init)
 ;;; init.el ends here
