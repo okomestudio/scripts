@@ -1,5 +1,9 @@
-# include .bashrc if it exists
-if [ -f ~/.bashrc ]; then
+# -*- mode: sh; sh-basic-offset: 2; -*-
+
+if [ -f ~/.profile ]; then
+  # Source .bashrc within .profile if exists.
+  . ~/.profile
+elif [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
