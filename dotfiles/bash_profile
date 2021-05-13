@@ -1,9 +1,16 @@
 # -*- mode: sh; sh-basic-offset: 2; -*-
 
 if [ -f ~/.profile ]; then
-  # Source .bashrc within .profile if exists.
   . ~/.profile
-elif [ -f ~/.bashrc ]; then
+fi
+
+if [ -d ~/.pyenv ]; then
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init --path)"
+fi
+
+if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 

@@ -1,3 +1,4 @@
+# -*- mode: sh; sh-basic-offset: 2; -*-
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
@@ -47,12 +48,12 @@ force_color_prompt=yes
 
 if [ -n "$force_color_prompt" ]; then
   if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	  # We have color support; assume it's compliant with Ecma-48
+    # We have color support; assume it's compliant with Ecma-48
     # (ISO/IEC-6429). (Lack of such support is extremely rare, and
     # such a case would tend to support setf rather than setaf.)
- 	  color_prompt=yes
+    color_prompt=yes
   else
- 	  color_prompt=
+    color_prompt=
   fi
 fi
 
@@ -111,25 +112,6 @@ fi
 # fi
 
 
-##############################################################################
-# Setting PATH: Any path that needs to be set in non-login shell needs
-# to be in ~/.bashrc.  Others can go in ~/.bash_profile.
-#PATH=/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games
-
-addpath() {
-  if [ -d "$1" ] && [[ ":$PATH:" != *":$1:"* ]]; then
-    PATH="$1:$PATH"
-  fi
-}
-
-# Add directories containing commands to PATH
-addpath /usr/games
-addpath /usr/local/games
-addpath /bin
-addpath /usr/bin
-addpath /usr/local/bin
-addpath ~/.local/bin
-
 #export LS_COLORS='ex=00;35:ln=00;32'
 export LS_COLORS="${LS_COLORS}:ex=32"
 export LC_COLLATE=C
@@ -161,17 +143,6 @@ unset color_prompt
 export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 ##############################################################################
-# Spark
-if [ -d ~/.local/spark ] ; then
-  export SPARK_HOME=~/.local/spark
-  addpath ~/.local/spark/bin
-fi
-
-##############################################################################
-# emacs
-addpath ~/.local/emacs/bin
-
-##############################################################################
 # Python
 export PYTHONIOENCODING=utf-8
 
@@ -179,15 +150,12 @@ export PYTHONIOENCODING=utf-8
 if command -v pyenv 1>/dev/null 2>&1; then
   export PYENV_VIRTUALENV_DISABLE_PROMPT=1  # avoid pyenv to modify prompt
   export PYENV_VIRTUALENV_VERBOSE_ACTIVATE=1
-
   # With --no-rehash, venv auto-activation does not work
   #eval "$(pyenv init - --no-rehash bash)"
   #eval "$(pyenv virtualenv-init - --no-rehash bash)"
   eval "$(pyenv init -)"
   eval "$(pyenv virtualenv-init -)"
 fi
-
-export PATH
 
 ##############################################################################
 # bash-it customization
