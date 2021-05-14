@@ -740,9 +740,6 @@ detail."
   (openwith-mode t))
 
 
-(use-package org-bullets)
-
-
 (use-package org-plus-contrib
   :bind
   (("C-c l" . 'org-store-link))
@@ -763,7 +760,7 @@ detail."
    (org-todo-keywords '((sequence "TODO" "|" "DONE" "SKIP"))))
 
   :hook
-  ((org-mode . (lambda () (org-bullets-mode 1)))
+  ((org-mode . (lambda () (org-superstar-mode 1)))
    (org-mode . auto-fill-mode)
    (org-mode . org-indent-mode))
 
@@ -789,6 +786,11 @@ detail."
      (shell . t)
      (sql . t)
      (typescript . t))))
+
+
+(use-package org-superstar
+  :custom
+  (org-superstar-headline-bullets-list '("◉" "🞛" "○" "▷")))
 
 
 (use-package plantuml-mode
