@@ -669,13 +669,17 @@ detail."
   :commands lsp
 
   :custom
-  (lsp-pyls-configuration-sources ["flake8"])
-  (lsp-pyls-server-command "~/.pyenv/shims/pyls")
+  (lsp-pylsp-configuration-sources ["flake8"])
+  ;(lsp-pylsp-disable-warning t)
+  (lsp-pylsp-plugins-flake8-enabled t)
+  ;(lsp-pylsp-plugins-flake8-max-line-length 150)
+  (lsp-pylsp-plugins-pycodestyle-enabled nil)
+  (lsp-pylsp-server-command "~/.pyenv/shims/pylsp")
 
   :ensure-system-package
   (("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]==4.3.21") ; NOTE: https://github.com/PyCQA/pylint/pull/3725
    (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
-   ("~/.pyenv/shims/pyls" . "~/.pyenv/shims/pip3 install python-language-server[all] pyls-black pyls-isort")
+   ("~/.pyenv/shims/pylsp" . "~/.pyenv/shims/pip3 install python-lsp-server[all] pyls-black pyls-isort")
    (bash-language-server . "sudo npm i -g bash-language-server"))
 
   :hook
@@ -684,10 +688,10 @@ detail."
 
   :config
   (lsp-register-client
-   (make-lsp-client :new-connection (lsp-tramp-connection "~/.pyenv/shims/pyls")
+   (make-lsp-client :new-connection (lsp-tramp-connection "~/.pyenv/shims/pylsp")
                     :major-modes '(python-mode)
                     :remote? t
-                    :server-id 'pyls-remote)))
+                    :server-id 'pylsp-remote)))
 
 
 (use-package lsp-ui
