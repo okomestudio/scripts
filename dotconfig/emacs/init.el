@@ -677,14 +677,21 @@ detail."
   (lsp-pylsp-server-command "~/.pyenv/shims/pylsp")
 
   :ensure-system-package
-  (("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]==4.3.21") ; NOTE: https://github.com/PyCQA/pylint/pull/3725
-   (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
+  (("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]")
    ("~/.pyenv/shims/pylsp" . "~/.pyenv/shims/pip3 install python-lsp-server[all] pyls-black pyls-isort")
-   (bash-language-server . "sudo npm i -g bash-language-server"))
+   (bash-language-server . "sudo npm i -g bash-language-server")
+   (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
+   (sqls . "go get github.com/lighttiger2505/sqls")
+   (unified-language-server . "sudo npm i -g unified-language-server"))
 
   :hook
-  ((sh-mode . lsp)
-   (python-mode . lsp))
+  ((dockerfile-mode . lsp)
+   (json-mode . lsp)
+   (markdown-mode . lsp)
+   (python-mode . lsp)
+   (sh-mode . lsp)
+   (sql-mode . lsp)
+   (yaml-mode . lsp))
 
   :config
   (lsp-register-client
