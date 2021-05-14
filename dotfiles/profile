@@ -33,5 +33,7 @@ if [ -d "$HOME/.local/spark" ] ; then
 fi
 
 addpath "$HOME/.local/emacs/bin"
+addpath "/usr/local/go/bin"
+addpath "$HOME/go/bin"
 
 export PATH
