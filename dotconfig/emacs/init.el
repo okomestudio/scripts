@@ -562,8 +562,6 @@ detail."
   :init
   (setq sh-basic-offset 4
         sh-indentation 4)
-  (add-to-list 'auto-mode-alist '("/bashrc\\'" . sh-mode))
-  (add-to-list 'auto-mode-alist '("/bash_.*\\'" . sh-mode))
   (add-to-list 'auto-mode-alist '("\\.bats\\'" . sh-mode))
   (add-to-list 'interpreter-mode-alist '("bats" . sh-mode)))
 
