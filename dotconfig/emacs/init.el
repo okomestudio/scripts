@@ -293,8 +293,10 @@ detail."
 (use-package ace-isearch
   :config
   (global-ace-isearch-mode 1)
-  (setq ace-isearch-input-length 20
-        ace-isearch-jump-delay 0.4))
+
+  :custom
+  ((ace-isearch-input-length 20)
+   (ace-isearch-jump-delay 0.75)))
 
 
 (use-package ace-jump-mode)
