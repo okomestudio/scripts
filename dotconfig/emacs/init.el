@@ -687,7 +687,8 @@ detail."
    (bash-language-server . "sudo npm i -g bash-language-server")
    (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
    (sqls . "go get github.com/lighttiger2505/sqls")
-   (unified-language-server . "sudo npm i -g unified-language-server"))
+   (unified-language-server . "sudo npm i -g unified-language-server")
+   (vs-code-json-languageserver . "sudo npm i -g vscode-json-languageserver"))
 
   :hook
   ((dockerfile-mode . lsp)
