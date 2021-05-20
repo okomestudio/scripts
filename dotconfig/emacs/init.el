@@ -676,6 +676,9 @@ detail."
   (lsp-pylsp-plugins-flake8-enabled t)
   ;(lsp-pylsp-plugins-flake8-max-line-length 150)
   (lsp-pylsp-plugins-pycodestyle-enabled nil)
+  (lsp-pylsp-plugins-pydocstyle-add-ignore '("D100" "D103"))
+  (lsp-pylsp-plugins-pydocstyle-convention "google")
+  (lsp-pylsp-plugins-pydocstyle-enabled t)
   (lsp-pylsp-server-command "~/.pyenv/shims/pylsp")
 
   :ensure-system-package
