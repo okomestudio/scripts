@@ -41,7 +41,9 @@ export PATH
 
 # ibus
 if command -v ibus &>2 /dev/null ; then
-  export GTK_IM_MODULE=ibus
-  export XMODIFIERS=@im=ibus
-  export QT_IM_MODULE=ibus
+  if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+    export GTK_IM_MODULE=ibus
+    export XMODIFIERS=@im=ibus
+    export QT_IM_MODULE=ibus
+  fi
 fi
