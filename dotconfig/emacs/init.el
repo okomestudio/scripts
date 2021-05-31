@@ -79,11 +79,17 @@ detail."
   (find-font (font-spec :name font-name)))
 
 
+(defun ts/insert-zero-width-space ()
+  (interactive)
+  (insert-char #x200b))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CONFIGS
 
 (global-set-key (kbd "M-i") 'imenu)
 (global-set-key (kbd "M-o") 'other-window-or-frame)
+(global-set-key (kbd "C-c C-x *") 'ts/insert-zero-width-space)
 (global-set-key (kbd "C-x C-y")
                 (lambda ()
                   (interactive)
@@ -781,8 +787,8 @@ detail."
   (plist-put org-format-latex-options :scale 1.5)
 
   ;; Add a few characters usable for bounding emphasis markup
-  (setcar org-emphasis-regexp-components "-—[:space:]('\"{")
-  (setcar (nthcdr 1 org-emphasis-regexp-components) "-—[:space:].,:!?;'\")}\\[")
+  (setcar org-emphasis-regexp-components "-—[:space:]('\"{\x200B")
+  (setcar (nthcdr 1 org-emphasis-regexp-components) "-—[:space:].,:!?;'\")}\\[\x200B")
   (org-set-emph-re 'org-emphasis-regexp-components org-emphasis-regexp-components)
 
   (add-to-list
