@@ -485,9 +485,6 @@ detail."
 (use-package dash)
 
 
-(use-package dash-functional)
-
-
 (use-package direnv
   :config
   (direnv-mode)
@@ -688,8 +685,9 @@ detail."
   (lsp-pylsp-server-command "~/.pyenv/shims/pylsp")
 
   :ensure-system-package
-  (("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]")
-   ("~/.pyenv/shims/pylsp" . "~/.pyenv/shims/pip3 install python-lsp-server[all] pyls-black pyls-isort")
+  (;("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]")
+   ("~/.pyenv/shims/isort" . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install isort[pyproject]")
+   ("~/.pyenv/shims/pylsp" . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install python-lsp-server[all] pyls-black pyls-isort")
    (bash-language-server . "sudo npm i -g bash-language-server")
    (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
    (sqls . "go get github.com/lighttiger2505/sqls")
