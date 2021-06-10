@@ -727,14 +727,20 @@ detail."
 
 ;; Allows browser preview with C-c C-c v
 (use-package markdown-mode
-  :hook ((markdown-mode) . remove-trailing-whitespaces-on-save)
   :commands (markdown-mode gfm-mode)
+
+  :ensure-system-package
+  ((pandoc . "sudo apt install pandoc"))
+
+  :hook ((markdown-mode) . remove-trailing-whitespaces-on-save)
+
+  :init
+  (setq markdown-command "pandoc")
+
   :mode (("README\\.md\\'" . gfm-mode)
          ("\\.md\\'" . markdown-mode)
          ("\\.markdown\\'" . markdown-mode)
-         ("\\.lr\\'" . markdown-mode))
-  :init
-  (setq markdown-command "pandoc"))
+         ("\\.lr\\'" . markdown-mode)))
 
 
 (use-package magit)
