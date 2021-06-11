@@ -810,6 +810,15 @@ detail."
      (typescript . t))))
 
 
+(use-package org-roam
+  :custom
+  ((org-roam-db-location (file-truename "~/github.com/okomestudio/docs/.org-roam.db"))
+   (org-roam-directory (file-truename "~/github.com/okomestudio/docs/")))
+
+  :hook
+  (after-init-hook . org-roam-mode))
+
+
 (use-package org-superstar
   :custom
   (org-superstar-headline-bullets-list '("◉" "🞛" "○" "▷")))
