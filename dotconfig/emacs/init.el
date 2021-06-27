@@ -12,11 +12,8 @@
   (write-region "" nil custom-file))
 (load custom-file)
 
-;; '(inhibit-splash-screen t)
-;; '(inhibit-startup-screen t)
 ;; '(load-home-init-file t t)
 ;; '(global-font-lock-mode t nil (font-lock))
-;; '(make-backup-files nil)
 ;; '(default-input-method "rfc1345")
 ;; '(current-language-environment "UTF-8")
 ;; '(global-whitespace-mode nil)
@@ -79,55 +76,19 @@ detail."
   (find-font (font-spec :name font-name)))
 
 
-(defun ts/insert-zero-width-space ()
-  (interactive)
-  (insert-char #x200b))
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CONFIGS
 
-(global-set-key (kbd "M-i") 'imenu)
-(global-set-key (kbd "M-o") 'other-window-or-frame)
-(global-set-key (kbd "C-c C-x *") 'ts/insert-zero-width-space)
-(global-set-key (kbd "C-x C-y")
-                (lambda ()
-                  (interactive)
-                  (insert (shell-command-to-string "pbocr"))))
-(global-set-key [remap dabbrev-expand] 'hippie-expand)
+;; (set-face-attribute 'default nil :height 75)
+;; (setq inter program-paste-function 'x-cut-buffer-or-selection-value)
+;; (setq byte-compile-warnings '(cl-functions))
+;; (setq column-number-mode t)
+;; (setq size-indication-mode t)
 
-;;(set-face-attribute 'default nil :height 75)
-;;(setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
-(setq-default frame-title-format '("" "%f - Emacs"))  ;; for frame-cmds.el
-(setq-default scroll-bar-width 6)
-(setq-default indent-tabs-mode nil)
-(fringe-mode 0)
-
-(setq apropos-sort-by-scores t)
-(setq byte-compile-warnings '(cl-functions))
-(setq case-fold-search t)
-(setq column-number-mode t)
-(setq mouse-wheel-progressive-speed t)
-(setq mouse-wheel-scroll-amount '(3 ((shift) . 1)))
-(setq ring-bell-function 'ignore)  ;; Disable beeping
-(setq sentence-end-double-space nil)
-(setq size-indication-mode t)
-(setq tab-always-indent t)
-(setq tab-width 2)
-
-(fido-mode 1)                           ; using over ido
-(menu-bar-mode 1)
-(winner-mode 1)                         ; C-c <left> undoes, C-c <right> redoes
-
-;; (tooltip-mode -1)
-;; (fset 'menu-bar-open nil)
 (when window-system
   (scroll-bar-mode t)
   (tool-bar-mode -1)
   (setq select-enable-clipboard t))
-
-;; Use UTF-8 when possible
-(prefer-coding-system 'utf-8)
 
 
 (defun ts/setup-frame (frame)
@@ -163,28 +124,10 @@ detail."
   (ts/setup-frame (selected-frame)))
 
 
-;; BUGFIX: For fixing a startup error message
-;;
-;;   http.elpa.gnu.org:443*-257153" has a running process; kill it? (y or n) y
-;;
-;; This bug should be fixed on and after Emacs version 26.3.
-;; (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
-
 (defun sort-lines-ci ()
   (interactive)
   (let ((sort-fold-case t))
     (call-interactively 'sort-lines)))
-
-
-(defun unfill-paragraph (&optional region)
-  "Takes a multi-line paragraph and makes it into a single line of text."
-  (interactive (progn (barf-if-buffer-read-only) '(t)))
-  (let ((fill-column (point-max))
-        ;; This would override `fill-column' if it's an integer.
-        (emacs-lisp-docstring-fill-column t))
-    (fill-paragraph nil region)))
-
-(define-key global-map "\M-Q" 'unfill-paragraph)
 
 
 ;; PACKAGE CONFIGURATION
@@ -197,11 +140,6 @@ detail."
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")))
 
-;; For important compatibility libraries like cl-lib
-;; (when (< emacs-major-version 24)
-;;   (add-to-list 'package-archives
-;;                '("gnu" . "https://elpa.gnu.org/packages/")))
-
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -210,38 +148,44 @@ detail."
 (require 'use-package)
 (setq use-package-always-ensure t)
 
-(use-package startup
-  :no-require t
+
+;; BUILT-IN CUSTOMIZATION
+
+(use-package bytecomp
   :ensure nil
   :custom
-  (inhibit-splash-screen t)
-  (inhibit-startup-screen t))
+  (byte-compile-warnigns '(cl-functions)))
 
-(use-package use-package-ensure-system-package
-  :ensure t)
-
-
-;; UTILITY PACKAGES
-(use-package epc
-  :ensure t)
-
-
-;; CUSTOM KEYBINDINGS
-
-;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
-(use-package frame-cmds
+(use-package files
   :ensure nil
+  :custom
+  (make-backup-files nil))
 
-  :bind
-  (("C-x o" . (lambda () (interactive) (other-window-or-frame 1)))
-   ("C-x p" . (lambda () (interactive) (other-window-or-frame -1))))
-
+(use-package fringe
+  :ensure nil
   :init
-  (ensure-file-from-url
-   "https://www.emacswiki.org/emacs/download/frame-fns.el")
-  (ensure-file-from-url
-   "https://www.emacswiki.org/emacs/download/frame-cmds.el"))
+  (fringe-mode 0))
 
+(use-package hippie-exp
+  :ensure nil
+  :init
+  (global-set-key [remap dabbrev-expand] 'hippie-expand))
+
+(use-package icomplete
+  :ensure nil
+  :init
+  (fido-mode 1))
+
+(use-package imenu
+  :ensure nil
+  :init
+  (global-set-key (kbd "M-i") 'imenu))
+
+(use-package mwheel
+  :ensure nil
+  :custom
+  (mouse-wheel-progressive-speed t)
+  (mouse-wheel-scroll-amount '(3 ((shift) . 1))))
 
 (use-package simple
   :ensure nil
@@ -249,12 +193,33 @@ detail."
   :bind
   (("<f5>" . 'ts/revert-buffer-no-confirm)
    ("C-S-o" . 'ts/newline-above)
-   ("C-o" . 'ts/newline-below))
+   ("C-c C-x *" . 'ts/insert-zero-width-space)
+   ("C-x C-y" . (lambda ()
+                  (interactive)
+                  (insert (shell-command-to-string "pbocr"))))
+   ("C-o" . 'ts/newline-below)
+   ("M-Q" . 'ts/unfill-paragraph))
 
   :hook
   (before-save . delete-trailing-whitespace)
 
   :init
+  (defun ts/insert-zero-width-space ()
+    (interactive)
+    (insert-char #x200b))
+
+  (defun ts/newline-above ()
+    (interactive)
+    (back-to-indentation)
+    (newline-and-indent)
+    (forward-line -1)
+    (indent-according-to-mode))
+
+  (defun ts/newline-below ()
+    (interactive)
+    (end-of-line)
+    (newline-and-indent))
+
   (defun ts/revert-buffer-no-confirm (&optional force-reverting)
     "Interactive call to 'revert-buffer'.
 
@@ -267,17 +232,66 @@ detail."
         (revert-buffer :ignore-auto :noconfirm)
       (error "The buffer has been modified")))
 
-  (defun ts/newline-above ()
-    (interactive)
-    (back-to-indentation)
-    (newline-and-indent)
-    (forward-line -1)
-    (indent-according-to-mode))
+  (defun ts/unfill-paragraph (&optional region)
+    "Takes a multi-line paragraph and makes it into a single line of text."
+    (interactive (progn (barf-if-buffer-read-only) '(t)))
+    (let ((fill-column (point-max))
+          ;; This would override `fill-column' if it's an integer.
+          (emacs-lisp-docstring-fill-column t))
+      (fill-paragraph nil region)))
 
-  (defun ts/newline-below ()
-    (interactive)
-    (end-of-line)
-    (newline-and-indent)))
+  (setq-default indent-tabs-mode nil)
+
+  (setq apropos-sort-by-scores t)
+  (setq case-fold-search t)             ; in C source code
+  (setq sentence-end-double-space nil)  ; in paragraphs.el
+  (setq tab-always-indent t)            ; in indent.el
+  (setq tab-width 2)                    ; in C source code
+  )
+
+(use-package startup
+  :ensure nil
+  :no-require t
+  :custom
+  (column-number-mode t)
+  (inhibit-splash-screen nil)
+  (inhibit-startup-screen nil)
+  (size-indication-mode t)
+
+  :init
+  (setq-default scroll-bar-width 6)
+  (setq ring-bell-function 'ignore)     ; Disable beeping (in C source code)
+  (menu-bar-mode -1)
+  (prefer-coding-system 'utf-8)         ; Use UTF-8 when possible
+)
+
+(use-package tooltip
+  :ensure nil
+  :init
+  (tooltip-mode 1))
+
+;; C-c <left> undoes, C-c <right> redoes
+(use-package winner
+  :ensure nil
+  :init
+  (winner-mode 1))
+
+;; frame-comds is used to add C-x o and C-x p to go back and forth between windows.
+(use-package frame-cmds
+  :ensure nil
+
+  :bind
+  (("C-x o" . (lambda () (interactive) (other-window-or-frame 1)))
+   ("C-x p" . (lambda () (interactive) (other-window-or-frame -1)))
+   ("M-o" . 'other-window-or-frame))
+
+  :init
+  (ensure-file-from-url
+   "https://www.emacswiki.org/emacs/download/frame-fns.el")
+  (ensure-file-from-url
+   "https://www.emacswiki.org/emacs/download/frame-cmds.el")
+
+  (setq-default frame-title-format '("" "%f - Emacs")))
 
 
 ;; THEME
@@ -354,7 +368,9 @@ detail."
   :after (treemacs projectile))
 
 
-;; PACKAGES
+;; UTILITY PACKAGES
+(use-package epc
+  :ensure t)
 
 ;; Dired -- ignore some files
 ;; (require 'dired-x)
