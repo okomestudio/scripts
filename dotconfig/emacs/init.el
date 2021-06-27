@@ -1253,6 +1253,13 @@ detail."
   (vertico-mode))
 
 
+;; solaire-mode : visually distinguish "real" buffers from "unreal" buffers
+
+(use-package solaire-mode
+  :init
+  (solaire-global-mode +1))
+
+
 (use-package tramp
   :defer t
 
