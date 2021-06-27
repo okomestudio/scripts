@@ -221,7 +221,7 @@ detail."
   :ensure t)
 
 
-;; Utility packages
+;; UTILITY PACKAGES
 (use-package epc
   :ensure t)
 
@@ -353,6 +353,8 @@ detail."
 
 (use-package treemacs-projectile
   :after (treemacs projectile))
+
+
 ;; PACKAGES
 
 ;; Dired -- ignore some files
@@ -364,6 +366,8 @@ detail."
 ;; Based on the number of characters used for search, ace-isearch uses
 ;; different mode.
 (use-package ace-isearch
+  :after (ace-jump-mode)
+
   :config
   (global-ace-isearch-mode 1)
 
@@ -372,7 +376,8 @@ detail."
    (ace-isearch-jump-delay 0.75)))
 
 
-(use-package ace-jump-mode)
+(use-package ace-jump-mode
+  :after (helm-swoop))
 
 
 (use-package add-node-modules-path)
@@ -500,7 +505,9 @@ detail."
 
 
 (use-package company-graphviz-dot
+  :after (graphviz-dot-mode)
   :ensure nil
+
   :init
   (ensure-file-from-github
    "ppareit/graphviz-dot-mode/master/company-graphviz-dot.el"))
@@ -1062,8 +1069,6 @@ detail."
   (ensure-file-from-github "ternjs/tern/master/emacs/tern.el"))
 
 
-
-
 (use-package typescript-mode)
 
 
@@ -1244,6 +1249,7 @@ detail."
   (marginalia-mode))
 
 (use-package orderless
+  ;; Completion style that matches multiple regexps in any order
   :init
   (setq completion-styles '(orderless)))
 
