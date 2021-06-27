@@ -114,7 +114,6 @@ detail."
 (setq size-indication-mode t)
 (setq tab-always-indent t)
 (setq tab-width 2)
-(setq tramp-default-method "ssh")
 
 (fido-mode 1)                           ; using over ido
 (menu-bar-mode 1)
@@ -1252,6 +1251,13 @@ detail."
 
   :init
   (vertico-mode))
+
+
+(use-package tramp
+  :defer t
+
+  :custom
+  (tramp-default-method "ssh"))
 
 
 (provide 'init)
