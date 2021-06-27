@@ -221,10 +221,6 @@ detail."
 (use-package use-package-ensure-system-package
   :ensure t)
 
-;; Theme
-(use-package professional-theme
-  :config
-  (load-theme 'professional t))
 
 ;; Utility packages
 (use-package epc
@@ -285,6 +281,79 @@ detail."
     (newline-and-indent)))
 
 
+;; THEME
+
+(use-package professional-theme
+  :disabled t
+
+  :config
+  (load-theme 'professional t))
+
+(use-package spacemacs-common
+  :ensure spacemacs-theme
+
+  :config
+  (load-theme 'spacemacs-light t))
+
+(use-package all-the-icons
+  :init
+  (if (not (file-exists-p "~/.local/share/fonts/all-the-icons.ttf"))
+      (all-the-icons-install-fonts +1)))
+
+(use-package cfrs)
+
+(use-package treemacs
+  :ensure t
+  :defer t
+  :after (cfrs treemacs-all-the-icons)
+
+  :bind
+  (([f8] . treemacs)
+   ([mouse-1] . treemacs-single-click-expand-action))
+
+  :config
+  (when window-system
+    (setq treemacs-indentation 2
+          treemacs-is-never-other-window t
+          treemacs-space-between-root-nodes nil
+          treemacs-width 40))
+
+  (setq treemacs-collapse-dirs 0
+        treemacs-file-event-delay 500
+        treemacs-follow-after-init t
+        treemacs-missing-project-action 'keep
+        treemacs-no-png-images nil
+        treemacs-show-cursor t
+        treemacs-show-hidden-files nil)
+
+  (treemacs-follow-mode t)
+  ;; (treemacs-resize-icons 11)  ;; needs imagemagick support on Emacs build
+  ;; (treemacs-display-current-project-exclusively)
+
+  (with-eval-after-load 'treemacs
+    (defun ts/treemacs-ignore-emacs (filename absolute-path)
+      (or (string-match-p "\\.elc$" filename)
+          (string-match-p "^#.*#$" filename)
+          (string-match-p "~$" filename)))
+    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-emacs)
+    (defun ts/treemacs-ignore-python (filename absolute-path)
+      (or (string-match-p "\\(^\\|/\\)__pycache__$" filename)
+          (string-match-p "\\(^\\|/\\)build$" filename)
+          (string-match-p "\\(^\\|/\\)dist$" filename)
+          (string-match-p "\\.egg-info$" filename)
+          (string-match-p "\\.pyc$" filename)))
+    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-python))
+
+  :init
+  (treemacs-load-theme "all-the-icons"))
+
+(use-package treemacs-all-the-icons)
+
+(use-package treemacs-magit
+  :after (treemacs magit))
+
+(use-package treemacs-projectile
+  :after (treemacs projectile))
 ;; PACKAGES
 
 ;; Dired -- ignore some files
@@ -388,9 +457,6 @@ detail."
   :ensure nil
   :config
   (setq c-basic-offset 2))
-
-
-(use-package cfrs)
 
 
 (use-package company
@@ -991,55 +1057,6 @@ detail."
   (ensure-file-from-github "ternjs/tern/master/emacs/tern.el"))
 
 
-(use-package treemacs
-  :ensure t
-  :defer t
-  :after cfrs
-
-  :bind
-  (([f8] . treemacs)
-   ([mouse-1] . treemacs-single-click-expand-action))
-
-  :config
-  (when window-system
-    (setq treemacs-indentation 2
-          treemacs-is-never-other-window t
-          treemacs-space-between-root-nodes nil
-          treemacs-width 40))
-
-  (setq treemacs-collapse-dirs 0
-        treemacs-file-event-delay 500
-        treemacs-follow-after-init t
-        treemacs-missing-project-action 'keep
-        treemacs-no-png-images nil
-        treemacs-show-cursor t
-        treemacs-show-hidden-files nil)
-
-  (treemacs-follow-mode t)
-  (treemacs-resize-icons 11)  ;; needs imagemagick support on Emacs build
-  ;; (treemacs-display-current-project-exclusively)
-
-  (with-eval-after-load 'treemacs
-    (defun ts/treemacs-ignore-emacs (filename absolute-path)
-      (or (string-match-p "\\.elc$" filename)
-          (string-match-p "^#.*#$" filename)
-          (string-match-p "~$" filename)))
-    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-emacs)
-    (defun ts/treemacs-ignore-python (filename absolute-path)
-      (or (string-match-p "\\(^\\|/\\)__pycache__$" filename)
-          (string-match-p "\\(^\\|/\\)build$" filename)
-          (string-match-p "\\(^\\|/\\)dist$" filename)
-          (string-match-p "\\.egg-info$" filename)
-          (string-match-p "\\.pyc$" filename)))
-    (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-python)))
-
-
-(use-package treemacs-magit
-  :after treemacs magit)
-
-
-(use-package treemacs-projectile
-  :after treemacs projectile)
 
 
 (use-package typescript-mode)
