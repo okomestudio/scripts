@@ -737,6 +737,13 @@ detail."
 (use-package lsp-mode
   :commands lsp
 
+  ;; :config
+  ;; (lsp-register-client
+  ;;  (make-lsp-client :new-connection (lsp-tramp-connection "~/.pyenv/shims/pylsp")
+  ;;                   :major-modes '(python-mode)
+  ;;                   :remote? t
+  ;;                   :server-id 'pylsp-remote))
+
   :custom
   (lsp-pylsp-configuration-sources ["flake8"])
   ;(lsp-pylsp-disable-warning t)
@@ -749,9 +756,8 @@ detail."
   (lsp-pylsp-server-command "~/.pyenv/shims/pylsp")
 
   :ensure-system-package
-  (;("~/.pyenv/shims/isort" . "~/.pyenv/shims/pip3 install isort[pyproject]")
-   ("~/.pyenv/shims/isort" . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install isort[pyproject]")
-   ("~/.pyenv/shims/pylsp" . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install python-lsp-server[all] pyls-black pyls-isort")
+  ((isort-with-pyenv . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install isort[pyproject]")
+   (pylsp-with-pyenv . "~/.pyenv/versions/$(pyenv global)/bin/pip3 install python-lsp-server[all] pyls-black pyls-isort")
    (bash-language-server . "sudo npm i -g bash-language-server")
    (javascript-typescript-langserver . "sudo npm i -g javascript-typescript-langserver")
    (sqls . "go get github.com/lighttiger2505/sqls")
@@ -767,12 +773,12 @@ detail."
    (sql-mode . lsp)
    (yaml-mode . lsp))
 
-  :config
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-tramp-connection "~/.pyenv/shims/pylsp")
-                    :major-modes '(python-mode)
-                    :remote? t
-                    :server-id 'pylsp-remote)))
+  :init
+  (defun ts/get-global-pypath (exe)
+    (let ((ver (car (split-string (shell-command-to-string "pyenv global")))))
+      (concat "~/.pyenv/versions/" ver "/bin/" exe)))
+  (setq pylsp-with-pyenv (ts/get-global-pypath "pylsp"))
+  (setq isort-with-pyenv (ts/get-global-pypath "isort")))
 
 
 (use-package lsp-ui
