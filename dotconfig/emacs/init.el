@@ -302,7 +302,6 @@ detail."
 (use-package cfrs)
 
 (use-package treemacs
-  :ensure t
   :defer t
   :after (cfrs treemacs-all-the-icons)
 
@@ -326,7 +325,6 @@ detail."
         treemacs-show-hidden-files nil)
 
   (treemacs-follow-mode t)
-  ;; (treemacs-resize-icons 11)  ;; needs imagemagick support on Emacs build
   ;; (treemacs-display-current-project-exclusively)
 
   (with-eval-after-load 'treemacs
@@ -346,7 +344,8 @@ detail."
   :init
   (treemacs-load-theme "all-the-icons"))
 
-(use-package treemacs-all-the-icons)
+(use-package treemacs-all-the-icons
+  :after (all-the-icons))
 
 (use-package treemacs-magit
   :after (treemacs magit))
