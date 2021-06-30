@@ -1,3 +1,4 @@
+# -*- mode: conf; -*-
 [sqlfluff]
 verbose = 0
 nocolor = False
