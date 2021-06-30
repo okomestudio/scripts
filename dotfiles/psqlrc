@@ -3,7 +3,7 @@
 \set COMP_KEYWORD_CASE upper
 \x auto
 \pset null ¤
-\set PROMPT1 '%n@%M:%x %/# '
+\set PROMPT1 '%n@%m:%x %/# '
 \timing on
 \set AUTOCOMMIT off
-\set HISTSIZE 50
+\set HISTSIZE 200
