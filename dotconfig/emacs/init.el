@@ -880,6 +880,11 @@ detail."
    (org-mode . org-indent-mode))
 
   :init
+  (defun org-agenda-gather-files ()
+    "Gather org agenda files."
+    (interactive)
+    (setq org-agenda-files (directory-files-recursively default-directory "\\.org$")))
+
   (plist-put org-format-latex-options :scale 1.5)
 
   ;; Add a few characters usable for bounding emphasis markup
