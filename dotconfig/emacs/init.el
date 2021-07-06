@@ -335,10 +335,12 @@ detail."
         treemacs-follow-after-init t
         treemacs-missing-project-action 'keep
         treemacs-no-png-images nil
+        ;treemacs-recenter-after-project-jump nil
+        ;treemacs-recenter-after-project-expand nil
         treemacs-show-cursor t
         treemacs-show-hidden-files nil)
 
-  (treemacs-follow-mode t)
+  (treemacs-follow-mode nil)
   ;; (treemacs-display-current-project-exclusively)
 
   (with-eval-after-load 'treemacs
