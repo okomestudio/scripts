@@ -193,6 +193,7 @@ detail."
   :bind
   (("<f5>" . 'ts/revert-buffer-no-confirm)
    ("C-S-o" . 'ts/newline-above)
+   ("C-a" . 'ts/beginning-of-line)
    ("C-c C-x *" . 'ts/insert-zero-width-space)
    ("C-x C-y" . (lambda ()
                   (interactive)
@@ -204,6 +205,14 @@ detail."
   (before-save . delete-trailing-whitespace)
 
   :init
+  (defun ts/beginning-of-line ()
+    "Move point to first non-whitespace char or beginning-of-line."
+    (interactive)
+    (let ((oldpos (point)))
+      (back-to-indentation)
+      (and (= oldpos (point))
+           (beginning-of-line))))
+
   (defun ts/insert-zero-width-space ()
     (interactive)
     (insert-char #x200b))
