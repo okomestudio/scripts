@@ -346,7 +346,6 @@ detail."
         treemacs-show-cursor t
         treemacs-show-hidden-files nil)
 
-  (treemacs-follow-mode nil)
   ;; (treemacs-display-current-project-exclusively)
 
   (with-eval-after-load 'treemacs
@@ -364,7 +363,8 @@ detail."
     (add-to-list 'treemacs-ignored-file-predicates #'ts/treemacs-ignore-python))
 
   :init
-  (treemacs-load-theme "all-the-icons"))
+  (treemacs-load-theme "all-the-icons")
+  (treemacs-follow-mode -1))
 
 (use-package treemacs-all-the-icons
   :after (all-the-icons))
