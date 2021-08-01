@@ -99,8 +99,6 @@ detail."
 ;; CONFIGS
 
 (when window-system
-  (scroll-bar-mode t)
-  (tool-bar-mode -1)
   (setq select-enable-clipboard t))
 
 
@@ -279,7 +277,6 @@ detail."
   :init
   (setq-default scroll-bar-width 6)
   (setq ring-bell-function 'ignore)     ; Disable beeping (in C source code)
-  (menu-bar-mode -1)
   (prefer-coding-system 'utf-8)         ; Use UTF-8 when possible
 )
 
