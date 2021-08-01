@@ -12,6 +12,10 @@
 ;; (profiler-start 'cpu)
 
 
+;; Reduce GC usage while initialization
+(setq gc-cons-threshold most-positive-fixnum)
+
+
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (unless (file-exists-p custom-file)
   (write-region "" nil custom-file))
@@ -1326,6 +1330,10 @@ detail."
   ((google-translate-backend-method 'curl)
    (google-translate-default-source-language "auto")
    (google-translate-default-target-language "ja")))
+
+
+;; Restore GC threshold; 800 kb is the default (2021-08-01)
+(setq gc-cons-threshold 800000)
 
 
 ;; Uncomment for profiling
