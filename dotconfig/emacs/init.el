@@ -29,10 +29,12 @@
             (lambda () (setq gc-cons-threshold default-gc-cons-threshold))))
 
 
+;; custom.el is for variables configured interactively
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (unless (file-exists-p custom-file)
   (write-region "" nil custom-file))
-(load custom-file)
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 ;; '(load-home-init-file t t)
 ;; '(global-font-lock-mode t nil (font-lock))
@@ -162,13 +164,18 @@ detail."
         ("melpa" . "https://melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")))
 
-(package-initialize)
+(unless (bound-and-true-p package--initialized)
+  (package-initialize))
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(require 'use-package)
-(setq use-package-always-ensure t)
+
+(eval-and-compile
+  (setq use-package-always-ensure t))
+
+(eval-when-compile
+  (require 'use-package))
 
 
 ;; BUILT-IN CUSTOMIZATION
