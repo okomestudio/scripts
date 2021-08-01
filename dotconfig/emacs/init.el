@@ -1,4 +1,4 @@
-;;; emacs --- Emacs configuration
+;;; emacs --- Emacs configuration  -*- lexical-binding: t -*-
 ;;
 ;;; Commentary:
 ;;
