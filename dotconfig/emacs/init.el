@@ -36,11 +36,6 @@
 (when (file-exists-p custom-file)
   (load custom-file))
 
-;; '(load-home-init-file t t)
-;; '(global-font-lock-mode t nil (font-lock))
-;; '(default-input-method "rfc1345")
-;; '(current-language-environment "UTF-8")
-;; '(global-whitespace-mode nil)
 
 ;; UTILITY VARIABLES AND FUNCTIONS
 
@@ -102,12 +97,6 @@ detail."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; CONFIGS
-
-;; (set-face-attribute 'default nil :height 75)
-;; (setq inter program-paste-function 'x-cut-buffer-or-selection-value)
-;; (setq byte-compile-warnings '(cl-functions))
-;; (setq column-number-mode t)
-;; (setq size-indication-mode t)
 
 (when window-system
   (scroll-bar-mode t)
