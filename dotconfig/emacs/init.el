@@ -22,7 +22,11 @@
 
 
 ;; Reduce GC usage while initialization
-(setq gc-cons-threshold most-positive-fixnum)
+(let ((default-gc-cons-threshold 800000) ; 800 kb is the Emacs default (2021-08-01)
+      (init-gc-cons-threshold most-positive-fixnum))
+  (setq gc-cons-threshold init-gc-cons-threshold)
+  (add-hook 'emacs-startup-hook
+            (lambda () (setq gc-cons-threshold default-gc-cons-threshold))))
 
 
 (setq custom-file (concat user-emacs-directory "custom.el"))
@@ -1341,13 +1345,10 @@ detail."
    (google-translate-default-target-language "ja")))
 
 
-;; Restore GC threshold; 800 kb is the default (2021-08-01)
-(setq gc-cons-threshold 800000)
-
-
 ;; Uncomment for profiling
 ;; (profiler-report)
 ;; (profiler-stop)
+
 
 (provide 'init)
 ;;; init.el ends here
