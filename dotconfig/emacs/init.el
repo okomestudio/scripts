@@ -321,6 +321,14 @@ detail."
   (("C-a" . 'mwim-beginning)
    ("C-e" . 'mwim-end)))
 
+;; Smart garbage collection
+(use-package gcmh
+  :defer nil
+  :custom
+  (gcmh-mode 1)
+  (gcmh-idle-delay 5)
+  (gcmh-high-cons-threshold (* 16 1024 1024)))
+
 
 ;; THEME
 
