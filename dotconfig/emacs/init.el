@@ -7,6 +7,11 @@
 ;;
 ;;; Code:
 
+;; Uncomment for profiling (also see the end of file)
+;; (require 'profiler)
+;; (profiler-start 'cpu)
+
+
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (unless (file-exists-p custom-file)
   (write-region "" nil custom-file))
@@ -1322,6 +1327,10 @@ detail."
    (google-translate-default-source-language "auto")
    (google-translate-default-target-language "ja")))
 
+
+;; Uncomment for profiling
+;; (profiler-report)
+;; (profiler-stop)
 
 (provide 'init)
 ;;; init.el ends here
