@@ -12,6 +12,11 @@
 ;; (profiler-start 'cpu)
 
 
+(let ((minver "27.1"))
+  (when (version< emacs-version minver)
+    (error "The minimum Emacs version for init.el is Version %s" minver)))
+
+
 ;; Reduce GC usage while initialization
 (setq gc-cons-threshold most-positive-fixnum)
 
