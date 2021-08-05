@@ -93,6 +93,9 @@ case $1 in
   *.html.j2|*.htm.j2)
     pygmentize -f 256 -O bg=light -l html $1
     ;;
+  *.yaml|*.yml)
+    pygmentize -f 256 -O bg=light -l yaml $1
+    ;;
   *)
     prog=$(parse_shebang $1)
     if [ ! -z $prog ]; then
