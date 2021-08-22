@@ -4,11 +4,13 @@ if [ -f ~/.profile ]; then
   . ~/.profile
 fi
 
+# BEGIN by pyenv
 if [ -d ~/.pyenv ]; then
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init --path)"
 fi
+# END by pyenv
 
 if [ -f ~/.bashrc ]; then
   . ~/.bashrc
