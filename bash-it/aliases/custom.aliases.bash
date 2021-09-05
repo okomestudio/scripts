@@ -1,7 +1,7 @@
-#!/usr/bin/env bash
+# -*- mode: sh; sh-basic-offset: 2; -*-
 
 if [ -x /usr/bin/tput ] && tput setaf 1 >& /dev/null; then
-	use_color=t
+  use_color=t
 fi
 
 
@@ -22,7 +22,6 @@ if [[ ! -z "$use_color" ]] && [ -x /usr/bin/dircolors ]; then
 else
   alias ls='ls --classify'
 fi
-
 alias ll='ls -alh'
 
 
@@ -30,7 +29,7 @@ alias ll='ls -alh'
 alias open='xdg-open'
 
 
-# faster find
+# fd: Faster find
 alias fd='fdfind'
 
 
@@ -40,7 +39,7 @@ function mdviewer() {
 }
 
 
-# cd: Override to source local .bash_local if exists.
+# cd: Override by sourcing .bash_local if exists in the directory.
 function cd() {
   command cd "$@" || return
   local bash_local="$PWD/.bash_local"
