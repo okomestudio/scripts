@@ -30,6 +30,10 @@ alias ll='ls -alh'
 alias open='xdg-open'
 
 
+# faster find
+alias fd='fdfind'
+
+
 # markdown viewer on shell
 function mdviewer() {
   pandoc "$1" | lynx -stdin;

@@ -26,7 +26,7 @@ alias ll='ls -alh'
 
 alias em='emacs -nw'
 alias open='xdg-open'
-
+alias fd='fdfind'
 
 # Alias and completion for Git.
 if [[ -e /usr/share/bash-completion/completions/git ]]; then
