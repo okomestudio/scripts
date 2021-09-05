@@ -62,10 +62,10 @@ export LC_COLLATE=C
 
 # Misc
 export BROWSER=google-chrome
-export EDITOR="emacs -nw"
-export ALTERNATE_EDITOR="nano"
+export EDITOR=nano
+# export ALTERNATE_EDITOR=nano
 export GIT_EDITOR=nano
-#export VISUAL="emacs"
+export VISUAL="emacsclient -nc"
 export PAGER=less
 
 ##############################################################################
