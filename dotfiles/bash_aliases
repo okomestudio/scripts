@@ -1,5 +1,5 @@
 # -*- mode: sh; sh-basic-offset: 2; -*-
 
-if [ -f ~/github.com/environment/bash-it/aliases/custom.aliases.bash ]; then
-  . ~/github.com/environment/bash-it/aliases/custom.aliases.bash
+if [ -f ~/github.com/okomestudio/environment/bash-it/aliases/custom.aliases.bash ]; then
+  . ~/github.com/okomestudio/environment/bash-it/aliases/custom.aliases.bash
 fi
