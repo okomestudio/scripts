@@ -16,6 +16,16 @@ if [ -f ~/.bashrc ]; then
   . ~/.bashrc
 fi
 
+# BEGIN by keychain
+if command -v keychain 1>/dev/null 2>&1; then
+  keys=""
+  for i in $(ls ~/.ssh/*.pub) ; do
+    keys="$keys $(basename "${i%.*}")" ;
+  done
+  keychain --quiet --noask --systemd $keys
+  . ~/.keychain/$HOSTNAME-sh
+fi
+# END by keychain
 
 function backup() {
   if [ -z "$1" ] ; then

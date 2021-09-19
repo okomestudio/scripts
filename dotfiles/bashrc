@@ -99,17 +99,6 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 # END by pyenv
 
-##############################################################################
-# Keychain
-if command -v keychain 1>/dev/null 2>&1; then
-  keys=""
-  for i in $(ls ~/.ssh/*.pub) ; do
-    keys="$keys $(basename "${i%.*}")" ;
-  done
-  keychain --quiet --noask --systemd $keys
-  . ~/.keychain/$HOSTNAME-sh
-fi
-
 #################################################################################
 # Bash-it customization (See: bash-it/template/bash_profile.template.bash)
 export BASH_IT=~/github.com/Bash-it/bash-it
