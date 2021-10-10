@@ -138,8 +138,6 @@ source "$BASH_IT"/bash_it.sh
 
 ##############################################################################
 # emacs-vterm
-if [[ "$INSIDE_EMACS" = 'vterm' ]] \
-     && [[ -n ${EMACS_VTERM_PATH} ]] \
-     && [[ -f ${EMACS_VTERM_PATH}/etc/emacs-vterm-bash.sh ]]; then
-	source ${EMACS_VTERM_PATH}/etc/emacs-vterm-bash.sh
+if [[ "$INSIDE_EMACS" = 'vterm' ]] && [[ -f ~/.config/emacs/etc/vterm-bash.sh ]]; then
+	source ~/.config/emacs/etc/vterm-bash.sh
 fi
