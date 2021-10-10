@@ -141,3 +141,9 @@ source "$BASH_IT"/bash_it.sh
 if [[ "$INSIDE_EMACS" = 'vterm' ]] && [[ -f ~/.config/emacs/etc/vterm-bash.sh ]]; then
 	source ~/.config/emacs/etc/vterm-bash.sh
 fi
+
+##############################################################################
+# autojump
+if [[ -f /usr/share/autojump/autojump.sh ]]; then
+  source /usr/share/autojump/autojump.sh
+fi
