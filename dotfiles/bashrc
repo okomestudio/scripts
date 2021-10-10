@@ -99,6 +99,12 @@ if command -v pyenv 1>/dev/null 2>&1; then
 fi
 # END by pyenv
 
+##############################################################################
+# autojump
+if [[ -f /usr/share/autojump/autojump.sh ]]; then
+  source /usr/share/autojump/autojump.sh
+fi
+
 #################################################################################
 # Bash-it customization (See: bash-it/template/bash_profile.template.bash)
 export BASH_IT=~/github.com/Bash-it/bash-it
@@ -140,10 +146,4 @@ source "$BASH_IT"/bash_it.sh
 # emacs-vterm
 if [[ "$INSIDE_EMACS" = 'vterm' ]] && [[ -f ~/.config/emacs/etc/vterm-bash.sh ]]; then
 	source ~/.config/emacs/etc/vterm-bash.sh
-fi
-
-##############################################################################
-# autojump
-if [[ -f /usr/share/autojump/autojump.sh ]]; then
-  source /usr/share/autojump/autojump.sh
 fi
