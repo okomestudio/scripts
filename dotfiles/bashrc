@@ -61,6 +61,7 @@ export LS_COLORS="${LS_COLORS}:ex=32"
 export LC_COLLATE=C
 
 # Misc
+export AWS_PAGER=""
 export BROWSER=google-chrome
 export EDITOR=nano
 # export ALTERNATE_EDITOR=nano
