@@ -1,0 +1,15 @@
+# -*- mode: sh; sh-basic-offset: 2 -*-
+#
+# Kensington SlimBlade Trackball for Left-Handed Use
+
+source .local/include/xsessionrc_helpers.sh
+
+device_name="Kensington Slimblade Trackball"
+
+device_id=$(get_device_id $device_name)
+if [[ -n "$device_id" ]]; then
+  logger -t xsessionrc "Configuring $device_name ($device_id)"
+  xinput --set-button-map "$device_id" \
+         9  3  1   5  4  6  2  8
+  #     BL TL BR CCW CW  6  7 TR
+fi
