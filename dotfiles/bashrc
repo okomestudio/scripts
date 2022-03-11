@@ -148,3 +148,9 @@ source "$BASH_IT"/bash_it.sh
 if [[ "$INSIDE_EMACS" = 'vterm' ]] && [[ -f ~/.config/emacs/etc/vterm-bash.sh ]]; then
 	source ~/.config/emacs/etc/vterm-bash.sh
 fi
+
+##############################################################################
+# direnv
+if command -v direnv >&/dev/null; then
+  eval "$(direnv hook bash)"
+fi
