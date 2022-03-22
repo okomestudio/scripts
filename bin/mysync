@@ -1,19 +1,22 @@
 #!/usr/bin/env python
 """File synchronizer
 
-This microserver watches two files and sync them as modification happens. The files are
-watched by watchdog (a Python library) and sync is done by unison.
+This microserver watches pairs of files and sync them as modification happens. The files
+are watched by watchdog (a Python library) and sync is done by unison, which are both
+dependencies that need to be installed.
 
-  $ mysync file1 file2
+For example,
+
+  $ mysync -l file1 file2 -l file3 file4
+
 """
-import pathlib
 import re
 import sys
 import time
-
 from argparse import ArgumentParser
-from subprocess import DEVNULL
-from subprocess import run
+from collections import namedtuple
+from pathlib import Path
+from subprocess import DEVNULL, run
 
 try:
     from watchdog.events import RegexMatchingEventHandler
@@ -114,12 +117,10 @@ def validate_file(path):
         raise IOError(f"Not valid files to watch: {path.absolute()}")
 
 
-def main(path1, path2):
+def _prepare_link(observer, path1, path2):
     paths = [path1, path2]
     for path in paths:
         validate_file(path)
-
-    observer = Observer()
 
     event_handler1 = MyHandler(path1)
     event_handler2 = MyHandler(path2)
@@ -128,8 +129,20 @@ def main(path1, path2):
     synchronizer.synchronize()
     synchronizer.schedule_all()
 
-    observer.start()
 
+def _check_requirements():
+    result = run(["which", "unison"])
+    if result.returncode != 0:
+        raise RuntimeError("The unison command is not available")
+
+
+def main(links):
+    observer = Observer()
+
+    for link in links:
+        _prepare_link(observer, link.source, link.target)
+
+    observer.start()
     try:
         while 1:
             time.sleep(1)
@@ -138,17 +151,14 @@ def main(path1, path2):
     observer.join()
 
 
-def check_requirements():
-    result = run(["which", "unison"])
-    if result.returncode != 0:
-        raise RuntimeError("The unison command is not available")
-
-
 if __name__ == "__main__":
-    check_requirements()
+    _check_requirements()
 
     p = ArgumentParser(description=__doc__)
-    p.add_argument("file1", type=pathlib.Path, help="First file")
-    p.add_argument("file2", type=pathlib.Path, help="Second file")
+    p.add_argument("--link", "-l", nargs=2, type=Path, action="append")
+
     args = p.parse_args()
-    main(args.file1, args.file2)
+
+    Link = namedtuple("Link", ("source", "target"))
+    links = [Link(*pair) for pair in args.link]
+    main(links)
