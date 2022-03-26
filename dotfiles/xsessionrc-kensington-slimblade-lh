@@ -10,6 +10,6 @@ device_id=$(get_device_id $device_name)
 if [[ -n "$device_id" ]]; then
   logger -t xsessionrc "Configuring $device_name ($device_id)"
   xinput --set-button-map "$device_id" \
-         9  3  1   5  4  6  2  8
+         9  3  1   4  5  6  2  8
   #     BL TL BR CCW CW  6  7 TR
 fi
