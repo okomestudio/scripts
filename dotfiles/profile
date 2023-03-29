@@ -25,7 +25,6 @@ addpath /usr/local/bin
 addpath "$HOME/.local/bin"
 addpath "$HOME/bin"
 
-##############################################################################
 # Spark
 if [ -d "$HOME/.local/spark" ] ; then
   export SPARK_HOME="$HOME/.local/spark"
@@ -33,6 +32,7 @@ if [ -d "$HOME/.local/spark" ] ; then
 fi
 
 addpath "$HOME/.local/emacs/bin"
+addpath "$HOME/.local/rust/cargo/bin"
 addpath "/usr/local/go/bin"
 addpath "$HOME/go/bin"
 
