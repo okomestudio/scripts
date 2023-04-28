@@ -31,6 +31,13 @@ if [ -d "$HOME/.local/spark" ] ; then
   addpath "$HOME/.local/spark/bin"
 fi
 
+# Node. Allow globals to be install as a regular user; see
+# https://stackoverflow.com/a/59227497.
+if command -v node >/dev/null 2>&1 ; then
+  npm config set prefix '~/.local'
+fi
+
+
 addpath "$HOME/.local/emacs/bin"
 addpath "$HOME/.local/rust/cargo/bin"
 addpath "/usr/local/go/bin"
