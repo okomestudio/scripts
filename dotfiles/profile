@@ -39,8 +39,8 @@ addpath "$HOME/go/bin"
 export PATH
 
 
-# ibus
-if command -v ibus >/dev/null 2>&1 ; then
+# fcitx
+if command -v fcitx >/dev/null 2>&1 ; then
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     export GTK_IM_MODULE=fcitx
     export XMODIFIERS=@im=fcitx
