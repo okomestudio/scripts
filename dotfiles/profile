@@ -22,6 +22,7 @@ addpath /usr/local/games
 addpath /bin
 addpath /usr/bin
 addpath /usr/local/bin
+addpath "$HOME/.local/emacs/bin"
 addpath "$HOME/.local/bin"
 addpath "$HOME/bin"
 
@@ -38,7 +39,6 @@ if command -v node >/dev/null 2>&1 ; then
 fi
 
 
-addpath "$HOME/.local/emacs/bin"
 addpath "$HOME/.local/rust/cargo/bin"
 addpath "/usr/local/go/bin"
 addpath "$HOME/go/bin"
@@ -47,7 +47,7 @@ export PATH
 
 
 # fcitx
-if command -v fcitx >/dev/null 2>&1 ; then
+if command -v fcitx5 >/dev/null 2>&1 ; then
   if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
     export GTK_IM_MODULE=fcitx
     export XMODIFIERS=@im=fcitx
