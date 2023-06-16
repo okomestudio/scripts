@@ -39,6 +39,12 @@ function mdviewer() {
 }
 
 
+# awsume
+if pyenv which awsume > /dev/null 2>&1 ; then
+  alias awsume='. $(pyenv which awsume)'
+fi
+
+
 # cd: Override by sourcing .bash_local if exists in the directory.
 function cd() {
   command cd "$@" || return
