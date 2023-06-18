@@ -20,7 +20,7 @@ To alert at 10 minutes, two hours later from now, respectively:
   $ alertmeat 'now + 2 hour' 'Time to go home'
 
 Requirements:
-  - at
+  - at (sudo apt install at)
   - notify (via the custom script directory)
 USAGE
   exit ${1:-1}
