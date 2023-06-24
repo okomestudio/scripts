@@ -3,9 +3,6 @@
 * bin
   Miscellaneous scripts.
 
-* devices
-  Device configuration files.
-
 * install/uninstall
   Installer/uninstaller scripts.
 
