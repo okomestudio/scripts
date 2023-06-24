@@ -1,7 +1,0 @@
-#!/bin/bash
-#
-# .xsessionrc for Gigabyte X99
-
-set -e
-
-source .xsessionrc-logitech-mx-ergo
