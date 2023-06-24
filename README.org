@@ -1,4 +1,4 @@
-#+title: Linux Environment
+#+title: Scripts for personal use
 
 * bin
   Miscellaneous scripts.
