@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+# -*- mode: sh -*-
 
 # Add autocomplete to install/script
 for scriptname in ./install/script install/script; do
@@ -6,7 +6,6 @@ for scriptname in ./install/script install/script; do
            "$(find bin/ -type f -printf '%f ')" \
            $scriptname
 done
-
 
 # Add autocomplete to uninstall/script
 
