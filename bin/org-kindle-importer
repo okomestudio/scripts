@@ -13,8 +13,8 @@ from argparse import ArgumentParser
 import orgparse
 
 
-def preprocess(text):
-    """Preprocess text."""
+def preprocess_ja(text):
+    """Preprocess Japanese text."""
     if text is None:
         return None
     text = re.sub(r"　", "  ", text)
@@ -24,7 +24,7 @@ def preprocess(text):
 
 
 def render_header(org, item, depth):
-    org.append("*" * depth + " " + preprocess(item["text"]))
+    org.append("*" * depth + " " + item["text"])
     org.append(":PROPERTIES:")
     org.append(f":KINDLE_LOC: { item['location']['value'] }")
     org.append(":END:")
@@ -33,7 +33,7 @@ def render_header(org, item, depth):
 
 def render_note(org, item):
     org.append("#+BEGIN_QUOTE")
-    org.append(f"{ preprocess(item['text']) } (loc. { item['location']['value'] })")
+    org.append(f"{ item['text'] } (loc. { item['location']['value'] })")
     org.append("#+END_QUOTE")
     org.append("")
 
@@ -43,9 +43,14 @@ def render_note(org, item):
         org.append("")
 
 
-def main(highlights, target_file, target_heading):
+def main(highlights, lang, target_file, target_heading):
     with open(highlights) as f:
         jd = json.load(f)
+
+    if lang == "ja":
+        preprocess = preprocess_ja
+    else:
+        preprocess = lambda s: s
 
     title = preprocess(jd["title"])
     authors = jd["authors"]
@@ -117,6 +122,7 @@ def main(highlights, target_file, target_heading):
 if __name__ == "__main__":
     p = ArgumentParser()
     p.add_argument("highlights", help="JSON file")
+    p.add_argument("--lang", "-l", choices=("en", "ja"), default="en", help="Language")
     p.add_argument("--target-file", "-f", type=str, help="Not implemented yet")
     p.add_argument("--target-heading", "-t", type=str, help="Not implemented yet")
 
