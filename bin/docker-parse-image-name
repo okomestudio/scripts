@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cut -d ' ' -f 1 /var/log/apache2/access_logs | uniq -c | sort -n
+
 
 # Parse Docker image name ($1)
 function parse() {
