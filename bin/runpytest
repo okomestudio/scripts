@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-#
-# This pytest wrapper prevents __pycache__ directory to be created on running
-# pytest code. See https://github.com/pytest-dev/pytest/issues/200 for detail
-
-PYTHONDONTWRITEBYTECODE=1 python -m pytest -p no:cacheprovider "$@"
